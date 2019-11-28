@@ -1,16 +1,17 @@
 # boostnote_mobile
 
-A new Flutter project.
+## Architecture
 
-## Getting Started
+Presentation Layer:
+- Pages - view
+- Widgets (common widgets) - view
+- Controller/ModelView/Presenter/BLoc?????? - communicates with view and business layer
 
-This project is a starting point for a Flutter application.
+Business Layer:
+- Services/Usecases/Interactors - contains business logic
+- Domain Model/Entity
+- Repository Interface - linking point between business and data layer
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Data Layer:
+- Model - extends Business Model and adds additional data layer functionality like toCson() or fromCson()
+- Repository Implemetation - uses some kind of Datasource provided by the framework for storing data, implements Repository Interface

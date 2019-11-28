@@ -46,7 +46,7 @@ class DummyDataGenerator {
                                         updatedAt: new DateTime.now(),
                                         folder: 'Folder2',
                                         title: 'Snippet Note',
-                                        tags: ['Tag1'],
+                                        tags: ['#Tag1'],
                                         isStarred: true,
                                         isTrashed: false,
                                         description: description,
@@ -60,13 +60,21 @@ class DummyDataGenerator {
     String content = 'lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
     
     return new MarkdownNote(createdAt: new DateTime.now(),
-                                        updatedAt: new DateTime.now(),
+                                        updatedAt: new DateTime(2017,02,28),
                                         folder: 'Folder1',
                                         title: 'Markdown Note',
-                                        tags: ['Tag1, Tag2'],
+                                        tags: ['#Tag1' , '#Tag2'],
                                         isStarred: false,
                                         isTrashed: false,
                                         content: content
                                         );
+  }
+
+  List<String> folders = ['Default'];
+
+
+
+  void saveFolder(String folder){
+    folders.add(folder);
   }
 }

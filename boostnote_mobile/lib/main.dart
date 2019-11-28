@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:boostnote_mobile/ui/screens/MainScreen.dart';
+import 'package:boostnote_mobile/ui/screens/main/MainScreen.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Boostnote',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

@@ -1,6 +1,8 @@
 
+import 'package:boostnote_mobile/data/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/data/model/Note.dart';
-import 'package:boostnote_mobile/ui/screens/NoteList/NoteTile.dart';
+import 'package:boostnote_mobile/ui/screens/main/NoteList/MarkdownTile.dart';
+import 'package:boostnote_mobile/ui/screens/main/NoteList/SnippetTile.dart';
 import 'package:flutter/cupertino.dart';
 
 class NoteList extends StatelessWidget {
@@ -21,7 +23,7 @@ class NoteList extends StatelessWidget {
       itemBuilder: (context, int) {
         return GestureDetector(
           onTap: () => itemSelectedCallback(data[int]),
-          child: new NoteTile(note: data[int]),
+          child: data[int] is MarkdownNote ? MarkdownTile(note: data[int]) : SnippetTile(note: data[int]),  //ugly
         );
       },
     );

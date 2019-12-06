@@ -34,7 +34,7 @@ class SnippetTile extends StatelessWidget{
     children: <Widget>[
       Row(
         children: <Widget>[
-          Icon(Icons.code),
+          Icon(Icons.code, color: Colors.grey),
           Text(note.title, 
             maxLines: 1,
             style: TextStyle(fontSize: 28.0)),

@@ -34,6 +34,12 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Boostnote'),
+        leading: IconButton(
+          icon: Icon(Icons.menu, color: Theme.of(context).accentColor), 
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
@@ -45,7 +51,12 @@ class _MainScreenState extends State<MainScreen> {
           )
         ],
       ),
-      drawer: isTablet ? null : new NavigationDrawer(),
+      drawer: Theme(
+        data: Theme.of(context).copyWith(
+                 canvasColor: Theme.of(context).primaryColorLight, 
+              ),
+        child: isTablet ? null : NavigationDrawer(),
+      ),
       body: body,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),

@@ -34,7 +34,7 @@ class MarkdownTile extends StatelessWidget{
     children: <Widget>[
       Row(
         children: <Widget>[
-          Icon(Icons.note),
+          Icon(Icons.note, color: Colors.grey),
           Text(note.title, 
               maxLines: 1,
               style: TextStyle(fontSize: 28.0)),

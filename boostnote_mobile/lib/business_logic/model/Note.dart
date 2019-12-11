@@ -1,5 +1,6 @@
 abstract class Note {
 
+  final int id;
   final DateTime createdAt;
   DateTime updatedAt;
   String folder; //im wiki nach gucken, wie wert generiert wird + evtl extra Klasse
@@ -8,7 +9,8 @@ abstract class Note {
   bool isStarred;
   bool isTrashed;
 
-  Note({this.createdAt, 
+  Note({this.id,
+        this.createdAt, 
         this.updatedAt, 
         this.folder, 
         this.title, 

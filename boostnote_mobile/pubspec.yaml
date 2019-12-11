@@ -1,5 +1,5 @@
 name: boostnote_mobile
-description: A new Flutter project.
+description: A Markdown Editor for Developers.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -23,6 +23,9 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
+
+  flutter_markdown: ^0.3.0
+  flutter_highlight: ^0.5.0
 
 dev_dependencies:
   flutter_test:

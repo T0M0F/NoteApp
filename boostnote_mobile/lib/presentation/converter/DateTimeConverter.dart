@@ -4,18 +4,16 @@ class DateTimeConverter {
 
   String convertToReadableForm(DateTime dateTime){
 
-    if(today(dateTime)){
+    if(_today(dateTime)){
       return dateTime.hour.toString() + ':' + dateTime.minute.toString();
-    } else if(thisYear(dateTime)){
+    } else if(_thisYear(dateTime)){
       return dateTime.day.toString() + '.' + dateTime.month.toString();
     } else {
       return dateTime.day.toString() + '.' + dateTime.month.toString() + '.' + dateTime.year.toString();
     }
-    
-    
   }
     
-  bool today(DateTime dateTime){
+  bool _today(DateTime dateTime){
 
     DateTime now = DateTime.now();
     DateTime today = new DateTime(now.year, now.month, now.day);
@@ -24,7 +22,7 @@ class DateTimeConverter {
     return today == dateToCheck;
   }
 
-  bool thisYear(DateTime dateTime) {
+  bool _thisYear(DateTime dateTime) {
 
     DateTime now = DateTime.now();
     DateTime year = new DateTime(now.year);

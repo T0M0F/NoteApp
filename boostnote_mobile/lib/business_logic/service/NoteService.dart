@@ -27,6 +27,10 @@ class NoteService {
     noteRepository.delete(note);
   }
 
+  void deleteAll(List<Note> notes) {
+    noteRepository.deleteAll(notes);
+  }
+
   List<Note> generateNotes(int number){
 
     if(number < 0){
@@ -64,15 +68,15 @@ class NoteService {
     String description = 'lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
     return SnippetNote(createdAt: DateTime.now(),
-                                        updatedAt: DateTime.now(),
-                                        folder: 'Folder2',
-                                        title: 'Snippet Note',
-                                        tags: ['#Tag1'],
-                                        isStarred: true,
-                                        isTrashed: false,
-                                        description: description,
-                                        codeSnippets: [codeSnippet, codeSnippet, codeSnippet, codeSnippet]
-                                        );
+                      updatedAt: DateTime.now(),
+                      folder: 'Folder2',
+                      title: 'Snippet Note',
+                      tags: ['#Tag1'],
+                      isStarred: true,
+                      isTrashed: false,
+                      description: description,
+                      codeSnippets: [codeSnippet, codeSnippet, codeSnippet, codeSnippet]
+                      );
   }
 
   
@@ -81,14 +85,14 @@ class NoteService {
     String content = 'lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
     
     return MarkdownNote(createdAt: DateTime.now(),
-                                        updatedAt: DateTime(2017,02,28),
-                                        folder: 'Folder1',
-                                        title: 'Markdown Note',
-                                        tags: ['#Tag1' , '#Tag2'],
-                                        isStarred: false,
-                                        isTrashed: false,
-                                        content: content
-                                        );
+                        updatedAt: DateTime(2017,02,28),
+                        folder: 'Folder1',
+                        title: 'Markdown Note',
+                        tags: ['#Tag1' , '#Tag2'],
+                        isStarred: false,
+                        isTrashed: false,
+                        content: content
+                        );
   }
   
 }

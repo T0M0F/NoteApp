@@ -28,19 +28,18 @@ class MarkdownEditor extends StatefulWidget{
     _textEditingController.text = this.widget._text;
     return Container(
       child: TextField(
-            keyboardType: TextInputType.multiline,
-            maxLines: null,
-            controller: _textEditingController,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "INPUT TEXT" 
-            ),
-            onChanged: (String text){
-              setState(() {
-                this.widget.callback(text);
-              });
-            },
-          ),
+        controller: _textEditingController,
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: 'Note'),
+        onChanged: (String text){
+           
+              this.widget.callback(text);
+            
+        },
+      ),
     );
   }
   

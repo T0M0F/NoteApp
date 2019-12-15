@@ -9,19 +9,16 @@ class SnippetTile extends StatelessWidget{
   
   final DateTimeConverter _dateTimeConverter = new DateTimeConverter();  
   final SnippetNote note;
+  final bool expanded;
 
-  SnippetTile({this.note});
+  SnippetTile({this.note, this.expanded});
 
   @override
   Widget build(BuildContext context) => _buildItem(context);
 
   Widget _buildItem(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
-      child: Column(
-        children: <Widget>[
+    List<Widget> widgets = expanded ?
+    <Widget>[
         buildHeaderRow(),
         buildBodyRow(),
         buildFooterRow(),
@@ -29,7 +26,21 @@ class SnippetTile extends StatelessWidget{
           height: 1.0,
           thickness: 1,
           )
-        ],
+    ] :
+    <Widget>[
+        buildHeaderRow(),
+        buildBodyRow(),
+        Divider(
+          height: 1.0,
+          thickness: 1,
+          )
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+      ),
+      child: Column(
+        children: widgets
       ),
     );
   }
@@ -56,7 +67,7 @@ class SnippetTile extends StatelessWidget{
   );
 
   Widget buildBodyRow() => Padding(
-    padding: EdgeInsets.symmetric(vertical: 5),
+    padding: expanded ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
     child: Text(
       note.description, 
       maxLines: 2,

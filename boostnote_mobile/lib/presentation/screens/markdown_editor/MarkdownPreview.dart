@@ -17,6 +17,9 @@ class MarkdownPreview extends StatefulWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MarkdownBody(data: this.widget._text);
+    return SingleChildScrollView(
+      child: MarkdownBody(data: this.widget._text,
+      )
+    );
   }
 }

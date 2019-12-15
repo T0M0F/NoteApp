@@ -18,9 +18,17 @@ class OverviewPresenter {
     _overviewView.update(notes);
   }
 
-  void onCreateNotePressed(){
-    Note note = _noteService.generateMarkdownNote();
+  void onCreateNotePressed(Note note){
     _noteService.save(note);
+    refresh();
+  }
+
+   void delete(List<Note> selectedNotes) {
+    _noteService.deleteAll(selectedNotes);
+    refresh();
+  }
+
+  void refresh() {
     List<Note> notes = _noteService.findAll();
     _overviewView.update(notes);
   }

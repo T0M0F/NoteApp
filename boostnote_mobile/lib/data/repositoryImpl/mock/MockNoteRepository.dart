@@ -21,7 +21,11 @@ class MockNoteRepository implements NoteRepository{
 
   @override
   void deleteAll(List<Note> notes) {
-    _notes.remove(notes);
+    for(Note note in notes){
+      if(_notes.contains(note)){
+        _notes.remove(note);
+      }
+    }
   }
 
   @override

@@ -8,20 +8,16 @@ class MarkdownTile extends StatelessWidget{
   
   final DateTimeConverter dateTimeConverter = new DateTimeConverter();
   final MarkdownNote note;
+  final bool expanded;
   
-  MarkdownTile({this.note});
+  MarkdownTile({this.note, this.expanded});
 
   @override
   Widget build(BuildContext context) => _buildItem(context);
 
   Widget _buildItem(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 5,
-      ),
-      child: Column(
-        children: <Widget>[
+    List<Widget> widgets = expanded ?
+    <Widget>[
         buildHeaderRow(),
         buildBodyRow(),
         buildFooterRow(),
@@ -29,7 +25,22 @@ class MarkdownTile extends StatelessWidget{
           height: 1.0,
           thickness: 1,
           )
-        ],
+    ] :
+    <Widget>[
+        buildHeaderRow(),
+        buildBodyRow(),
+        Divider(
+          height: 1.0,
+          thickness: 1,
+          )
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 5,
+      ),
+      child: Column(
+        children: widgets
       ),
     );
   }
@@ -56,7 +67,7 @@ class MarkdownTile extends StatelessWidget{
   );
 
   Widget buildBodyRow() => Padding(
-    padding: EdgeInsets.symmetric(vertical: 5),
+    padding:  expanded ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
     child: Text(
       note.content, 
       maxLines: 2,

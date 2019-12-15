@@ -18,6 +18,7 @@ class BoostnoteApp extends StatelessWidget {
         primaryColor: Color(0xFF202120),
         primaryColorLight: Color(0xFF2E3235),
         accentColor: Color(0xFF1EC38B),
+        hintColor: Colors.white,
       ),
       home: Overview(),
     );

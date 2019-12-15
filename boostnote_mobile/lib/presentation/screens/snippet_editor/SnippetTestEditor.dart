@@ -1,4 +1,6 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/github.dart';
@@ -7,13 +9,15 @@ import 'package:flutter_highlight/themes/github.dart';
 
 class SnippetTestEditor extends StatefulWidget {
 
+  final OverviewView _overview;
+
   final SnippetNote _note;
 
   int _index = 0;
   
-  SnippetTestEditor(this._note);
+  SnippetTestEditor(this._note, this._overview);
 
-  SnippetTestEditor.startAt(this._note, this._index);
+  SnippetTestEditor.startAt(this._note, this._index, this._overview);
 
   @override
   _SnippetTestEditorState createState() => new _SnippetTestEditorState();
@@ -48,6 +52,19 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> {
     }
   }
 
+   void _selectedAction(String action){
+      NoteService noteService = NoteService();
+      print(action);
+      print(action == 'Delete');
+      if(action == 'Delete'){
+        noteService.delete(this.widget._note);
+      } else if(action == 'Save'){
+        noteService.save(this.widget._note);
+      } 
+      this.widget._overview.refresh();
+      Navigator.of(context).pop();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +91,7 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> {
                                                               content: 'content'));
                 Navigator.of(context).pushReplacement(
                    PageRouteBuilder(
-                       pageBuilder: (c, a1, a2) =>  SnippetTestEditor.startAt(this.widget._note, this.widget._note.codeSnippets.length-1),
+                       pageBuilder: (c, a1, a2) =>  SnippetTestEditor.startAt(this.widget._note, this.widget._note.codeSnippets.length-1, this.widget._overview),
                        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
                        transitionDuration: Duration(milliseconds: 0),
                     ),
@@ -85,14 +102,35 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> {
               });
             },
           ),
-          IconButton(
+          PopupMenuButton<String>(
             icon: Icon(Icons.more_vert),
-            onPressed: () {},
+            onSelected: _selectedAction,
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuEntry<String>>[
+                PopupMenuItem(
+                  value: 'Save',
+                  child: ListTile(
+                    title: Text('Save')
+                  )
+                ),
+                PopupMenuItem(
+                  value: 'Delete',
+                  child: ListTile(
+                    title: Text('Delete')
+                  )
+                ),
+              ];
+            }
           )
         ],
        ),
         body: TabBarView(
           children: _tabs
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.edit, color: Color(0xFFF6F5F5)),
+          onPressed: (){
+          },
         ),
         bottomNavigationBar: Column(
           mainAxisSize: MainAxisSize.min,

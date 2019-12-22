@@ -31,11 +31,21 @@ class EditorState extends State<Editor> {
       print(action == 'Delete');
       if(action == 'Delete'){
         noteService.delete(this.widget._note);
+        this.widget._overview.refresh();
+        Navigator.of(context).pop();
       } else if(action == 'Save'){
         noteService.save(this.widget._note);
-      } 
-      this.widget._overview.refresh();
-      Navigator.of(context).pop();
+        this.widget._overview.refresh();
+        Navigator.of(context).pop();
+      }  else if(action == 'Edit Note'){
+        showEditNoteDialog(context, this.widget._note, (note){
+          setState(() {
+            this.widget._note.title = note.title;
+          });
+          noteService.save(this.widget._note);
+          Navigator.of(context).pop();
+        });
+      }
   }
 
   @override
@@ -83,6 +93,12 @@ class EditorState extends State<Editor> {
                     title: Text('Delete')
                   )
                 ),
+                PopupMenuItem(
+                  value: 'Edit Note',
+                  child: ListTile(
+                    title: Text('Edit Note')
+                  )
+                )
               ];
             }
           )
@@ -114,6 +130,60 @@ class EditorState extends State<Editor> {
 
   void callback(String text){
       this.widget._note.content = text;
+  }
+
+  Future<MarkdownNote> showEditNoteDialog(BuildContext context, MarkdownNote note, Function(MarkdownNote) callback){
+     TextEditingController controller = TextEditingController();
+     controller.text = note.title;
+  
+      return showDialog(context: context, 
+        builder: (context){
+          return AlertDialog(
+            title: Container( 
+              alignment: Alignment.center,
+              child: Text('Edit Note', style: TextStyle(color: Colors.black))
+            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  height: 75,
+                  child: Column(
+                    children: <Widget>[
+                      TextField(
+                        controller: controller,
+                        style: TextStyle(color: Colors.black),
+                      ), 
+                    ],
+                  ),
+                );
+              },
+            ),
+            actions: <Widget>[
+            MaterialButton(
+                minWidth:100,
+                elevation: 5.0,
+                color: Color(0xFFF6F5F5),
+                child: Text('Cancel', style: TextStyle(color: Colors.black),),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                }
+              ),
+              MaterialButton(
+                minWidth:100,
+                elevation: 5.0,
+                color: Theme.of(context).accentColor,
+                child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
+                onPressed: (){
+                  if(controller.text.trim().length > 0){
+                    note.title = controller.text;
+                    callback(note); 
+                  }
+                }
+              )
+            ],
+          );
+      });
   }
 }
 

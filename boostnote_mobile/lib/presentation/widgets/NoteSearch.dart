@@ -1,7 +1,9 @@
 
 import 'dart:collection';
 
+import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:flutter/material.dart';
 
 class NoteSearch extends SearchDelegate {
@@ -51,11 +53,36 @@ class NoteSearch extends SearchDelegate {
           return Center(
             child: Text('No data', style: TextStyle(fontSize: 18)),
           );
-        } else {
-          final results = snapshot.data.where((note) => note.title.toLowerCase().contains(query.toLowerCase()));
+          } else {
+          final results = snapshot.data.where((note){
+            if(note is MarkdownNote){
+              return note.title.toLowerCase().contains(query.toLowerCase()) || 
+              note.content.toLowerCase().contains(query.toLowerCase()) || 
+              note.tags.any((tag){
+                  return tag.toLowerCase().contains(query.toLowerCase());
+              });
+            } else if(note is SnippetNote){
+              return note.title.toLowerCase().contains(query.toLowerCase()) ||
+              note.codeSnippets.any((codeSnippet){
+                return codeSnippet.name.toLowerCase().contains(query.toLowerCase()) ||
+                codeSnippet.content.toLowerCase().contains(query.toLowerCase());
+              }) || 
+              note.tags.any((tag){
+                return tag.toLowerCase().contains(query.toLowerCase());
+              });
+            }
+            return false;
+          });
           return ListView(
             children: results.map<ListTile>((note) => ListTile(
-              title: Text(note.title),
+              contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+              title: Text(note.title,
+                maxLines: 1,
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+              subtitle: Text(
+                _getSubtitle(note),
+                maxLines: 2,
+                style: TextStyle(fontSize: 16.0, color: Colors.black)),
               onTap: () {
                 close(context, results);
                 itemSelectedCallback(note);
@@ -77,6 +104,15 @@ class NoteSearch extends SearchDelegate {
             title:   TextStyle(color: Colors.white),
         ),
     );
+  }
+
+  String _getSubtitle(Note note) {
+    if(note is MarkdownNote){
+      return note.content;
+    } else if (note is SnippetNote){
+      return note.description;
+    }
+    return "";
   }
 
 }

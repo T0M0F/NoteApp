@@ -15,8 +15,13 @@ class NoteList extends StatefulWidget {
   final ValueChanged<List<Note>> itemSelectedCallback;
   final bool edit;
   final bool expanded;
+  final List<Note> _selectedNotes = List();
 
   NoteList({@required this.notes,@required  this.edit, @required this.itemSelectedCallback, this.expanded});
+
+  void clearSelectedElements(){
+    _selectedNotes.clear();
+  }
 
   @override
   State<StatefulWidget> createState() => _NoteListState(notes, itemSelectedCallback);
@@ -27,7 +32,7 @@ class NoteList extends StatefulWidget {
 
   final List<Note> notes;
   final ValueChanged<List<Note>> itemSelectedCallback;
-  final List<Note> selectedNotes = List();
+  
    
   _NoteListState(this.notes, this.itemSelectedCallback);
 
@@ -50,11 +55,12 @@ class NoteList extends StatefulWidget {
               Flexible(
                 flex: 1,
                 child: Checkbox(
-                  value: selectedNotes.contains(notes[int]), 
+                  value: this.widget._selectedNotes.contains(notes[int]), 
                   onChanged: (bool selected) {
+                    NoteList widget = this.widget;
                     setState(() {
-                      selected ? selectedNotes.add(notes[int]) : selectedNotes.remove(notes[int]);
-                      itemSelectedCallback(selectedNotes);
+                      selected ? widget._selectedNotes.add(notes[int]) : widget._selectedNotes.remove(notes[int]);
+                      itemSelectedCallback(widget._selectedNotes);
                     });
                   },
                 )

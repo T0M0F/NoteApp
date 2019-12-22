@@ -97,7 +97,7 @@ class _OverviewState extends State<Overview> implements OverviewView{
     _isTablet = shortestSide >= 600;
 
     Widget body;
-    if (shortestSide < 600) {
+    if (shortestSide < 400) {
       body = _buildMobileLayout(_notes);
     } else {
       body = _buildTabletLayout(_notes);
@@ -211,6 +211,8 @@ class _OverviewState extends State<Overview> implements OverviewView{
               onPressed: () {
                 _presenter.delete(_selectedNotes);
                 setState(() {
+                  _selectedNotes.clear();
+                  noteList.clearSelectedElements();
                   _editMode = false;
                 });
               }
@@ -275,7 +277,7 @@ class _OverviewState extends State<Overview> implements OverviewView{
     return Row(
       children: <Widget>[
         Flexible(
-          flex: 2,
+          flex: 0,
           child: NavigationDrawer()
         ),
         Flexible(

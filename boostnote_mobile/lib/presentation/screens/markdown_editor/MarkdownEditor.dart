@@ -27,11 +27,15 @@ class MarkdownEditor extends StatefulWidget{
   Widget build(BuildContext context) {
     _textEditingController.text = this.widget._text;
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
       child: TextField(
+        autocorrect: true,
+        style: TextStyle(),
         controller: _textEditingController,
         keyboardType: TextInputType.multiline,
         maxLines: null,
         decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(0),
             border: InputBorder.none,
             hintText: 'Note'),
         onChanged: (String text){

@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+//TODO Delete???
 class CreateNoteDialog extends StatefulWidget {
 
   final bool createMarkdowNote;

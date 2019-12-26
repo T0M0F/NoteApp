@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 
 class NavigationDrawer extends StatefulWidget {
 
+  final Function(String) createFolderCallback;
+
+  const NavigationDrawer({Key key, @required this.createFolderCallback}) : super(key: key); //TODO: Constructor
+
   @override
   State<StatefulWidget> createState() => NavigationDrawerState();
 }
@@ -126,13 +130,14 @@ class NavigationDrawerState extends State<NavigationDrawer> {
     return widgets;
   }
 
+//TODO: In Widget auslagern
   Future<String> _createDialog(BuildContext context) {
-    TextEditingController controller = TextEditingController();
+    TextEditingController textEditingController = TextEditingController();
     return showDialog(context: context, builder: (context){
       return AlertDialog(
         title: Text('Create Folder', style: TextStyle(color: Colors.black)),
         content: TextField(
-          controller: controller,
+          controller: textEditingController,
           style: TextStyle(color: Colors.black)
         ),
         actions: <Widget>[
@@ -141,10 +146,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             color: Theme.of(context).accentColor,
             child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
             onPressed: (){
-              Navigator.of(context).pop();
-              setState(() {
-                _folderRepository.save(controller.text);
-              });
+               this.widget.createFolderCallback(textEditingController.text);
             }
           )
         ],

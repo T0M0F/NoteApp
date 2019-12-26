@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 class MarkdownEditor extends StatefulWidget{
 
   final String _text;
-  final Function(String) callback;
+  final Function(String) onChangedCallback;
 
-  MarkdownEditor(this._text, this.callback);
+  MarkdownEditor(this._text, this.onChangedCallback); //TODO: Constructor
 
   @override
   State<StatefulWidget> createState() => _MarkdownEditorState();
-  }
+
+}
   
-  class _MarkdownEditorState extends State<MarkdownEditor>{
+class _MarkdownEditorState extends State<MarkdownEditor>{
 
   TextEditingController _textEditingController;
 
@@ -39,9 +40,7 @@ class MarkdownEditor extends StatefulWidget{
             border: InputBorder.none,
             hintText: 'Note'),
         onChanged: (String text){
-           
-              this.widget.callback(text);
-            
+              this.widget.onChangedCallback(text);
         },
       ),
     );

@@ -1,24 +1,24 @@
 
-
 import 'package:boostnote_mobile/presentation/converter/DateTimeConverter.dart';
-import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SnippetTile extends StatelessWidget{
+//TODO: Merge with SnippetTile
+class MarkdownTile extends StatelessWidget{
   
-  final DateTimeConverter _dateTimeConverter = new DateTimeConverter();  
-  final SnippetNote note;
+  final DateTimeConverter dateTimeConverter = new DateTimeConverter();
+  final MarkdownNote note;
   final bool expanded;
-
-  SnippetTile({this.note, this.expanded});
+  
+  MarkdownTile({this.note, this.expanded});
 
   @override
-  Widget build(BuildContext context) => _buildItem(context);
+  Widget build(BuildContext context) {
 
-  Widget _buildItem(BuildContext context) {
-    List<Widget> widgets = expanded ?
-    <Widget>[
+    List<Widget> widgets;
+    if (expanded) {
+      widgets = <Widget>[
         buildHeaderRow(),
         buildBodyRow(),
         buildFooterRow(),
@@ -26,18 +26,22 @@ class SnippetTile extends StatelessWidget{
           height: 1.0,
           thickness: 1,
           )
-    ] :
-    <Widget>[
+      ];
+    } else {
+      widgets = <Widget>[
         buildHeaderRow(),
         buildBodyRow(),
         Divider(
           height: 1.0,
           thickness: 1,
           )
-    ];
+      ];
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 20,
+        vertical: 5,
       ),
       child: Column(
         children: widgets
@@ -52,31 +56,32 @@ class SnippetTile extends StatelessWidget{
       children: <Widget>[
         Row(
           children: <Widget>[
-            Icon(Icons.code, color: Colors.grey),
+            Icon(Icons.note, color: Colors.grey),
             Padding(
               padding: EdgeInsets.only(left: 7),
-              child:  Text(note.title, 
+              child: Text(note.title, 
                 maxLines: 1,
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
             )
           ],
         ),
-        Text(_dateTimeConverter.convertToReadableForm(note.updatedAt), style: TextStyle(fontSize: 15.0, color: Colors.grey))
+        Text(dateTimeConverter.convertToReadableForm(note.updatedAt), style: TextStyle(fontSize: 15.0, color: Colors.grey))
       ],
     ),
   );
 
   Widget buildBodyRow() => Padding(
-    padding: expanded ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
+    padding:  expanded ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
     child: Text(
-      note.description, 
+      note.content, 
       maxLines: 2,
       style: TextStyle(fontSize: 16.0)
     ),
   );
 
   Widget buildFooterRow() {
-   List<Widget> widgets;
+
+    List<Widget> widgets;
     if(note.isStarred){
       widgets = [ Text(note.tags.toString(), 
                   maxLines: 1,
@@ -93,7 +98,7 @@ class SnippetTile extends StatelessWidget{
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: widgets
-      ),
+      )
     );
   }
 }

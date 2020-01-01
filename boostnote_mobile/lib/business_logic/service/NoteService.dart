@@ -6,13 +6,36 @@ import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/mock/MockNoteRepository.dart';
+import 'package:boostnote_mobile/data/repositoryImpl/NoteRepositoryImpl.dart';
 
 class NoteService {
 
-  NoteRepository noteRepository = MockNoteRepository();
+  NoteRepository noteRepository = NoteRepositoryImpl();
 
   List<Note> findAll() {
     return noteRepository.findAll();
+  }
+
+  List<Note> findStarred(){ //TODO unelegant
+    List<Note> notes = noteRepository.findAll();
+    List<Note> starredNotes = List();
+      notes.forEach((note) {
+        if(note.isStarred) {
+          starredNotes.add(note);
+        }
+    });
+    return starredNotes;
+  }
+
+  List<Note> findTrashed(){   //TODO unelegant
+    List<Note> notes = noteRepository.findAll();
+    List<Note> trashedNotes = List();
+      notes.forEach((note) {
+        if(note.isStarred) {
+          trashedNotes.add(note);
+        }
+    });
+    return trashedNotes;
   }
 
   void save(Note note) {
@@ -86,7 +109,8 @@ class NoteService {
 
     String description = 'lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
-    return SnippetNote(createdAt: DateTime.now(),
+    return SnippetNote(id: DateTime.now().hashCode,
+                      createdAt: DateTime.now(),
                       updatedAt: DateTime.now(),
                       folder: 'Folder2',
                       title: 'Snippet Note',
@@ -164,7 +188,8 @@ Enjoy!
 [Google]: https://www.google.com/
 """;
     
-    return MarkdownNote(createdAt: DateTime.now(),
+    return MarkdownNote(id: DateTime.now().hashCode,
+                        createdAt: DateTime.now(),
                         updatedAt: DateTime(2017,02,28),
                         folder: 'Folder1',
                         title: 'Markdown Note',

@@ -14,8 +14,10 @@ class OverviewPresenter {
   }
 
   void init() {
+    /*
     List<Note> notes = _noteService.generateNotes(10);
     _overviewView.update(notes);
+    */
   }
 
   void onCreateNotePressed(Note note){
@@ -30,6 +32,20 @@ class OverviewPresenter {
 
   void refresh() {
     List<Note> notes = _noteService.findAll();
+    _overviewView.update(notes);
+  }
+
+  void showAllNotes() {
+    refresh();
+  }
+
+  void showTrashedNotes() {
+    List<Note> notes = _noteService.findTrashed();
+    _overviewView.update(notes);
+  }
+
+  void showStarredNotes() {
+    List<Note> notes = _noteService.findStarred();
     _overviewView.update(notes);
   }
 

@@ -1,15 +1,19 @@
  
  
+import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/mock/MockFolderRepository.dart';
 import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
+import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NavigationDrawer extends StatefulWidget {
 
   final Function(String) createFolderCallback;
+  final Function(int) onNavigate; 
 
-  const NavigationDrawer({Key key, @required this.createFolderCallback}) : super(key: key); //TODO: Constructor
+  const NavigationDrawer({Key key, @required this.createFolderCallback, this.onNavigate}) : super(key: key); //TODO: Constructor
 
   @override
   State<StatefulWidget> createState() => NavigationDrawerState();
@@ -53,7 +57,12 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             leading: Icon(Icons.note, color: Color(0xFFF6F5F5)),
             title: Text('All Notes'),
             onTap: () {
-              Navigator.pop(context);
+              //TODO: Callback to Parent
+              this.widget.onNavigate(NaviagtionDrawerAction.ALL_NOTES);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Overview(NoteService().findAll()))
+              );
             },
           ),
       ),
@@ -68,14 +77,24 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         leading: Icon(Icons.star, color: Color(0xFFF6F5F5)),
         title: Text('Starred'),
         onTap: () {
-          Navigator.pop(context);
+           //TODO: Callback to Parent
+          this.widget.onNavigate(NaviagtionDrawerAction.STARRED);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Overview(NoteService().findStarred()))
+          );
         },
       ),
       ListTile(
         leading: Icon(Icons.delete, color: Color(0xFFF6F5F5)),
         title: Text('Trash'),
         onTap: () {
-          Navigator.pop(context);
+           //TODO: Callback to Parent
+          this.widget.onNavigate(NaviagtionDrawerAction.TRASH);
+          /* Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Overview(NoteService().findTrashed()))
+          );*/
         },
       ),
       Padding(
@@ -156,4 +175,11 @@ class NavigationDrawerState extends State<NavigationDrawer> {
 
 }
  
-  
+class NaviagtionDrawerAction {
+
+  static const int TRASH = 0;
+  static const int ALL_NOTES = 1;
+  static const int STARRED = 2;
+
+}
+

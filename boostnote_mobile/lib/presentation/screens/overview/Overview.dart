@@ -16,6 +16,10 @@ import 'package:flutter/material.dart';
 
 class Overview extends StatefulWidget {
 
+  final List<Note> _notes;
+
+  Overview(this._notes);
+
   @override
   _OverviewState createState() => _OverviewState();
 
@@ -46,6 +50,7 @@ class _OverviewState extends State<Overview> implements OverviewView{
     super.initState();
     _presenter = OverviewPresenter(this);
     _selectedNotes = List();
+    _notes = this.widget._notes;
     _presenter.init();
   }
 
@@ -171,7 +176,7 @@ class _OverviewState extends State<Overview> implements OverviewView{
                canvasColor: Theme.of(context).primaryColorLight, 
                textTheme: TextTheme(body1: TextStyle(color: Theme.of(context).primaryColorLight))
             ),
-      child: isTablet ? null : NavigationDrawer(createFolderCallback: (folderName) {},),
+      child: isTablet ? null : NavigationDrawer(createFolderCallback: (folderName) {},onNavigate: (action) => _onNavigate(action)),
     );
   }
 
@@ -320,6 +325,20 @@ class _OverviewState extends State<Overview> implements OverviewView{
       context,
       MaterialPageRoute(builder: (context) => editor)
      );
+  }
+
+  _onNavigate(int action) {
+    switch (action) {
+      case NaviagtionDrawerAction.ALL_NOTES:
+        _presenter.showAllNotes();
+        break;
+      case NaviagtionDrawerAction.TRASH:
+        _presenter.showTrashedNotes();
+        break;
+      case NaviagtionDrawerAction.STARRED:
+        _presenter.showStarredNotes();
+       break;
+    }
   }
 }
 

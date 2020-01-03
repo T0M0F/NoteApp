@@ -10,7 +10,7 @@ import 'package:boostnote_mobile/data/repositoryImpl/NoteRepositoryImpl.dart';
 
 class NoteService {
 
-  NoteRepository noteRepository = NoteRepositoryImpl();
+  NoteRepository noteRepository = MockNoteRepository();
 
   List<Note> findAll() {
     return noteRepository.findAll();

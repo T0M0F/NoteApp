@@ -12,15 +12,15 @@ import 'package:flutter/material.dart';
 //TODO Refactor
 class SnippetTestEditor extends StatefulWidget {
 
-  final OverviewView _overview;
+  final OverviewView _parentWidget;
 
   final SnippetNote _note;
 
   int _index = 0;
   
-  SnippetTestEditor(this._note, this._overview);  //TODO: Constructor
+  SnippetTestEditor(this._note, this._parentWidget);  //TODO: Constructor
 
-  SnippetTestEditor.startAt(this._note, this._index, this._overview);
+  SnippetTestEditor.startAt(this._note, this._index, this._parentWidget);
 
   @override
   _SnippetTestEditorState createState() => new _SnippetTestEditorState();
@@ -33,32 +33,36 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
   List<CodeTab> _tabs;
   List<Widget> _tabNames;
   CodeSnippet _currentSnippet;
-  int _currentIndex = 0;
+  int _currentIndex;
 
   bool _editMode = false;
   NoteService _noteService = NoteService();
   TabController _tabController;
 
   @override
-  void initState() {
+  void initState() {  
     super.initState();
-    _currentSnippet = this.widget._note.codeSnippets[0];
+    print('init');
+    _currentIndex = this.widget._index;
+    if(this.widget._note.codeSnippets.length > 0) {
+     _currentSnippet = this.widget._note.codeSnippets[_currentIndex];
+     print('current Snippet is ' + _currentSnippet.name);
+    }
 
-    _tabNames = _getTabnames();
-
-    _tabController = TabController(    //TODO move to init
+    _tabController = TabController(    
       initialIndex: widget._index,
-      length: _tabNames.length, 
+      length: this.widget._note.codeSnippets.length, 
       vsync: this
     );
+
     _tabController.addListener((){
-      print('Change');
       setState(() {
         _editMode = false;
+        _currentSnippet.content = _currentSnippet.content; //refresh content of previous snippet
+        _currentIndex = _tabController.index;
+        _currentSnippet = this.widget._note.codeSnippets[_currentIndex];
       });
     });
-
-  
   }
 
   List<CodeTab> _getTabs(){
@@ -67,11 +71,13 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
     List<CodeSnippet> codeSnippets = this.widget._note.codeSnippets;
     for(CodeSnippet snippet in codeSnippets){
       _tabs.add(CodeTab(snippet, _editMode, (text){
-      
+        print(text);
+        _currentSnippet.content = text;
       },
       (bool){
          setState(() {
                 _editMode = bool;
+                _currentSnippet.content = _currentSnippet.content;
               });
       }));
     }
@@ -91,9 +97,10 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
    void _selectedAction(String action){
       if(action == 'Delete Note'){
         _noteService.delete(this.widget._note);
-        this.widget._overview.refresh();
+        this.widget._parentWidget.refresh();
         Navigator.of(context).pop();
       }  else if(action == 'Delete Curent Tab'){
+        /*
         setState(() {
           this.widget._note.codeSnippets.remove(_currentSnippet);
           _tabs.removeAt(_currentIndex);
@@ -101,10 +108,30 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
           _currentSnippet = this.widget._note.codeSnippets[_currentIndex];
           _noteService.save(this.widget._note);
         });
+        */
+        this.widget._note.codeSnippets.remove(_currentSnippet);
+        Route route;
+        if(this.widget._note.codeSnippets.length > 0) {
+          route = PageRouteBuilder(
+            pageBuilder: (c, a1, a2) =>  SnippetTestEditor.startAt(this.widget._note, this.widget._note.codeSnippets.length-1, this.widget._parentWidget),
+            transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+            transitionDuration: Duration(milliseconds: 0),
+          );
+        } else  {
+          route = PageRouteBuilder(
+            pageBuilder: (c, a1, a2) =>  SnippetTestEditor(this.widget._note, this.widget._parentWidget),
+            transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+            transitionDuration: Duration(milliseconds: 0),
+          );
+        } 
+     
+        _noteService.save(this.widget._note);
+        Navigator.of(context).pushReplacement(route);
+
       } else if(action == 'Save'){
         _noteService.save(this.widget._note);
-        this.widget._overview.refresh();
-      Navigator.of(context).pop();
+        this.widget._parentWidget.refresh();       
+        Navigator.of(context).pop();
       } else if(action == 'Description'){
         _showDescriptionDialog(context, this.widget._note, (text){
             this.widget._note.description = text;
@@ -113,7 +140,7 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
       } else if(action == 'Change Current Snippet Name'){
         _showEditNameDialog(context, _currentSnippet.name+'.'+_currentSnippet.mode, (text){
           setState(() {
-              List<String> s = text.split('.');
+           List<String> s = text.split('.');
            if(s.length > 1){
              _currentSnippet.name = s[0];
              _currentSnippet.mode = s[1];
@@ -123,17 +150,19 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
            }
            _noteService.save(this.widget._note);
 
-            _tabs[_currentIndex] = CodeTab(_currentSnippet, _editMode, (text){
-              
+          _tabs[_currentIndex] = CodeTab(_currentSnippet, _editMode, (text){
+              print(text);
+              _currentSnippet.content = text;
             },
             (bool){
               setState(() {
-                _editMode = bool;
-              });
+                      _editMode = bool;
+                      _currentSnippet.content = _currentSnippet.content;
+                    });
             });
-           _tabNames[_currentIndex] =  Tab( text: _currentSnippet.name+'.'+_currentSnippet.mode);
+            _tabNames[_currentIndex] =  Tab( text: _currentSnippet.name+'.'+_currentSnippet.mode);
           });
-           Navigator.of(context).pop();
+          Navigator.of(context).pop();
         });
       } else if (action == 'Edit Note'){
         _showEditNoteDialog(context, this.widget._note, (note){
@@ -147,12 +176,11 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
           });
         }
       }
-
-        
-          
+     
   @override
   Widget build(BuildContext context) {
     _tabs = _getTabs();
+    _tabNames = _getTabnames();
 
     if (_tabs.length == 0) {
       return buildEmptyBody(context);
@@ -213,30 +241,39 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
   Scaffold buildEmptyBody(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      title: Text(this.widget._note.title),
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Color(0xFFF6F5F5)), 
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
+        title: Text(this.widget._note.title),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0xFFF6F5F5)), 
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        actions: _buildIcon()
       ),
-      actions: <Widget>[
+      body:Container(),
+    );
+  }
+    
+  List<Widget> _buildIcon(){
+    if (_editMode) {
+      return <Widget>[
+        IconButton(
+          icon: Icon(Icons.check),
+          onPressed: (){
+            setState(() {
+              _editMode = false;
+              _currentSnippet.content = _currentSnippet.content;
+              //_tabs[_currentIndex]._editMode = false;
+            });
+          },
+        )
+      ];
+    } else if (this.widget._note.codeSnippets.length > 0 ) {
+      return <Widget>[  
         IconButton(
           icon: Icon(Icons.add),
           onPressed: () {
-            setState(() {
-              this.widget._note.codeSnippets.add(new CodeSnippet(linesHighlighted: new List(),
-                                                            name: 'Code',
-                                                            mode: 'java',
-                                                            content: 'content'));
-              Navigator.of(context).pushReplacement(
-                  PageRouteBuilder(
-                      pageBuilder: (c, a1, a2) =>  SnippetTestEditor.startAt(this.widget._note, this.widget._note.codeSnippets.length-1, this.widget._overview),
-                      transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
-                      transitionDuration: Duration(milliseconds: 0),
-                  ),
-              );
-            });
+             _addCodeSnippet();
           },
         ),
         PopupMenuButton<String>(
@@ -283,57 +320,13 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
             ];
           }
         )
-      ],
-      ),
-      body:Container(),
-    );
-  }
-    
-  List<Widget> _buildIcon(){
-    if (_editMode) {
-      return <Widget>[
-        IconButton(
-          icon: Icon(Icons.check),
-          onPressed: (){
-            setState(() {
-              _editMode = false;
-              //_tabs[_currentIndex]._editMode = false;
-            });
-          },
-        )
       ];
     } else {
-      return <Widget>[
+      return <Widget>[  
         IconButton(
           icon: Icon(Icons.add),
           onPressed: () {
-              _showAddSnippetDialog(context, (text){
-                setState(() {
-                  List<String> s = text.split('.');
-                  if(s.length > 1){
-                      this.widget._note.codeSnippets.add(new CodeSnippet(linesHighlighted: new List(),
-                                                                name: s[0],
-                                                                mode: s[1],
-                                                                content: ''));
-                  } else {
-                      this.widget._note.codeSnippets.add(new CodeSnippet(linesHighlighted: new List(),
-                                                                name: text,
-                                                                mode: '',
-                                                                content: ''));
-                  }
-                  
-                  Navigator.of(context).pushReplacement(
-                    PageRouteBuilder(
-                        pageBuilder: (c, a1, a2) =>  SnippetTestEditor.startAt(this.widget._note, this.widget._note.codeSnippets.length-1, this.widget._overview),
-                        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
-                        transitionDuration: Duration(milliseconds: 0),
-                      ),
-                  );
-                
-                /* _tabs.add(Container());
-                  _tabNames.add(Tab( text: 'new'));*/
-                });
-              });
+             _addCodeSnippet();
           },
         ),
         PopupMenuButton<String>(
@@ -351,18 +344,6 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
                 value: 'Delete Note',
                 child: ListTile(
                   title: Text('Delete')
-                )
-              ),
-              PopupMenuItem(
-                value: 'Delete Curent Tab',
-                child: ListTile(
-                  title: Text('Delete Curent Tab')
-                )
-              ),
-              PopupMenuItem(
-                value: 'Change Current Snippet Name',
-                child: ListTile(
-                  title: Text('Change Current Snippet Name')
                 )
               ),
               PopupMenuItem(
@@ -382,6 +363,40 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
         )
       ];
     }
+  }
+
+  void _addCodeSnippet() {  
+    _showAddSnippetDialog(context, (text){
+      setState(() {
+        print('sfjsdhak');
+        List<String> s = text.split('.');
+        if(s.length > 1){
+            this.widget._note.codeSnippets.add(new CodeSnippet(linesHighlighted: new List(),
+                                                      name: s[0],
+                                                      mode: s[1],
+                                                      content: ''));
+        } else {
+            this.widget._note.codeSnippets.add(new CodeSnippet(linesHighlighted: new List(),
+                                                      name: text,
+                                                      mode: '',
+                                                      content: ''));
+        }
+
+        //This is neccessary, because tabcontrollers length can't change dynamically -> setState() doesn't work.
+        Route route = PageRouteBuilder(
+              pageBuilder: (c, a1, a2) =>  SnippetTestEditor.startAt(this.widget._note, this.widget._note.codeSnippets.length-1, this.widget._parentWidget),
+              transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+              transitionDuration: Duration(milliseconds: 0),
+            );
+        Navigator.of(context).pushReplacement(
+          route
+        );
+        Navigator.of(context).removeRouteBelow(route);
+      
+      /* _tabs.add(Container());
+        _tabNames.add(Tab( text: 'new'));*/
+      });
+    });
   }
     
 

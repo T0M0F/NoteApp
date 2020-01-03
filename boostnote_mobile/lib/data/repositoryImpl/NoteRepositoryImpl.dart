@@ -12,7 +12,11 @@ class NoteRepositoryImpl extends NoteRepository {
   List<File> _files;
 
   NoteRepositoryImpl() {
-    getApplicationDocumentsDirectory().then((directory) => _directory = directory);
+    getApplicationDocumentsDirectory().then((directory) {
+      print('here');
+      print(_directory);
+      _directory = directory;
+    });
   }
 
   @override

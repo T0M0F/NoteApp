@@ -10,14 +10,14 @@ import 'package:boostnote_mobile/data/repositoryImpl/NoteRepositoryImpl.dart';
 
 class NoteService {
 
-  NoteRepository noteRepository = MockNoteRepository();
+  NoteRepository noteRepository = NoteRepositoryImpl();
 
-  List<Note> findAll() {
+  Future<List<Note>> findAll() async {
     return noteRepository.findAll();
   }
 
-  List<Note> findStarred(){ //TODO unelegant
-    List<Note> notes = noteRepository.findAll();
+  Future<List<Note>> findStarred() async { //TODO unelegant
+    List<Note> notes = await noteRepository.findAll();
     List<Note> starredNotes = List();
       notes.forEach((note) {
         if(note.isStarred) {
@@ -27,8 +27,8 @@ class NoteService {
     return starredNotes;
   }
 
-  List<Note> findTrashed(){   //TODO unelegant
-    List<Note> notes = noteRepository.findAll();
+  Future<List<Note>> findTrashed() async {   //TODO unelegant
+    List<Note> notes = await noteRepository.findAll();
     List<Note> trashedNotes = List();
       notes.forEach((note) {
         if(note.isStarred) {

@@ -20,14 +20,14 @@ class MockFolderRepository implements FolderRepository{
   }
 
   @override
-  List<String> findAll() {
-    return _folders;
+  Future<List<String>> findAll() {
+    return Future.value(_folders);
   }
 
   @override
-  String findById(int id) {
+  Future<String> findById(int id) {
     // TODO: implement findById
-    return null;
+    return Future.value(null);
   }
 
   @override

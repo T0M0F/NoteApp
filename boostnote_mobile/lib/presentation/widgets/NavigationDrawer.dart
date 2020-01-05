@@ -30,7 +30,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
       elevation: 20.0,
       child: ListView(
         padding: EdgeInsets.zero,
-        children: buildWidgetList(context, _folderRepository.findAll())
+        children: buildWidgetList(context, List()) //TODO: use repo
       ),
     );
   }
@@ -61,7 +61,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
               this.widget.onNavigate(NaviagtionDrawerAction.ALL_NOTES);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Overview(NoteService().findAll()))
+                MaterialPageRoute(builder: (context) => Overview(List())) //TODO: use repo
               );
             },
           ),
@@ -81,7 +81,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
           this.widget.onNavigate(NaviagtionDrawerAction.STARRED);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Overview(NoteService().findStarred()))
+            MaterialPageRoute(builder: (context) => Overview(List())) //TODO: use repo
           );
         },
       ),

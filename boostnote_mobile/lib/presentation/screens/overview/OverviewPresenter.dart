@@ -31,8 +31,7 @@ class OverviewPresenter {
   }
 
   void refresh() {
-    List<Note> notes = _noteService.findAll();
-    _overviewView.update(notes);
+    _noteService.findAll().then((notes) => _overviewView.update(notes));
   }
 
   void showAllNotes() {
@@ -40,13 +39,11 @@ class OverviewPresenter {
   }
 
   void showTrashedNotes() {
-    List<Note> notes = _noteService.findTrashed();
-    _overviewView.update(notes);
+    _noteService.findTrashed().then((notes) => _overviewView.update(notes));
   }
 
   void showStarredNotes() {
-    List<Note> notes = _noteService.findStarred();
-    _overviewView.update(notes);
+    _noteService.findStarred().then((notes) => _overviewView.update(notes));
   }
 
 }

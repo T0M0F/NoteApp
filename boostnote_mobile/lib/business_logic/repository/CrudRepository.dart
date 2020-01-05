@@ -1,9 +1,9 @@
 
 abstract class CrudRepository<T> {
 
-  T findById(int id);
+  Future<T> findById(int id);
 
-  List<T> findAll();
+  Future<List<T>> findAll();
 
   void save(T entity);
 

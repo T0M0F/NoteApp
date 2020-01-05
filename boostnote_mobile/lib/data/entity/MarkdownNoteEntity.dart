@@ -15,8 +15,8 @@ class MarkdownNoteEntity extends MarkdownNote {
   factory MarkdownNoteEntity.fromJson(Map<String, dynamic> json) {
     return MarkdownNoteEntity(
       id: json['id'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
       folder: json['folder'],
       title: json['title'],
       content: json['content'],
@@ -25,4 +25,16 @@ class MarkdownNoteEntity extends MarkdownNote {
       isTrashed: json['isTrashed'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toString(),
+    'updatedAt': updatedAt.toString(),
+    'folder': folder,
+    'title': title,
+    'content': content,
+    'tags': tags,
+    'isStarred': isStarred,
+    'isTrashed': isTrashed,
+  };
 }

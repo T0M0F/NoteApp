@@ -7,12 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class BoostnoteApp extends StatelessWidget {
+
+  List<Note> _notes = List();
   
   @override
   Widget build(BuildContext context) {
     
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-    
+    loadNotes();
+
     return MaterialApp(
       title: 'Boostnote',
       debugShowCheckedModeBanner: false,
@@ -22,10 +25,16 @@ class BoostnoteApp extends StatelessWidget {
         accentColor: Color(0xFF1EC38B),
         hintColor: Colors.white,
       ),
-      home: Overview(generateNotes()),
+      home: Overview(_notes),
     );
   }
 
   List<Note> generateNotes() => NoteService().generateNotes(10);
+
+  List<Note> loadNotes() { 
+    NoteService().findAll().then((result) { 
+      setState() => _notes = result;
+    });
+  }
   
 }

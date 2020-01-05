@@ -10,7 +10,7 @@ class SnippetNoteEntity extends SnippetNote {
       List<String> tags, 
       bool isStarred, 
       bool isTrashed,
-      String, description,
+      String description,
       List<CodeSnippet> codeSnippets}) : super(id: id, createdAt: createdAt, updatedAt: updatedAt, 
       folder: folder, title: title, tags: tags, isStarred: isStarred, isTrashed: isTrashed, 
       description: description, codeSnippets: codeSnippets);
@@ -18,8 +18,8 @@ class SnippetNoteEntity extends SnippetNote {
   factory SnippetNoteEntity.fromJson(Map<String, dynamic> json) {
     return SnippetNoteEntity(
       id: json['id'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
       folder: json['folder'],
       title: json['title'],
       description: json['description'],
@@ -29,6 +29,19 @@ class SnippetNoteEntity extends SnippetNote {
       isTrashed: json['isTrashed'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toString(),
+    'updatedAt': updatedAt.toString(),
+    'folder': folder,
+    'title': title,
+    'tags': tags,
+    'isStarred': isStarred,
+    'isTrashed': isTrashed,
+    'description' : description,
+    'codeSnippets' : codeSnippets,
+  };
 }
 
 class CodeSnippetEntity extends CodeSnippet {
@@ -44,4 +57,11 @@ class CodeSnippetEntity extends CodeSnippet {
       content: json['content'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'linesHighlighted': linesHighlighted,
+    'name': name,
+    'mode': mode,
+    'content': content
+  };
 }

@@ -42,12 +42,12 @@ class MockNoteRepository implements NoteRepository{
   }
 
   @override
-  List<Note> findAll() {
+  Future<List<Note>> findAll() async {
     return _notes;
   }
 
   @override
-  Note findById(int id) {
+  Future<Note> findById(int id) async {
     for(Note note in _notes){
       if(note.id == id){
         return note;

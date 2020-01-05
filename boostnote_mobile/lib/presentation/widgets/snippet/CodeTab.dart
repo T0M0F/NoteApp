@@ -46,9 +46,6 @@ class CodeTabState extends State<CodeTab> {
           border: InputBorder.none),
         onChanged: (String text){
           this.widget._callback(text);
-          /*setState(() {
-           this.widget._codeSnippet.content = text;
-          });*/
         },
         onEditingComplete: (){
           print('EDITING COMPLETED');

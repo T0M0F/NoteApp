@@ -1,5 +1,6 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/AddSnippetDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
@@ -39,6 +40,9 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
   NoteService _noteService = NoteService();
   TabController _tabController;
 
+  static const String MARK_ACTION = 'Mark Note';
+  static const String UNMARK_ACTION = 'Unmark Note';
+
   @override
   void initState() {  
     super.initState();
@@ -63,6 +67,14 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
         _currentSnippet = this.widget._note.codeSnippets[_currentIndex];
       });
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print('DISPOSE');
+    NoteService().save(this.widget._note);
+    this.widget._parentWidget.refresh();
   }
 
   List<CodeTab> _getTabs(){
@@ -96,7 +108,7 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
 
    void _selectedAction(String action){
       if(action == 'Delete Note'){
-        _noteService.delete(this.widget._note);
+        _noteService.moveToTrash(this.widget._note);
         this.widget._parentWidget.refresh();
         Navigator.of(context).pop();
       }  else if(action == 'Delete Curent Tab'){
@@ -124,7 +136,6 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
             transitionDuration: Duration(milliseconds: 0),
           );
         } 
-     
         _noteService.save(this.widget._note);
         Navigator.of(context).pushReplacement(route);
 
@@ -173,9 +184,15 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
                _noteService.save(note);
              });
               Navigator.of(context).pop();
-          });
-        }
-      }
+        });
+      } else if (action == UNMARK_ACTION){
+        this.widget._note.isStarred = false;
+        _noteService.save(this.widget._note);
+      } else if (action == MARK_ACTION){
+        this.widget._note.isStarred = true;
+        _noteService.save(this.widget._note);
+      } 
+    } 
      
   @override
   Widget build(BuildContext context) {
@@ -316,6 +333,12 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
                 child: ListTile(
                   title: Text('Edit Note')
                 )
+              ),
+              PopupMenuItem(
+                value: this.widget._note.isStarred ?  UNMARK_ACTION : MARK_ACTION,
+                child: ListTile(
+                  title: Text(this.widget._note.isStarred ?  UNMARK_ACTION : MARK_ACTION)
+                )
               )
             ];
           }
@@ -371,12 +394,12 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
         print('sfjsdhak');
         List<String> s = text.split('.');
         if(s.length > 1){
-            this.widget._note.codeSnippets.add(new CodeSnippet(linesHighlighted: new List(),
+            this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: new List(),  //TODO CodeSnippetEntity...
                                                       name: s[0],
                                                       mode: s[1],
                                                       content: ''));
         } else {
-            this.widget._note.codeSnippets.add(new CodeSnippet(linesHighlighted: new List(),
+            this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: new List(),
                                                       name: text,
                                                       mode: '',
                                                       content: ''));

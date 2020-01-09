@@ -92,7 +92,6 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
       Note note;
       if(groupvalue == CreateNoteDialog._MARKDOWNNOTE){
         note = MarkdownNote(
-          id: 1,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           folder: '',

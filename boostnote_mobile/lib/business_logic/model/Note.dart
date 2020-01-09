@@ -1,6 +1,6 @@
 abstract class Note {
 
-  final int id;
+  int id;
   final DateTime createdAt;
   DateTime updatedAt;
   String folder; //im wiki nach gucken, wie wert generiert wird + evtl extra Klasse

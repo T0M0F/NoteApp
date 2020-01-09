@@ -5,6 +5,7 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
+import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/mock/MockNoteRepository.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/NoteRepositoryImpl.dart';
 
@@ -13,7 +14,22 @@ class NoteService {
   NoteRepository noteRepository = NoteRepositoryImpl();
 
   Future<List<Note>> findAll() async {
+    /*List<Note> notes = await noteRepository.findAll();
+    notes.forEach((note) => note is SnippetNoteEntity ? note as SnippetNote  : note as MarkdownNote);
+    notes.forEach((note) => print(note.runtimeType));
+    return notes;*/
     return noteRepository.findAll();
+  }
+
+  Future<List<Note>> findNotTrashed() async {
+    List<Note> notes = await noteRepository.findAll();
+    List<Note> notTrashedNotes = List();
+      notes.forEach((note) {
+        if(!note.isTrashed) {
+          notTrashedNotes.add(note);
+        }
+    });
+    return notTrashedNotes;
   }
 
   Future<List<Note>> findStarred() async { //TODO unelegant
@@ -31,19 +47,30 @@ class NoteService {
     List<Note> notes = await noteRepository.findAll();
     List<Note> trashedNotes = List();
       notes.forEach((note) {
-        if(note.isStarred) {
+        if(note.isTrashed) {
           trashedNotes.add(note);
         }
     });
     return trashedNotes;
   }
 
-  void save(Note note) {
+  void createNote(Note note) {  //TODO Validation + kein note objekt als param sondern nur einzelne werte und created at selber genrieren
+    note.id = note.createdAt.hashCode;
+    noteRepository.save(note);
+  }
+
+  void save(Note note) {  //TODO check if note already exists, if it doesnt exist throw exception -> use createNote method instead
     noteRepository.save(note);
   }
 
   void saveAll(List<Note> notes) {
     noteRepository.saveAll(notes);
+  }
+
+  void moveToTrash(Note note) {
+    print('move to Trash');
+    note.isTrashed = true;
+    noteRepository.save(note);
   }
 
   void delete(Note note) {

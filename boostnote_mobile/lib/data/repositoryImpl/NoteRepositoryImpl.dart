@@ -8,10 +8,10 @@ import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/MarkdownNoteEntity.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
-import 'package:boostnote_mobile/data/repositoryImpl/filesystem/Storage.dart';
 import 'package:path_provider/path_provider.dart';
 
 //TODO: Make functions async
+//TODO: Exception handling
 class NoteRepositoryImpl extends NoteRepository {
 
   //Directory _directory;
@@ -89,22 +89,29 @@ class NoteRepositoryImpl extends NoteRepository {
     print('findAll');
     final Directory dir = await directory;
 
-    dir.list().toList().then((List<FileSystemEntity> list) {
+    return dir.list().toList().then((List<FileSystemEntity> list) async {
       List<String> paths = List();
       list.forEach((entity) => paths.add(entity.path));
       List<File> _files = List();
       paths.forEach((path) => _files.add(File(path)));
-      List<Note> notes = List();
       print(_files.length.toString() + ' notes found');
-      _files.forEach((file) async {
-        String content = await file.readAsString();
-        print('content: ' + content);
-        notes.add(MarkdownNoteEntity.fromJson(jsonDecode(content)));   //TODO call fromJson()
-      });
+      List<Note> notes = await _extractNotes(_files);
       return Future.value(notes);
+    }); 
+  }
+
+  Future<List<Note>> _extractNotes(List<File> _files) async {
+    List<Note> notes = List();
+    _files.forEach((file) {
+      String content = file.readAsStringSync();
+      Map<String, dynamic> a = jsonDecode(content);
+      if(a.containsKey('codeSnippets')) {
+        notes.add(SnippetNoteEntity.fromJson(jsonDecode(content)));
+      } else {
+        notes.add(MarkdownNoteEntity.fromJson(jsonDecode(content)));
+      }
     });
-    return Future.value(List());
-    
+    return Future.value(notes);
   }
 
   @override
@@ -117,7 +124,7 @@ class NoteRepositoryImpl extends NoteRepository {
   @override
   void save(Note note) async {
 
-//TODO: Convertion is ugly
+//TODO: Convertion is ugly -> cast
     if(note is MarkdownNote) {
       MarkdownNote markdownNote = note;
       note = MarkdownNoteEntity(
@@ -128,7 +135,7 @@ class NoteRepositoryImpl extends NoteRepository {
         title: note.title,
         tags: note.tags,
         isStarred: note.isStarred,
-        isTrashed: note.isStarred,
+        isTrashed: note.isTrashed,
         content: markdownNote.content
       );
     } else {
@@ -152,7 +159,7 @@ class NoteRepositoryImpl extends NoteRepository {
         title: note.title,
         tags: note.tags,
         isStarred: note.isStarred,
-        isTrashed: note.isStarred,
+        isTrashed: note.isTrashed,
         description: snippetNote.description,
         codeSnippets: codeSnippetEntities
       );
@@ -160,6 +167,7 @@ class NoteRepositoryImpl extends NoteRepository {
     
     print('save');
     String path = await localPath;
+    print('id: ' + note.id.toString());
     File file = File(path + '/' + note.id.toString());
     bool fileExists = await file.exists();
     if(fileExists) {
@@ -167,9 +175,10 @@ class NoteRepositoryImpl extends NoteRepository {
       print('json: ' + jsonEncode(note));
       file.writeAsString(jsonEncode(note));
     } else {
-      //TODO: Set id somewhere
       print('File does not yet exist');
       print('-----------------------');
+      print(note.createdAt);
+      file = File(path + '/' + note.id.toString());
       file.create();
       if(note is MarkdownNoteEntity) {
         MarkdownNoteEntity markdownNoteEntity = note;

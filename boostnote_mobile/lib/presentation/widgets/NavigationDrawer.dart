@@ -12,8 +12,9 @@ class NavigationDrawer extends StatefulWidget {
 
   final Function(String) createFolderCallback;
   final Function(int) onNavigate; 
+  String mode = 'All Notes';
 
-  const NavigationDrawer({Key key, @required this.createFolderCallback, this.onNavigate}) : super(key: key); //TODO: Constructor
+  NavigationDrawer({Key key, @required this.createFolderCallback, this.onNavigate, this.mode}) : super(key: key); //TODO: Constructor
 
   @override
   State<StatefulWidget> createState() => NavigationDrawerState();
@@ -52,49 +53,38 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             )
         ),
       ),
-      Container(color: Color(0x111EC38B),
-        child:  ListTile(
-            leading: Icon(Icons.note, color: Color(0xFFF6F5F5)),
-            title: Text('All Notes'),
+     ListTile(
+            leading: Icon(Icons.note, color: this.widget.mode == 'All Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+            title: Text('All Notes', style: TextStyle(color: this.widget.mode == 'All Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
             onTap: () {
               //TODO: Callback to Parent
               this.widget.onNavigate(NaviagtionDrawerAction.ALL_NOTES);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Overview(List())) //TODO: use repo
-              );
+              Navigator.of(context).pop();
             },
-          ),
       ),
       ListTile(
-        leading: Icon(Icons.label, color: Color(0xFFF6F5F5)),
-        title: Text('Tags'),
+        leading: Icon(Icons.label, color: this.widget.mode == 'Tags' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text('Tags', style: TextStyle(color: this.widget.mode == 'Tags' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
         },
       ),
       ListTile(
-        leading: Icon(Icons.star, color: Color(0xFFF6F5F5)),
-        title: Text('Starred'),
+        leading: Icon(Icons.star, color: this.widget.mode == 'Starred Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text('Starred', style: TextStyle(color: this.widget.mode == 'Starred Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
            //TODO: Callback to Parent
           this.widget.onNavigate(NaviagtionDrawerAction.STARRED);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Overview(List())) //TODO: use repo
-          );
+          Navigator.of(context).pop();
         },
       ),
       ListTile(
-        leading: Icon(Icons.delete, color: Color(0xFFF6F5F5)),
-        title: Text('Trash'),
+        leading: Icon(Icons.delete, color: this.widget.mode == 'Trashed Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text('Trash', style: TextStyle(color: this.widget.mode == 'Trashed Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
            //TODO: Callback to Parent
           this.widget.onNavigate(NaviagtionDrawerAction.TRASH);
-          /* Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Overview(NoteService().findTrashed()))
-          );*/
+          Navigator.of(context).pop();
         },
       ),
       Padding(

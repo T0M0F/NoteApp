@@ -6,15 +6,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class BoostnoteApp extends StatelessWidget {
+class BoostnoteApp extends StatefulWidget {
 
-  List<Note> _notes = List();
-  
+  @override
+  _BoostnoteAppState createState() => _BoostnoteAppState();
+}
+
+class _BoostnoteAppState extends State<BoostnoteApp> {
+
   @override
   Widget build(BuildContext context) {
     
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-    loadNotes();
 
     return MaterialApp(
       title: 'Boostnote',
@@ -25,16 +28,27 @@ class BoostnoteApp extends StatelessWidget {
         accentColor: Color(0xFF1EC38B),
         hintColor: Colors.white,
       ),
-      home: Overview(_notes),
+      home: Overview(),
     );
   }
 
   List<Note> generateNotes() => NoteService().generateNotes(10);
 
-  List<Note> loadNotes() { 
-    NoteService().findAll().then((result) { 
-      setState() => _notes = result;
+/*
+  Future<List<Note>> loadNotes() async { 
+    Future<List<Note>> notes = NoteService().findAll();
+    notes.then((result) { 
+      print('-----------------------------Notes------------------------------------');
+      print('-----------------------------------------------------------------');
+      result.forEach((note) => print(note.title + ' ' + note.runtimeType.toString()));
+      print('-----------------------------------------------------------------');
+      print('-----------------------------------------------------------------');
+
+      setState(() {
+        _notes = result;
+      });
     });
   }
-  
+  */
+
 }

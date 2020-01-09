@@ -13,15 +13,17 @@ class OverviewPresenter {
     _noteService = NoteService();
   }
 
-  void init() {
-    /*
-    List<Note> notes = _noteService.generateNotes(10);
-    _overviewView.update(notes);
-    */
+  void loadNotes() {
+    Future<List<Note>> notes = NoteService().findNotTrashed();
+    notes.then((result) { 
+      result.forEach((note) => print('note: ' + note.title + ' ' + note.id.toString()));
+      _overviewView.update(result);
+    });
   }
 
   void onCreateNotePressed(Note note){
-    _noteService.save(note);
+    print('Create Note');
+    _noteService.createNote(note);
     refresh();
   }
 
@@ -31,18 +33,21 @@ class OverviewPresenter {
   }
 
   void refresh() {
-    _noteService.findAll().then((notes) => _overviewView.update(notes));
+    _noteService.findNotTrashed().then((notes) => _overviewView.update(notes));
   }
 
   void showAllNotes() {
+    print('showAllNOtes');
     refresh();
   }
 
   void showTrashedNotes() {
+     print('showTrashedNOtes');
     _noteService.findTrashed().then((notes) => _overviewView.update(notes));
   }
 
   void showStarredNotes() {
+     print('showStarredNOtes');
     _noteService.findStarred().then((notes) => _overviewView.update(notes));
   }
 

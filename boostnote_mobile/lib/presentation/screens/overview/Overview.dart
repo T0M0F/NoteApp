@@ -16,9 +16,9 @@ import 'package:flutter/material.dart';
 
 class Overview extends StatefulWidget {
 
-  final List<Note> _notes;
+  final List<Note> notes;
 
-  Overview(this._notes);
+  Overview({this.notes});
 
   @override
   _OverviewState createState() => _OverviewState();
@@ -44,19 +44,25 @@ class _OverviewState extends State<Overview> implements OverviewView{
   static const String EDIT_ACTION = 'Edit';
   static const String EXPAND_ACTION = 'Expand';
   static const String COLLPASE_ACTION = 'Collapse';
+
+  String _pageTitle = 'All Notes';
   
   @override
   void initState(){
     super.initState();
     _presenter = OverviewPresenter(this);
     _selectedNotes = List();
-    _notes = this.widget._notes;
-    _presenter.init();
+    _notes = this.widget.notes;
+    if(_notes == null) {
+        _notes = List();
+        _presenter.loadNotes();
+      }
   }
 
  @override
   void update(List<Note> notes){
     setState(() {
+      print('Update Overview');
       if(_notes != null){
         _notes.replaceRange(0, _notes.length, notes);
       } else {
@@ -81,7 +87,7 @@ class _OverviewState extends State<Overview> implements OverviewView{
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      title: Text('All Notes'),
+      title: Text(_pageTitle),
       leading: IconButton(
         icon: Icon(Icons.menu, color: Theme.of(context).accentColor), 
         onPressed: () {
@@ -176,7 +182,7 @@ class _OverviewState extends State<Overview> implements OverviewView{
                canvasColor: Theme.of(context).primaryColorLight, 
                textTheme: TextTheme(body1: TextStyle(color: Theme.of(context).primaryColorLight))
             ),
-      child: isTablet ? null : NavigationDrawer(createFolderCallback: (folderName) {},onNavigate: (action) => _onNavigate(action)),
+      child: isTablet ? null : NavigationDrawer(createFolderCallback: (folderName) {},onNavigate: (action) => _onNavigate(action), mode: _pageTitle),
     );
   }
 
@@ -210,7 +216,7 @@ class _OverviewState extends State<Overview> implements OverviewView{
       children: <Widget>[
         Flexible(
           flex: 0,
-          child: NavigationDrawer(createFolderCallback: (folderName) {},)
+          child: NavigationDrawer(createFolderCallback: (folderName) {}, mode: _pageTitle)
         ),
         Flexible(
           flex: 3,
@@ -330,12 +336,15 @@ class _OverviewState extends State<Overview> implements OverviewView{
   _onNavigate(int action) {
     switch (action) {
       case NaviagtionDrawerAction.ALL_NOTES:
+        _pageTitle = 'All Notes';
         _presenter.showAllNotes();
         break;
       case NaviagtionDrawerAction.TRASH:
+        _pageTitle = 'Trashed Notes';
         _presenter.showTrashedNotes();
         break;
       case NaviagtionDrawerAction.STARRED:
+        _pageTitle = 'Starred Notes';
         _presenter.showStarredNotes();
        break;
     }

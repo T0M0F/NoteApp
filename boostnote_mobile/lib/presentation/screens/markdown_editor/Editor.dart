@@ -29,6 +29,8 @@ class EditorState extends State<Editor> {
   static const String DELETE_ACTION = 'Delete';
   static const String SAVE_ACTION = 'Save';
   static const String EDIT_ACTION = 'Edit Note';
+  static const String MARK_ACTION = 'Mark Note';
+  static const String UNMARK_ACTION = 'Unmark Note';
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +48,21 @@ class EditorState extends State<Editor> {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    print('DISPOSE');
+    NoteService().save(this.widget._note);
+    this.widget._overview.refresh();
+  }
+
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text(this.widget._note.title),
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Color(0xFFF6F5F5)), 
         onPressed: () {
-          Navigator.of(context).pop(); //TODO: Presenter??
+         Navigator.of(context).pop();  
         },
       ),
       actions: <Widget>[
@@ -86,6 +96,12 @@ class EditorState extends State<Editor> {
                 child: ListTile(
                   title: Text(EDIT_ACTION)
                 )
+              ),
+              PopupMenuItem(
+                value: this.widget._note.isStarred ?  UNMARK_ACTION : MARK_ACTION,
+                child: ListTile(
+                  title: Text(this.widget._note.isStarred ?  UNMARK_ACTION : MARK_ACTION)
+                )
               )
             ];
           }
@@ -97,15 +113,15 @@ class EditorState extends State<Editor> {
   //TODO: Presenter??
   void _selectedAction(String action){
       NoteService noteService = NoteService();
-      if(action == 'Delete'){
-        noteService.delete(this.widget._note);
+      if(action == DELETE_ACTION){
+        noteService.moveToTrash(this.widget._note);
         this.widget._overview.refresh();
         Navigator.of(context).pop();
-      } else if(action == 'Save'){
+      } else if(action == SAVE_ACTION){
         noteService.save(this.widget._note);
         this.widget._overview.refresh();
         Navigator.of(context).pop();
-      }  else if(action == 'Edit Note'){
+      } else if(action == EDIT_ACTION){
         showEditNoteDialog(context, this.widget._note, (note){
           setState(() {
             this.widget._note.title = note.title;
@@ -113,7 +129,13 @@ class EditorState extends State<Editor> {
           noteService.save(this.widget._note);
           Navigator.of(context).pop();
         });
-      }
+      } else if(action == MARK_ACTION){
+        this.widget._note.isStarred = true;
+        noteService.save(this.widget._note);
+      } else if(action == UNMARK_ACTION){
+        this.widget._note.isStarred = false;
+        noteService.save(this.widget._note);
+      } 
   }
 
   Widget _buildMobileLayout() {

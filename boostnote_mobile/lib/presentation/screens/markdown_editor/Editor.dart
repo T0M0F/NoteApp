@@ -1,8 +1,8 @@
 
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownEditor.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownPreview.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditMarkdownNoteDialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,11 +11,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Editor extends StatefulWidget {
 
-  final OverviewView _overview;
+  final Refreshable _parentWidget;
   final bool _isTablet;
   final MarkdownNote _note;
 
-  Editor(this._isTablet, this._note, this._overview);
+  Editor(this._isTablet, this._note, this._parentWidget);
 
   @override
   State<StatefulWidget> createState() => EditorState();
@@ -53,7 +53,7 @@ class EditorState extends State<Editor> {
     super.dispose();
     print('DISPOSE');
     NoteService().save(this.widget._note);
-    this.widget._overview.refresh();
+    this.widget._parentWidget.refresh();
   }
 
   AppBar _buildAppBar(BuildContext context) {
@@ -115,11 +115,11 @@ class EditorState extends State<Editor> {
       NoteService noteService = NoteService();
       if(action == DELETE_ACTION){
         noteService.moveToTrash(this.widget._note);
-        this.widget._overview.refresh();
+        this.widget._parentWidget.refresh();
         Navigator.of(context).pop();
       } else if(action == SAVE_ACTION){
         noteService.save(this.widget._note);
-        this.widget._overview.refresh();
+        this.widget._parentWidget.refresh();
         Navigator.of(context).pop();
       } else if(action == EDIT_ACTION){
         showEditNoteDialog(context, this.widget._note, (note){

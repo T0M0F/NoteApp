@@ -30,42 +30,42 @@ class NoteList extends StatefulWidget {
   
   Widget _buildList(BuildContext context) => ListView.builder(
     itemCount: this.widget.notes.length,
-    itemBuilder: (context, int) {
+    itemBuilder: (context, index) {
       return GestureDetector(
-        onTap: () => this.widget.rowSelectedCallback([this.widget.notes[int]]),
-        child: _buildBody(int)
+        onTap: () => this.widget.rowSelectedCallback([this.widget.notes[index]]),
+        child: _buildBody(index)
       );
     },
   );
 
-  Widget _buildBody(int int) {
-    if (this.widget.editMode) {
-      return Row (
-        children: <Widget>[
-          Flexible(
-            flex: 5,
-            child: _buildTile(this.widget.notes[int])
-          ),
-          Flexible(
-            flex: 1,
-            child: Checkbox(
-              value: this.widget.selectedNotes.contains(this.widget.notes[int]), 
-              onChanged: (bool selected) {
-                NoteList widget = this.widget;
-                setState(() {
-                  selected ? widget.selectedNotes.add(this.widget.notes[int]) : widget.selectedNotes.remove(this.widget.notes[int]);
-                });
-                this.widget.rowSelectedCallback(widget.selectedNotes);
-              },
-            )
+Widget _buildBody(int index) {
+  if (this.widget.editMode) {
+    return Row (
+      children: <Widget>[
+        Flexible(
+          flex: 5,
+          child: _buildTile(this.widget.notes[index])
+        ),
+        Flexible(
+          flex: 1,
+          child: Checkbox(
+            value: this.widget.selectedNotes.contains(this.widget.notes[index]), 
+            onChanged: (bool selected) {
+              NoteList widget = this.widget;
+              setState(() {
+                selected ? widget.selectedNotes.add(this.widget.notes[index]) : widget.selectedNotes.remove(this.widget.notes[index]);
+              });
+              this.widget.rowSelectedCallback(widget.selectedNotes);
+            },
           )
-        ],
-      );
-    } else {
-      return _buildTile(this.widget.notes[int]);
-    }
+        )
+      ],
+    );
+  } else {
+    return _buildTile(this.widget.notes[index]);
   }
+}
 
-  Widget _buildTile(Note note) => note is MarkdownNote ? MarkdownTile(note: note, expanded: this.widget.expandedMode) : SnippetTile(note: note, expanded: this.widget.expandedMode);
+Widget _buildTile(Note note) => note is MarkdownNote ? MarkdownTile(note: note, expanded: this.widget.expandedMode) : SnippetTile(note: note, expanded: this.widget.expandedMode);
 }
 

@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
@@ -94,7 +95,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
         note = MarkdownNote(
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          folder: '',
+          folder: Folder(),
           title: controller.text.trim(),
           tags: [],
           isStarred: false,
@@ -105,7 +106,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
         note = SnippetNote(
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          folder: '',
+          folder: Folder(),
           title: controller.text.trim(),
           tags: [],
           isStarred: false,

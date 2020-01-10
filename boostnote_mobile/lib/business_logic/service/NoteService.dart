@@ -1,23 +1,18 @@
 
 import 'dart:math';
 
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
-import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
-import 'package:boostnote_mobile/data/repositoryImpl/mock/MockNoteRepository.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/NoteRepositoryImpl.dart';
 
 class NoteService {
 
   NoteRepository noteRepository = NoteRepositoryImpl();
 
-  Future<List<Note>> findAll() async {
-    /*List<Note> notes = await noteRepository.findAll();
-    notes.forEach((note) => note is SnippetNoteEntity ? note as SnippetNote  : note as MarkdownNote);
-    notes.forEach((note) => print(note.runtimeType));
-    return notes;*/
+  Future<List<Note>> findAll() {
     return noteRepository.findAll();
   }
 
@@ -54,8 +49,20 @@ class NoteService {
     return trashedNotes;
   }
 
+  Future<List<Note>> findNotesIn(Folder folder) async {   //TODO unelegant
+    List<Note> notes = await noteRepository.findAll();
+    List<Note> filteredNotes = List();
+      notes.forEach((note) {
+        if(note.folder.id == folder.id) {
+          filteredNotes.add(note);
+        }
+    });
+    return filteredNotes;
+  }
+
   void createNote(Note note) {  //TODO Validation + kein note objekt als param sondern nur einzelne werte und created at selber genrieren
     note.id = note.createdAt.hashCode;
+    note.folder.id = note.folder.name.hashCode;
     noteRepository.save(note);
   }
 
@@ -139,7 +146,7 @@ class NoteService {
     return SnippetNote(id: DateTime.now().hashCode,
                       createdAt: DateTime.now(),
                       updatedAt: DateTime.now(),
-                      folder: 'Folder2',
+                      folder: Folder(name: 'Folder2'),
                       title: 'Snippet Note',
                       tags: ['#Tag1'],
                       isStarred: true,
@@ -218,7 +225,7 @@ Enjoy!
     return MarkdownNote(id: DateTime.now().hashCode,
                         createdAt: DateTime.now(),
                         updatedAt: DateTime(2017,02,28),
-                        folder: 'Folder1',
+                        folder: Folder(name: 'Folder1'),
                         title: 'Markdown Note',
                         tags: ['#Tag1' , '#Tag2'],
                         isStarred: false,

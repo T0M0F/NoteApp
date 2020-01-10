@@ -3,7 +3,9 @@ import 'dart:collection';
 
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/presentation/screens/folder_overview/FolderOverview.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
+import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/OverviewPresenter.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
@@ -25,7 +27,7 @@ class Overview extends StatefulWidget {
 
 }
 
-class _OverviewState extends State<Overview> implements OverviewView{
+class _OverviewState extends State<Overview> implements OverviewView, Refreshable{
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   OverviewPresenter _presenter;
@@ -182,7 +184,7 @@ class _OverviewState extends State<Overview> implements OverviewView{
                canvasColor: Theme.of(context).primaryColorLight, 
                textTheme: TextTheme(body1: TextStyle(color: Theme.of(context).primaryColorLight))
             ),
-      child: isTablet ? null : NavigationDrawer(createFolderCallback: (folderName) {},onNavigate: (action) => _onNavigate(action), mode: _pageTitle),
+      child: isTablet ? null : NavigationDrawer(onNavigate: (action) => _onNavigate(action), mode: _pageTitle),
     );
   }
 
@@ -216,7 +218,7 @@ class _OverviewState extends State<Overview> implements OverviewView{
       children: <Widget>[
         Flexible(
           flex: 0,
-          child: NavigationDrawer(createFolderCallback: (folderName) {}, mode: _pageTitle)
+          child: NavigationDrawer(onNavigate: (action) => _onNavigate(action), mode: _pageTitle)
         ),
         Flexible(
           flex: 3,
@@ -347,6 +349,13 @@ class _OverviewState extends State<Overview> implements OverviewView{
         _pageTitle = 'Starred Notes';
         _presenter.showStarredNotes();
        break;
+      case NaviagtionDrawerAction.FOLDERS:
+        _pageTitle = 'Folders';
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => FolderOverview())
+        );
+      break;
     }
   }
 }

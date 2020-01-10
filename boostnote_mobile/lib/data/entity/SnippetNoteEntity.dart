@@ -1,14 +1,17 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+
+import 'FolderEntity.dart';
 
 class SnippetNoteEntity extends SnippetNote {
 
     SnippetNoteEntity({int id,
       DateTime createdAt, 
       DateTime updatedAt, 
-      String folder, 
+      Folder folder, 
       String title, 
       List<String> tags, 
       bool isStarred, 
@@ -23,7 +26,7 @@ class SnippetNoteEntity extends SnippetNote {
       id: json['id'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      folder: json['folder'],
+      folder: FolderEntity.fromJson(json['folder']),
       title: json['title'],
       description: json['description'],
       codeSnippets: (json['codeSnippets'] as List).map((i) => CodeSnippetEntity.fromJson(i)).toList(),
@@ -47,7 +50,7 @@ class SnippetNoteEntity extends SnippetNote {
   };
 
   List<CodeSnippetEntity> _parseCodeSnippets(String json) {
-    jsonDecode(json).cast<Map<String, dynamic>>().map<CodeSnippetEntity>((json) => CodeSnippetEntity.fromJson(json)).toList();
+    return jsonDecode(json).cast<Map<String, dynamic>>().map<CodeSnippetEntity>((json) => CodeSnippetEntity.fromJson(json)).toList();
   }
 }
 
@@ -58,7 +61,7 @@ class CodeSnippetEntity extends CodeSnippet {
 
   factory CodeSnippetEntity.fromJson(Map<String, dynamic> json) {
     return CodeSnippetEntity(
-    //  linesHighlighted: List<String>.from(['linesHighlighted']).map((string) => int.parse(string)).toList(),
+    //  linesHighlighted: List<String>.from(['linesHighlighted']).map((string) => int.parse(string)).toList(),    //TODO fix
       name: json['name'],
       mode: json['mode'],
       content: json['content'],

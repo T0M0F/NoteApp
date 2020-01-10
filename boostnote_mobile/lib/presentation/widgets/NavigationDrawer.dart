@@ -1,28 +1,19 @@
  
- 
-import 'package:boostnote_mobile/business_logic/model/Note.dart';
-import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/data/repositoryImpl/mock/MockFolderRepository.dart';
-import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NavigationDrawer extends StatefulWidget {
 
-  final Function(String) createFolderCallback;
   final Function(int) onNavigate; 
   String mode = 'All Notes';
 
-  NavigationDrawer({Key key, @required this.createFolderCallback, this.onNavigate, this.mode}) : super(key: key); //TODO: Constructor
+  NavigationDrawer({Key key, this.onNavigate, this.mode}) : super(key: key); //TODO: Constructor
 
   @override
   State<StatefulWidget> createState() => NavigationDrawerState();
 }
 
 class NavigationDrawerState extends State<NavigationDrawer> {
-
-  FolderRepository _folderRepository = MockFolderRepository();
 
    @override
   Widget build(BuildContext context) {
@@ -70,6 +61,13 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         },
       ),
       ListTile(
+        leading: Icon(Icons.label, color: this.widget.mode == 'Folders' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text('Folders', style: TextStyle(color: this.widget.mode == 'Folders' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        onTap: () {
+          this.widget.onNavigate(NaviagtionDrawerAction.FOLDERS);
+        },
+      ),
+      ListTile(
         leading: Icon(Icons.star, color: this.widget.mode == 'Starred Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
         title: Text('Starred', style: TextStyle(color: this.widget.mode == 'Starred Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
@@ -85,21 +83,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
            //TODO: Callback to Parent
           this.widget.onNavigate(NaviagtionDrawerAction.TRASH);
           Navigator.of(context).pop();
-        },
-      ),
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Divider(
-          height: 2.0,
-          thickness: 2,
-          color: Theme.of(context).accentColor,
-        ),
-      ),
-      ListTile(
-        leading: Icon(Icons.create_new_folder, color: Color(0xFFF6F5F5)),
-        title: Text('Create Folder'),
-        onTap: () {
-          _createDialog(context);
         },
       ),
       Padding(
@@ -139,30 +122,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
     return widgets;
   }
 
-//TODO: In Widget auslagern
-  Future<String> _createDialog(BuildContext context) {
-    TextEditingController textEditingController = TextEditingController();
-    return showDialog(context: context, builder: (context){
-      return AlertDialog(
-        title: Text('Create Folder', style: TextStyle(color: Colors.black)),
-        content: TextField(
-          controller: textEditingController,
-          style: TextStyle(color: Colors.black)
-        ),
-        actions: <Widget>[
-          MaterialButton(
-            elevation: 5.0,
-            color: Theme.of(context).accentColor,
-            child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
-            onPressed: (){
-               this.widget.createFolderCallback(textEditingController.text);
-            }
-          )
-        ],
-      );
-    });
-  }
-
 }
  
 class NaviagtionDrawerAction {
@@ -170,6 +129,6 @@ class NaviagtionDrawerAction {
   static const int TRASH = 0;
   static const int ALL_NOTES = 1;
   static const int STARRED = 2;
-
+  static const int FOLDERS = 3;
 }
 

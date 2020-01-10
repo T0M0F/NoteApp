@@ -1,7 +1,7 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
+import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/AddSnippetDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNoteDialog.dart';
@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 //TODO Refactor
 class SnippetTestEditor extends StatefulWidget {
 
-  final OverviewView _parentWidget;
+  final Refreshable _parentWidget;
 
   final SnippetNote _note;
 

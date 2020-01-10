@@ -1,4 +1,5 @@
 
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 
 class MarkdownNote extends Note{
@@ -8,7 +9,7 @@ class MarkdownNote extends Note{
   MarkdownNote({int id,
       DateTime createdAt, 
       DateTime updatedAt, 
-      String folder, 
+      Folder folder, 
       String title, 
       List<String> tags, 
       bool isStarred, 

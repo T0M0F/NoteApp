@@ -1,11 +1,14 @@
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
+
+import 'FolderEntity.dart';
 
 class MarkdownNoteEntity extends MarkdownNote {
 
   MarkdownNoteEntity({int id,
       DateTime createdAt, 
       DateTime updatedAt, 
-      String folder, 
+      Folder folder, 
       String title, 
       List<String> tags, 
       bool isStarred, 
@@ -17,7 +20,7 @@ class MarkdownNoteEntity extends MarkdownNote {
       id: json['id'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      folder: json['folder'],
+      folder: FolderEntity.fromJson(json['folder']),
       title: json['title'],
       content: json['content'],
       tags: List<String>.from(json['tags']),

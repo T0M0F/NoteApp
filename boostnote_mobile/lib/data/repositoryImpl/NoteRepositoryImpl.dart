@@ -1,18 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/data/entity/MarkdownNoteEntity.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
+import 'package:boostnote_mobile/data/repositoryImpl/FolderRepositoryImpl.dart';
 import 'package:path_provider/path_provider.dart';
 
 //TODO: Make functions async
 //TODO: Exception handling
 class NoteRepositoryImpl extends NoteRepository {
+
+  FolderRepository _folderRepository = FolderRepositoryImpl();
 
   //Directory _directory;
 
@@ -71,7 +77,6 @@ class NoteRepositoryImpl extends NoteRepository {
   void deleteById(int id) async {
     print('deleteById');
     final List<Note> notes = await findAll();
-    notes.add(NoteService().generateMarkdownNote());
     Note noteToBeRemoved = notes.firstWhere((note) => note.id == id, orElse: () => null);
     if(noteToBeRemoved != null) {
       String path = await localPath;
@@ -104,8 +109,8 @@ class NoteRepositoryImpl extends NoteRepository {
     List<Note> notes = List();
     _files.forEach((file) {
       String content = file.readAsStringSync();
-      Map<String, dynamic> a = jsonDecode(content);
-      if(a.containsKey('codeSnippets')) {
+      Map<String, dynamic> map = jsonDecode(content);
+      if(map.containsKey('codeSnippets')) {
         notes.add(SnippetNoteEntity.fromJson(jsonDecode(content)));
       } else {
         notes.add(MarkdownNoteEntity.fromJson(jsonDecode(content)));
@@ -131,7 +136,7 @@ class NoteRepositoryImpl extends NoteRepository {
         id: note.id,
         createdAt: note.createdAt,
         updatedAt: note.updatedAt,
-        folder: note.folder,
+        folder: FolderEntity(name: note.folder.name, id: note.folder.id),
         title: note.title,
         tags: note.tags,
         isStarred: note.isStarred,
@@ -155,7 +160,7 @@ class NoteRepositoryImpl extends NoteRepository {
         id: note.id,
         createdAt: note.createdAt,
         updatedAt: note.updatedAt,
-        folder: note.folder,
+        folder: FolderEntity(name: note.folder.name, id: note.folder.id),
         title: note.title,
         tags: note.tags,
         isStarred: note.isStarred,
@@ -190,6 +195,8 @@ class NoteRepositoryImpl extends NoteRepository {
         file.writeAsString(jsonEncode(snippetNoteEntity.toJson()));
       }
     } 
+
+    _folderRepository.save(note.folder);
   }
 
   @override

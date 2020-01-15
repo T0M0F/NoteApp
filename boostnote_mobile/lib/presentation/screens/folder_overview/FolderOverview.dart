@@ -3,11 +3,15 @@ import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
+import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
+import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/CreateFolderDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/RenameFolderDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/folderlist/FolderList.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +26,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
+  NoteService _noteService;
   FolderService _folderService;
   List<Folder> _folders;
 
@@ -31,15 +36,20 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
 
   @override
   void refresh() {
-    // TODO: implement refresh
+    _folderService.findAllUntrashed().then((folders) {
+      setState((){ 
+        _folders = folders;
+      });
+    });
   }
   
   @override
   void initState(){
     super.initState();
     _folders = List();
+    _noteService = NoteService();
     _folderService = FolderService();
-    _folderService.findAll().then((folders) {
+    _folderService.findAllUntrashed().then((folders) {
       setState((){ 
         _folders = folders;
       });
@@ -67,7 +77,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.create_new_folder), 
-          onPressed: () {},
+          onPressed: _createFolderDialog,
         )
       ],
     );
@@ -89,20 +99,20 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
     
     Widget body;
     if (_isTablet) {
-      body = _buildTabletLayout(_folders);
+      body = _buildTabletLayout();
     } else {
-      body = _buildMobileLayout(_folders);
+      body = _buildMobileLayout();
     }
     return body;
   }
 
-  Widget _buildMobileLayout(List<Folder> folders){
+  Widget _buildMobileLayout(){
     return Container(
-      child: FolderList(folders: _folders, rowSelectedCallback: (folder) {},)
+      child: FolderList(folders: _folders, onRowTap: _onFolderTap, onRowLongPress: _onFolderLongPress)
     );
   }
 
-  Widget _buildTabletLayout(List<Folder> folders){
+  Widget _buildTabletLayout(){
     return Row(
       children: <Widget>[
         Flexible(
@@ -111,7 +121,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
         ),
         Flexible(
           flex: 3,
-          child: FolderList(folders: _folders, rowSelectedCallback: (folder) {},)
+          child: FolderList(folders: _folders, onRowTap: _onFolderTap, onRowLongPress: _onFolderLongPress)
         ),
       ],
     );
@@ -137,13 +147,99 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           //_presenter.onCreateNotePressed(note);
-          openNote(note);   
+          //openNote(note);   
         },
       );
     });
   }
 
-  void openNote(Note note){
+  void _createFolderDialog() {
+   showDialog(context: context, 
+    builder: (context){
+      return CreateFolderDialog(
+        cancelCallback: () {
+          Navigator.of(context).pop();
+        }, 
+        saveCallback: (String folderName) {
+          Navigator.of(context).pop();
+          _createFolder(folderName);
+        },
+      );
+    });
+  }
+
+  void _renameFolderDialog(Folder folder) {
+   showDialog(context: context, 
+    builder: (context){
+      return RenameFolderDialog(
+        folder: folder,
+        cancelCallback: () {
+          Navigator.of(context).pop();
+        }, 
+        saveCallback: (Folder folder) {
+          Navigator.of(context).pop();
+          _renameFolder(folder);
+        },
+      );
+    });
+  }
+
+  void _createFolder(String folderName) {
+    _folderService.createFolderIfNotExisting(Folder(name: folderName));
+
+    refresh();
+  }
+
+  void _onFolderTap(Folder folder) {
+    _noteService.findUntrashedNotesIn(folder).then((notes) {
+     Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Overview(notes: notes, mode: NaviagtionDrawerAction.NOTES_IN_FOLDER))
+     );
+   });
+  }
+
+  void _onFolderLongPress(Folder folder) {
+   showModalBottomSheet(
+      context: context,
+      builder: (BuildContext buildContext){
+        return Container(
+          child: new Wrap(
+          children: <Widget>[
+            new ListTile(
+              leading: new Icon(Icons.delete),
+              title: new Text('Remove Folder'),
+              onTap: () {
+                Navigator.of(context).pop();
+                _removeFolder(folder);
+              }      
+            ),
+            new ListTile(
+              leading: new Icon(Icons.folder),
+              title: new Text('Rename Folder'),
+              onTap: () {
+                Navigator.of(context).pop();
+                _renameFolderDialog(folder);
+              }      
+            ),
+          ],
+          ),
+        );
+      }
+    );
+  }
+
+  void _renameFolder(Folder folder) {
+    _folderService.renameFolder(folder);
+    refresh();
+  }
+
+  void _removeFolder(Folder folder) {
+    _folderService.delete(folder);
+    refresh();
+  }
+
+  void _openNote(Note note){
      Widget editor = note is MarkdownNote ? Editor(_isTablet, note, this) : SnippetTestEditor(note, this);
      Navigator.push(
       context,
@@ -155,18 +251,19 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
     switch (action) {
       case NaviagtionDrawerAction.ALL_NOTES:
         _pageTitle = 'All Notes';
-        //_presenter.showAllNotes();
+        Navigator.pushNamed(context, '/AllNotes');
         break;
       case NaviagtionDrawerAction.TRASH:
         _pageTitle = 'Trashed Notes';
-        //_presenter.showTrashedNotes();
+         Navigator.pushNamed(context, '/TrashedNotes');
         break;
       case NaviagtionDrawerAction.STARRED:
         _pageTitle = 'Starred Notes';
+         Navigator.pushNamed(context, '/StarredNotes');
         //_presenter.showStarredNotes();
        break;
       case NaviagtionDrawerAction.FOLDERS:
-        _pageTitle = 'Folders';
+        Navigator.of(context).pop();
         //_presenter.showStarredNotes();
       break;
     }

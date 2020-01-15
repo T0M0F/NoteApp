@@ -2,6 +2,7 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
+import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,16 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         accentColor: Color(0xFF1EC38B),
         hintColor: Colors.white,
       ),
-      home: Overview(),
+      initialRoute: '/',
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        '/': (context) => Overview(),
+        '/AllNotes': (context) => Overview(mode: NaviagtionDrawerAction.ALL_NOTES),
+        '/StarredNotes': (context) => Overview(mode: NaviagtionDrawerAction.STARRED),
+        '/TrashedNotes': (context) => Overview(mode: NaviagtionDrawerAction.TRASH),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        //'/second': (context) => SecondScreen(),
+      },
     );
   }
 

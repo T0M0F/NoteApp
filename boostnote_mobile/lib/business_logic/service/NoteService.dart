@@ -10,14 +10,14 @@ import 'package:boostnote_mobile/data/repositoryImpl/NoteRepositoryImpl.dart';
 
 class NoteService {
 
-  NoteRepository noteRepository = NoteRepositoryImpl();
+  NoteRepository _noteRepository = NoteRepositoryImpl();
 
   Future<List<Note>> findAll() {
-    return noteRepository.findAll();
+    return _noteRepository.findAll();
   }
 
   Future<List<Note>> findNotTrashed() async {
-    List<Note> notes = await noteRepository.findAll();
+    List<Note> notes = await _noteRepository.findAll();
     List<Note> notTrashedNotes = List();
       notes.forEach((note) {
         if(!note.isTrashed) {
@@ -28,7 +28,7 @@ class NoteService {
   }
 
   Future<List<Note>> findStarred() async { //TODO unelegant
-    List<Note> notes = await noteRepository.findAll();
+    List<Note> notes = await _noteRepository.findAll();
     List<Note> starredNotes = List();
       notes.forEach((note) {
         if(note.isStarred) {
@@ -39,7 +39,7 @@ class NoteService {
   }
 
   Future<List<Note>> findTrashed() async {   //TODO unelegant
-    List<Note> notes = await noteRepository.findAll();
+    List<Note> notes = await _noteRepository.findAll();
     List<Note> trashedNotes = List();
       notes.forEach((note) {
         if(note.isTrashed) {
@@ -50,7 +50,7 @@ class NoteService {
   }
 
   Future<List<Note>> findNotesIn(Folder folder) async {   //TODO unelegant
-    List<Note> notes = await noteRepository.findAll();
+    List<Note> notes = await _noteRepository.findAll();
     List<Note> filteredNotes = List();
       notes.forEach((note) {
         if(note.folder.id == folder.id) {
@@ -60,32 +60,49 @@ class NoteService {
     return filteredNotes;
   }
 
+  Future<List<Note>> findUntrashedNotesIn(Folder folder) async {   //TODO unelegant
+    List<Note> notes = await _noteRepository.findAll();
+    List<Note> filteredNotes = List();
+      notes.forEach((note) {
+        if(note.folder.id == folder.id && note.isTrashed == false) {
+          filteredNotes.add(note);
+        }
+    });
+    return filteredNotes;
+  }
+
   void createNote(Note note) {  //TODO Validation + kein note objekt als param sondern nur einzelne werte und created at selber genrieren
     note.id = note.createdAt.hashCode;
     note.folder.id = note.folder.name.hashCode;
-    noteRepository.save(note);
+    _noteRepository.save(note);
   }
 
   void save(Note note) {  //TODO check if note already exists, if it doesnt exist throw exception -> use createNote method instead
-    noteRepository.save(note);
+    _noteRepository.save(note);
   }
 
   void saveAll(List<Note> notes) {
-    noteRepository.saveAll(notes);
+    _noteRepository.saveAll(notes);
   }
 
   void moveToTrash(Note note) {
     print('move to Trash');
     note.isTrashed = true;
-    noteRepository.save(note);
+    note.isStarred = false;
+    note.folder.name = 'Trash';
+    _noteRepository.save(note);
+  }
+
+  void moveAllToTrash(List<Note> notes) {
+    notes.forEach((note) => moveToTrash(note));
   }
 
   void delete(Note note) {
-    noteRepository.delete(note);
+    _noteRepository.delete(note);
   }
 
   void deleteAll(List<Note> notes) {
-    noteRepository.deleteAll(notes);
+    _noteRepository.deleteAll(notes);
   }
 
   List<Note> generateNotes(int number){
@@ -110,7 +127,7 @@ class NoteService {
       _notes.add(note);
     }
 
-    noteRepository.saveAll(_notes);
+    _noteRepository.saveAll(_notes);
     return _notes;
   }
 

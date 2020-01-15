@@ -13,13 +13,19 @@ class FolderService {
     return _folderRepository.findAll();
   }
 
-  void createFolder(Folder folder) {
+  Future<List<Folder>> findAllUntrashed() async {
+    List<Folder> folders = await findAll();
+    List<Folder> filteredFolders = folders.where((folder) => folder.name != 'Trash').toList();
+    return Future.value(filteredFolders);
+  }
+
+  void createFolderIfNotExisting(Folder folder) {
     folder.id = folder.name.hashCode;
     _folderRepository.save(folder);
   }
 
   void renameFolder(Folder folder) async {
-    createFolder(folder);
+    createFolderIfNotExisting(folder);
     List<Note> notesToBeMoved = await _noteService.findNotesIn(folder);
     notesToBeMoved.forEach((note) => note.folder = folder);
     _noteService.saveAll(notesToBeMoved);
@@ -27,7 +33,7 @@ class FolderService {
 
   void delete(Folder folder) async {
     List<Note> notesToBeDeleted = await _noteService.findNotesIn(folder);
-    _noteService.deleteAll(notesToBeDeleted);
+    _noteService.moveAllToTrash(notesToBeDeleted);
     _folderRepository.delete(folder);
   }
 

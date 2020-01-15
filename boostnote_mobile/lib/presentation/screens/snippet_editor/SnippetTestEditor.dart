@@ -218,9 +218,39 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
       ),
       actions: _buildIcon()
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: _tabs
+      body: Column(
+        children: <Widget>[
+          Flexible(flex: 1, child: 
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      IconButton(icon: Icon(Icons.folder_open), onPressed: () {}),
+                      Text('Notizbuch', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  Row(
+                  children: <Widget>[
+                    IconButton(icon: Icon(Icons.label_outline), onPressed: () {}),
+                    IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ),
+          Expanded(flex: 7,
+            child: Container(
+                    child: 
+                      TabBarView(
+                        controller: _tabController,
+                        children: _tabs
+                      )
+                  )
+          )
+        ],
       ),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
@@ -233,7 +263,7 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
                 .primaryColor,
               child: TabBar(
                 controller: _tabController,
-                isScrollable: true,
+                isScrollable: _tabNames.length > 5 ? true : false,
                 tabs: _tabNames,
                 onTap: (int) {
                   _currentSnippet = this.widget._note.codeSnippets[int];

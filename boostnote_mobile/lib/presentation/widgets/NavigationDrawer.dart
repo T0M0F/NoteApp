@@ -49,8 +49,9 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             title: Text('All Notes', style: TextStyle(color: this.widget.mode == 'All Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
             onTap: () {
               //TODO: Callback to Parent
+              Navigator.pop(context);
               this.widget.onNavigate(NaviagtionDrawerAction.ALL_NOTES);
-              Navigator.of(context).pop();
+       
             },
       ),
       ListTile(
@@ -64,6 +65,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         leading: Icon(Icons.label, color: this.widget.mode == 'Folders' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
         title: Text('Folders', style: TextStyle(color: this.widget.mode == 'Folders' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
+          Navigator.pop(context);
           this.widget.onNavigate(NaviagtionDrawerAction.FOLDERS);
         },
       ),
@@ -72,8 +74,8 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text('Starred', style: TextStyle(color: this.widget.mode == 'Starred Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
            //TODO: Callback to Parent
+          Navigator.pop(context);
           this.widget.onNavigate(NaviagtionDrawerAction.STARRED);
-          Navigator.of(context).pop();
         },
       ),
       ListTile(
@@ -81,8 +83,8 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text('Trash', style: TextStyle(color: this.widget.mode == 'Trashed Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
            //TODO: Callback to Parent
+          Navigator.pop(context);
           this.widget.onNavigate(NaviagtionDrawerAction.TRASH);
-          Navigator.of(context).pop();
         },
       ),
       Padding(
@@ -130,5 +132,6 @@ class NaviagtionDrawerAction {
   static const int ALL_NOTES = 1;
   static const int STARRED = 2;
   static const int FOLDERS = 3;
+  static const int NOTES_IN_FOLDER = 4;
 }
 

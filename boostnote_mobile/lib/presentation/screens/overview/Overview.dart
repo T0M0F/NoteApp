@@ -19,8 +19,9 @@ import 'package:flutter/material.dart';
 class Overview extends StatefulWidget {
 
   final List<Note> notes;
+  int mode;
 
-  Overview({this.notes});
+  Overview({this.mode, this.notes});
 
   @override
   _OverviewState createState() => _OverviewState();
@@ -47,7 +48,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   static const String EXPAND_ACTION = 'Expand';
   static const String COLLPASE_ACTION = 'Collapse';
 
-  String _pageTitle = 'All Notes';
+  String _pageTitle;
   
   @override
   void initState(){
@@ -56,9 +57,26 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     _selectedNotes = List();
     _notes = this.widget.notes;
     if(_notes == null) {
-        _notes = List();
-        _presenter.loadNotes();
-      }
+      _notes = List();
+      _presenter.loadNotes(this.widget.mode);
+    }
+    switch (this.widget.mode) {
+      case NaviagtionDrawerAction.ALL_NOTES:
+        _pageTitle = 'All Notes';
+        break;
+      case NaviagtionDrawerAction.TRASH:
+        _pageTitle = 'Trashed Notes';
+        break;
+      case NaviagtionDrawerAction.STARRED:
+        _pageTitle = 'Starred Notes';
+        break;
+      case NaviagtionDrawerAction.NOTES_IN_FOLDER:
+        _pageTitle = _notes.first.folder.name;
+        break;
+      default:
+        _pageTitle = 'All Notes';
+        break;
+    }
   }
 
  @override
@@ -90,7 +108,14 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text(_pageTitle),
-      leading: IconButton(
+      leading: this.widget.mode == NaviagtionDrawerAction.NOTES_IN_FOLDER ?
+      IconButton(
+        icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor), 
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      )
+      : IconButton(
         icon: Icon(Icons.menu, color: Theme.of(context).accentColor), 
         onPressed: () {
           _drawerKey.currentState.openDrawer();
@@ -320,6 +345,9 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         }, 
         saveCallback: (Note note) {
           Navigator.of(context).pop();
+          if(this.widget.mode == NaviagtionDrawerAction.NOTES_IN_FOLDER) {
+            note.folder = this.widget.notes.first.folder;
+          } 
           _presenter.onCreateNotePressed(note);
           openNote(note);   //TODO: Presenter???
         },
@@ -338,18 +366,22 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   _onNavigate(int action) {
     switch (action) {
       case NaviagtionDrawerAction.ALL_NOTES:
+        this.widget.mode = NaviagtionDrawerAction.ALL_NOTES;
         _pageTitle = 'All Notes';
         _presenter.showAllNotes();
         break;
       case NaviagtionDrawerAction.TRASH:
+        this.widget.mode = NaviagtionDrawerAction.TRASH;
         _pageTitle = 'Trashed Notes';
         _presenter.showTrashedNotes();
         break;
       case NaviagtionDrawerAction.STARRED:
+        this.widget.mode = NaviagtionDrawerAction.STARRED;
         _pageTitle = 'Starred Notes';
         _presenter.showStarredNotes();
        break;
       case NaviagtionDrawerAction.FOLDERS:
+        this.widget.mode = NaviagtionDrawerAction.FOLDERS;
         _pageTitle = 'Folders';
         Navigator.push(
           context,

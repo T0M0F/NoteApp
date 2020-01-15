@@ -2,6 +2,7 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
+import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 
 class OverviewPresenter {
 
@@ -13,12 +14,41 @@ class OverviewPresenter {
     _noteService = NoteService();
   }
 
-  void loadNotes() {
-    Future<List<Note>> notes = NoteService().findNotTrashed();
-    notes.then((result) { 
-      result.forEach((note) => print('note: ' + note.title + ' ' + note.id.toString()));
-      _overviewView.update(result);
-    });
+  void loadNotes(int mode) {
+    print('laodnotes mode: ' + mode.toString());
+    switch (mode) {
+      case NaviagtionDrawerAction.ALL_NOTES:
+      print('ALLNOTES');
+        Future<List<Note>> notes = NoteService().findNotTrashed();
+        notes.then((result) { 
+          result.forEach((note) => print('note: ' + note.title + ' ' + note.id.toString()));
+          _overviewView.update(result);
+        });
+        break;
+      case NaviagtionDrawerAction.TRASH:
+        Future<List<Note>> notes = NoteService().findTrashed();
+        notes.then((result) { 
+          result.forEach((note) => print('note: ' + note.title + ' ' + note.id.toString()));
+          _overviewView.update(result);
+        });
+        break;
+      case NaviagtionDrawerAction.STARRED:
+        Future<List<Note>> notes = NoteService().findStarred();
+        notes.then((result) { 
+          result.forEach((note) => print('note: ' + note.title + ' ' + note.id.toString()));
+          _overviewView.update(result);
+        });
+        break;
+      default:
+      print('ALLNOTES');
+        Future<List<Note>> notes = NoteService().findNotTrashed();
+        notes.then((result) { 
+          result.forEach((note) => print('note: ' + note.title + ' ' + note.id.toString()));
+          _overviewView.update(result);
+        });
+        break;
+    }
+    
   }
 
   void onCreateNotePressed(Note note){

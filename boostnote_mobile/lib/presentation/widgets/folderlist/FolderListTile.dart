@@ -24,7 +24,7 @@ class _FolderListTileState extends State<FolderListTile> {
   void initState(){
     super.initState();
     _noteService = NoteService();
-    _noteService.findNotesIn(widget.folder).then((notes) {
+    _noteService.findUntrashedNotesIn(widget.folder).then((notes) {
       setState(() {
         _numberOfNotesInFolder = notes.length;
       });

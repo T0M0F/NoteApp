@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
 import 'package:boostnote_mobile/data/entity/BoostnoteEntity.dart';
+import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FolderRepositoryImpl extends FolderRepository {
@@ -58,7 +59,7 @@ class FolderRepositoryImpl extends FolderRepository {
   Future<List<Folder>> findAll() async {
     print('findNotesAll');
     final BoostnoteEntity bnEntity = await boostnoteEntity;
-    bnEntity.folders.forEach((f) => print(f.name));
+    bnEntity.folders.forEach((f) => print('bn' + f.name));
     return Future.value(bnEntity.folders); 
   }
 
@@ -80,6 +81,7 @@ class FolderRepositoryImpl extends FolderRepository {
         return;
       }
     }
+    folder = FolderEntity(name: folder.name, id: folder.id); //TODO ugly
     bnEntity.folders.add(folder);
     print('json folder: ' + jsonEncode(bnEntity));
     file.writeAsString(jsonEncode(bnEntity));

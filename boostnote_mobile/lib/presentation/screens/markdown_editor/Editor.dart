@@ -1,6 +1,9 @@
 
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
+import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownPreview.dart';
@@ -24,13 +27,33 @@ class Editor extends StatefulWidget {
 
 class EditorState extends State<Editor> {
 
+  NoteService _noteService;
+  FolderService _folderService;
+
   bool _previewMode = false;
+  List<FolderEntity> _folders;
+  FolderEntity _dropdownValue;
 
   static const String DELETE_ACTION = 'Delete';
   static const String SAVE_ACTION = 'Save';
   static const String EDIT_ACTION = 'Edit Note';
   static const String MARK_ACTION = 'Mark Note';
   static const String UNMARK_ACTION = 'Unmark Note';
+
+  @override
+  void initState() {
+    super.initState();
+    _noteService = NoteService();
+    _folderService = FolderService();
+    _folders = List();
+   
+    _folderService.findAll().then((folders) { 
+      setState(() { 
+        _folders = folders;
+         _dropdownValue = _folders.firstWhere((folder) => folder.id == this.widget._note.folder.id);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +162,50 @@ class EditorState extends State<Editor> {
   }
 
   Widget _buildMobileLayout() {
-    return _previewMode ? MarkdownPreview(this.widget._note.content, _launchURL) : MarkdownEditor(this.widget._note.content, _onTextChangedCallback);
+    return Column(
+      children: <Widget>[
+        Flexible(flex: 1, 
+        child: Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsetsDirectional.only(start: 10),
+                  child:  DropdownButton<FolderEntity> (    //TODO FolderEntity
+                    value: _dropdownValue, 
+                    underline: Container(), 
+                    icon: Icon(Icons.folder_open),
+                    items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
+                      value: folder,
+                      child: Text(folder.name)
+                    )).toList(),
+                    onChanged: (folder) {
+                        setState(() {
+                          _dropdownValue = folder;
+                        });
+                        this.widget._note.folder = folder;
+                        _noteService.save(this.widget._note);
+                      }
+                  )
+                ),
+                Row(
+                children: <Widget>[
+                  IconButton(icon: Icon(Icons.label_outline), onPressed: () {}),
+                  IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+                  ],
+                ),
+              ],
+            ),
+          )
+        ),
+        Flexible(flex: 7,
+          child: Align(
+                  alignment: Alignment.topLeft,
+                  child: _previewMode ? MarkdownPreview(this.widget._note.content, _launchURL) : MarkdownEditor(this.widget._note.content, _onTextChangedCallback),
+                )
+        )
+      ],
+    );
   }
 
   Widget _buildTabletLayout() {

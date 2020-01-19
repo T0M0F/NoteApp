@@ -24,11 +24,13 @@ class FolderService {
     _folderRepository.save(folder);
   }
 
-  void renameFolder(Folder folder) async {
-    createFolderIfNotExisting(folder);
-    List<Note> notesToBeMoved = await _noteService.findNotesIn(folder);
-    notesToBeMoved.forEach((note) => note.folder = folder);
+  void renameFolder(Folder oldFolder, String newName) async {
+    Folder newFolder = Folder(id: newName.hashCode, name: newName);
+    createFolderIfNotExisting(newFolder);
+    List<Note> notesToBeMoved = await _noteService.findNotesIn(oldFolder);
+    notesToBeMoved.forEach((note) => note.folder = newFolder);
     _noteService.saveAll(notesToBeMoved);
+    delete(oldFolder);
   }
 
   void delete(Folder folder) async {

@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
-import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/data/entity/MarkdownNoteEntity.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';

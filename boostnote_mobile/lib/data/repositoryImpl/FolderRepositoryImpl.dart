@@ -23,6 +23,9 @@ class FolderRepositoryImpl extends FolderRepository {
       file.createSync();
       BoostnoteEntity boostnoteEntity = BoostnoteEntity(folders: List());
       file.writeAsStringSync(jsonEncode(boostnoteEntity));
+      await save(Folder(name: 'Default', id: 'Default'.hashCode));
+      await save(Folder(name: 'Trash', id: 'Trash'.hashCode));
+      file = await localFile;
     }
     return file;
   }
@@ -71,7 +74,7 @@ class FolderRepositoryImpl extends FolderRepository {
   }
 
   @override
-  Future<void> save(Folder folder) async {
+  Future<void> save(Folder folder) async {  //TODO Future<void>?
     print('saveFolder');
     final File file = await localFile;
     final BoostnoteEntity bnEntity = await boostnoteEntity;

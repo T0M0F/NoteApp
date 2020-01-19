@@ -176,9 +176,9 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
         cancelCallback: () {
           Navigator.of(context).pop();
         }, 
-        saveCallback: (Folder folder) {
+        saveCallback: (String newFolderName) {
           Navigator.of(context).pop();
-          _renameFolder(folder);
+          _renameFolder(folder, newFolderName);
         },
       );
     });
@@ -194,7 +194,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
     _noteService.findUntrashedNotesIn(folder).then((notes) {
      Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Overview(notes: notes, mode: NaviagtionDrawerAction.NOTES_IN_FOLDER))
+      MaterialPageRoute(builder: (context) => Overview(notes: notes, mode: NaviagtionDrawerAction.NOTES_IN_FOLDER, selectedFolder: folder,))
      );
    });
   }
@@ -229,8 +229,8 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
     );
   }
 
-  void _renameFolder(Folder folder) {
-    _folderService.renameFolder(folder);
+  void _renameFolder(Folder oldFolder, String newName) {
+    _folderService.renameFolder(oldFolder, newName);
     refresh();
   }
 

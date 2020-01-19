@@ -1,8 +1,10 @@
 
 import 'dart:collection';
 
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/presentation/screens/folder_overview/FolderOverview.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
@@ -19,9 +21,10 @@ import 'package:flutter/material.dart';
 class Overview extends StatefulWidget {
 
   final List<Note> notes;
+  final Folder selectedFolder;
   int mode;
 
-  Overview({this.mode, this.notes});
+  Overview({this.mode, this.notes, this.selectedFolder});
 
   @override
   _OverviewState createState() => _OverviewState();
@@ -71,7 +74,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         _pageTitle = 'Starred Notes';
         break;
       case NaviagtionDrawerAction.NOTES_IN_FOLDER:
-        _pageTitle = _notes.first.folder.name;
+        _pageTitle = this.widget.selectedFolder.name;
         break;
       default:
         _pageTitle = 'All Notes';
@@ -346,7 +349,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           if(this.widget.mode == NaviagtionDrawerAction.NOTES_IN_FOLDER) {
-            note.folder = this.widget.notes.first.folder;
+            note.folder = this.widget.selectedFolder;
           } 
           _presenter.onCreateNotePressed(note);
           openNote(note);   //TODO: Presenter???

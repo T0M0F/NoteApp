@@ -1,5 +1,4 @@
 
-import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
@@ -47,7 +46,7 @@ class EditorState extends State<Editor> {
     _folderService = FolderService();
     _folders = List();
    
-    _folderService.findAll().then((folders) { 
+    _folderService.findAllUntrashed().then((folders) { 
       setState(() { 
         _folders = folders;
          _dropdownValue = _folders.firstWhere((folder) => folder.id == this.widget._note.folder.id);

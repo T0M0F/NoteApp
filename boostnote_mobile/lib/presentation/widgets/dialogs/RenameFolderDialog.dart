@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class RenameFolderDialog extends StatefulWidget {
 
   final Folder folder;
-  final Function(Folder folder) saveCallback;
+  final Function(String newFolderName) saveCallback;
   final Function() cancelCallback;
 
   const RenameFolderDialog({Key key, @required this.saveCallback, @required this.cancelCallback, @required this.folder}) : super(key: key); //TODO: Constructor
@@ -57,8 +57,7 @@ class _CreateNoteDialogState extends State<RenameFolderDialog> {
           color: Theme.of(context).accentColor,
           child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
           onPressed: () {
-            this.widget.folder.name = _textEditingController.text;
-            this.widget.saveCallback(this.widget.folder);
+            this.widget.saveCallback(_textEditingController.text);
           }
         )
       ],

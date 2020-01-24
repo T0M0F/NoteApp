@@ -71,13 +71,25 @@ class NoteService {
     return filteredNotes;
   }
 
+  findNotesByTag(String tag) async {
+    List<Note> notes = await _noteRepository.findAll();
+    List<Note> filteredNotes = List();
+      notes.forEach((note) {
+        if(note.tags.contains(tag) && note.isTrashed == false) {
+          filteredNotes.add(note);
+        }
+    });
+    return filteredNotes;
+  }
+
   void createNote(Note note) {  //TODO Validation + kein note objekt als param sondern nur einzelne werte und created at selber genrieren
-    note.id = note.createdAt.hashCode;
+    note.id = note.createdAt.hashCode;   //TODO CHECK if folder / tag exists
     note.folder.id = note.folder.name.hashCode;
     _noteRepository.save(note);
   }
 
   void save(Note note) {  //TODO check if note already exists, if it doesnt exist throw exception -> use createNote method instead
+                          //TODO CHECK if folder / tag exists
     _noteRepository.save(note);
   }
 

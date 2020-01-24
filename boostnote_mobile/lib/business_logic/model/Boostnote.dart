@@ -4,7 +4,8 @@ class Boostnote {
 
   final String version = '1.0'; //TODO required?
   List<Folder> folders;
+  List<String> tags;
 
-  Boostnote({this.folders});
+  Boostnote({this.folders, this.tags});
   
 }

@@ -29,6 +29,7 @@ class _MarkdownEditorState extends State<MarkdownEditor>{
     _textEditingController.text = this.widget._text;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+      color: Colors.red,
       child: TextField(
         autocorrect: true,
         style: TextStyle(),

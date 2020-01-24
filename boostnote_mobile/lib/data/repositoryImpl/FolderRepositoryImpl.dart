@@ -52,6 +52,12 @@ class FolderRepositoryImpl extends FolderRepository {
   @override
   Future<void> deleteById(int id) async {
     print('deleteFolderById');
+    if(id == 'Trash'.hashCode) {
+      throw Exception('Illegal Operation: Not allowed to delete Trash folder');
+    } 
+    if(id == 'Default'.hashCode) {
+      throw Exception('Illegal Operation: Not allowed to delete Default folder');
+    }                                 //TODO Trash und default als konstante
     final File file = await localFile;
     final BoostnoteEntity bnEntity = await boostnoteEntity;
     bnEntity.folders.removeWhere((folder) => folder.id == id);
@@ -76,6 +82,12 @@ class FolderRepositoryImpl extends FolderRepository {
   @override
   Future<void> save(Folder folder) async {  //TODO Future<void>?
     print('saveFolder');
+    if(folder.id == 'Trash'.hashCode && folder.name.hashCode != 'Trash'.hashCode) {
+      throw Exception('Illegal Operation: Not allowed to rename Trash folder');
+    } 
+    if(folder.id == 'Default'.hashCode && folder.name.hashCode != 'Default'.hashCode) {
+      throw Exception('Illegal Operation: Not allowed to rename Default folder');
+    }    
     final File file = await localFile;
     final BoostnoteEntity bnEntity = await boostnoteEntity;
     for(Folder currentFolder in bnEntity.folders) {

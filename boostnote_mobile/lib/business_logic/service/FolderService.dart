@@ -19,7 +19,7 @@ class FolderService {
     return Future.value(filteredFolders);
   }
 
-  void createFolderIfNotExisting(Folder folder) {
+  Future<void> createFolderIfNotExisting(Folder folder) async {
     folder.id = folder.name.hashCode;
     _folderRepository.save(folder);
   }

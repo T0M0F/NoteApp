@@ -55,18 +55,19 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             },
       ),
       ListTile(
-        leading: Icon(Icons.label, color: this.widget.mode == 'Tags' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text('Tags', style: TextStyle(color: this.widget.mode == 'Tags' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
-        onTap: () {
-          Navigator.pop(context);
-        },
-      ),
-      ListTile(
         leading: Icon(Icons.label, color: this.widget.mode == 'Folders' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
         title: Text('Folders', style: TextStyle(color: this.widget.mode == 'Folders' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
           this.widget.onNavigate(NaviagtionDrawerAction.FOLDERS);
+        },
+      ),
+      ListTile(
+        leading: Icon(Icons.label, color: this.widget.mode == 'Tags' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text('Tags', style: TextStyle(color: this.widget.mode == 'Tags' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        onTap: () {
+          Navigator.pop(context);
+          this.widget.onNavigate(NaviagtionDrawerAction.TAGS);
         },
       ),
       ListTile(
@@ -132,6 +133,8 @@ class NaviagtionDrawerAction {
   static const int ALL_NOTES = 1;
   static const int STARRED = 2;
   static const int FOLDERS = 3;
-  static const int NOTES_IN_FOLDER = 4;
+  static const int NOTES_IN_FOLDER = 4; //TODO Refactor, move in other class??
+  static const int NOTES_WITH_TAG = 5;
+  static const int TAGS = 6;
 }
 

@@ -2,49 +2,49 @@
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
-import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/CreateFolderDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/CreateTagDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/RenameFolderDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/folderlist/FolderList.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/RenameTagDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/taglist/TagList.dart';
 import 'package:flutter/material.dart';
 
-class FolderOverview extends StatefulWidget {
+class TagOverview extends StatefulWidget {  //TODO combine with folderoverview?
 
   @override
-  _FolderOverviewState createState() => _FolderOverviewState();
+  _TagOverviewState createState() => _TagOverviewState();
 
 }
 
-class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
+class _TagOverviewState extends State<TagOverview> implements Refreshable{
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   NoteService _noteService;
-  FolderService _folderService;
-  List<Folder> _folders;
+  TagService _tagService;
+  List<String> _tags;
 
   bool _isTablet = false;
 
-  String _pageTitle = 'Folders';
+  String _pageTitle = 'Tags';
 
   @override
   void refresh() {
-    _folderService.findAllUntrashed().then((folders) {
+    _tagService.findAll().then((tags) {
       setState((){ 
-        print('Folders changed');
-        if(_folders != null){
-            _folders.replaceRange(0, _folders.length, folders);
+        if(_tags != null){
+            _tags.replaceRange(0, _tags.length, tags);
         } else {
-          _folders = folders;
+          _tags = tags;
         }
-        _folders.forEach((f)=> print('nameF ' + f.name));
+        _tags.forEach((t)=> print('nameT ' + t));
       });
     });
   }
@@ -52,12 +52,13 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
   @override
   void initState(){
     super.initState();
-    _folders = List();
+    print('Init Tag Overview');
+    _tags = List();
     _noteService = NoteService();
-    _folderService = FolderService();
-    _folderService.findAllUntrashed().then((folders) {
+    _tagService = TagService();
+    _tagService.findAll().then((tags) {
       setState((){ 
-        _folders = folders;
+        _tags = tags;
       });
     });
   }
@@ -82,8 +83,8 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
       ),
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.create_new_folder), 
-          onPressed: _createFolderDialog,
+          icon: Icon(Icons.label_outline), 
+          onPressed: _createTagDialog,
         )
       ],
     );
@@ -114,7 +115,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
 
   Widget _buildMobileLayout(){
     return Container(
-      child: FolderList(folders: _folders, onRowTap: _onFolderTap, onRowLongPress: _onFolderLongPress)
+      child: TagList(tags: _tags, onRowTap: _onTagTap, onRowLongPress: _onTagLongPress)
     );
   }
 
@@ -127,7 +128,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
         ),
         Flexible(
           flex: 3,
-          child: FolderList(folders: _folders, onRowTap: _onFolderTap, onRowLongPress: _onFolderLongPress)
+          child: TagList(tags: _tags, onRowTap: _onTagTap, onRowLongPress: _onTagLongPress)
         ),
       ],
     );
@@ -138,12 +139,12 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
     return FloatingActionButton(
       child: Icon(Icons.add, color: Color(0xFFF6F5F5)),
       onPressed: (){
-        _createDialog(context);
+        _createNoteDialog(context);
       },
     );
   }
 
-  Future<String> _createDialog(BuildContext context) {
+  Future<String> _createNoteDialog(BuildContext context) {
     return showDialog(context: context, 
     builder: (context){
       return CreateNoteDialog(
@@ -159,93 +160,91 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
     });
   }
 
-  void _createFolderDialog() {
+  void _createTagDialog() {
    showDialog(context: context, 
     builder: (context){
-      return CreateFolderDialog(
+      return CreateTagDialog(
         cancelCallback: () {
           Navigator.of(context).pop();
         }, 
-        saveCallback: (String folderName) {
+        saveCallback: (String tag) {
           Navigator.of(context).pop();
-          _createFolder(folderName);
+          _createTag(tag);
         },
       );
     });
   }
 
-  void _renameFolderDialog(Folder folder) {
+  void _renameTagDialog(String tag) {
    showDialog(context: context, 
     builder: (context){
-      return RenameFolderDialog(
-        folder: folder,
+      return RenameTagDialog(
+        tag: tag,
         cancelCallback: () {
           Navigator.of(context).pop();
         }, 
-        saveCallback: (String newFolderName) {
+        saveCallback: (String newTag) {
           Navigator.of(context).pop();
-          _renameFolder(folder, newFolderName);
+          _renameTag(tag, newTag);
         },
       );
     });
   }
 
-  void _onFolderTap(Folder folder) {
-    _noteService.findUntrashedNotesIn(folder).then((notes) {
+  void _onTagTap(String tag) {
+    _noteService.findNotesByTag(tag).then((notes) {
      Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Overview(notes: notes, mode: NaviagtionDrawerAction.NOTES_IN_FOLDER, selectedFolder: folder,))
+      MaterialPageRoute(builder: (context) => Overview(notes: notes, mode: NaviagtionDrawerAction.NOTES_WITH_TAG, selectedTag: tag,))
      );
    });
   }
 
-  void _onFolderLongPress(Folder folder) {
-    if(folder.id != 'Default'.hashCode && folder.id != 'Trash'.hashCode){
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext buildContext){
-          return Container(
-            child: new Wrap(
-            children: <Widget>[
-              new ListTile(
-                leading: new Icon(Icons.delete),
-                title: new Text('Remove Folder'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _removeFolder(folder);
-                }      
-              ),
-              new ListTile(
-                leading: new Icon(Icons.folder),
-                title: new Text('Rename Folder'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _renameFolderDialog(folder);
-                }      
-              ),
-            ],
+  void _onTagLongPress(String tag) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext buildContext){
+        return Container(
+          child: new Wrap(
+          children: <Widget>[
+            new ListTile(
+              leading: new Icon(Icons.delete),
+              title: new Text('Remove Tag'),
+              onTap: () {
+                Navigator.of(context).pop();
+                _removeTag(tag);
+              }      
             ),
-          );
-        }
-      );
-    }
+            new ListTile(
+              leading: new Icon(Icons.folder),
+              title: new Text('Rename Tag'),
+              onTap: () {
+                Navigator.of(context).pop();
+                _renameTagDialog(tag);
+              }      
+            ),
+          ],
+          ),
+        );
+      }
+    );
   }
 
-  void _createFolder(String folderName) {
-    _folderService.createFolderIfNotExisting(Folder(name: folderName))
+  void _createTag(String tag) {
+    _tagService.createTagIfNotExisting(tag)
     .then((void v) {
       refresh();
     });
   }
 
 
-  void _renameFolder(Folder oldFolder, String newName) {
-    _folderService.renameFolder(oldFolder, newName);
+  void _renameTag(String oldTag, String newTag) {
+    _tagService.renameTag(oldTag, newTag);
     refresh();
   }
 
-  void _removeFolder(Folder folder) {
-    _folderService.delete(folder);
+  void _removeTag(String tag) {
+    _tagService.delete(tag);
     refresh();
   }
 
@@ -276,7 +275,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable{
         Navigator.of(context).pop();
         //_presenter.showStarredNotes();
       break;
-      case NaviagtionDrawerAction.TAGS:
+      case NaviagtionDrawerAction.NOTES_WITH_TAG:
         Navigator.of(context).pop();
         //_presenter.showStarredNotes();
       break;

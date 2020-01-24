@@ -8,6 +8,7 @@ import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/presentation/screens/folder_overview/FolderOverview.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
+import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/OverviewPresenter.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
@@ -20,11 +21,12 @@ import 'package:flutter/material.dart';
 
 class Overview extends StatefulWidget {
 
-  final List<Note> notes;
+  final List<Note> notes;   //TODO final?
   final Folder selectedFolder;
+  String selectedTag;
   int mode;
 
-  Overview({this.mode, this.notes, this.selectedFolder});
+  Overview({this.mode, this.notes, this.selectedFolder, this.selectedTag});
 
   @override
   _OverviewState createState() => _OverviewState();
@@ -75,6 +77,9 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         break;
       case NaviagtionDrawerAction.NOTES_IN_FOLDER:
         _pageTitle = this.widget.selectedFolder.name;
+        break;
+      case NaviagtionDrawerAction.NOTES_WITH_TAG:
+        _pageTitle = this.widget.selectedTag;
         break;
       default:
         _pageTitle = 'All Notes';
@@ -382,7 +387,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         this.widget.mode = NaviagtionDrawerAction.STARRED;
         _pageTitle = 'Starred Notes';
         _presenter.showStarredNotes();
-       break;
+        break;
       case NaviagtionDrawerAction.FOLDERS:
         this.widget.mode = NaviagtionDrawerAction.FOLDERS;
         _pageTitle = 'Folders';
@@ -390,7 +395,15 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
           context,
           MaterialPageRoute(builder: (context) => FolderOverview())
         );
-      break;
+        break;
+      case NaviagtionDrawerAction.TAGS:
+        this.widget.mode = NaviagtionDrawerAction.TAGS;
+        _pageTitle = 'Tags';
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TagOverview())
+        );
+        break;
     }
   }
 }

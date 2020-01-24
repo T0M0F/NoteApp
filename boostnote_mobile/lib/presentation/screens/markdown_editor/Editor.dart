@@ -4,6 +4,7 @@ import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownPreview.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditMarkdownNoteDialog.dart';
@@ -31,7 +32,7 @@ class EditorState extends State<Editor> {
 
   bool _previewMode = false;
   List<FolderEntity> _folders;
-  FolderEntity _dropdownValue;
+  FolderEntity _dropdownValueFolder;
 
   static const String DELETE_ACTION = 'Delete';
   static const String SAVE_ACTION = 'Save';
@@ -49,7 +50,7 @@ class EditorState extends State<Editor> {
     _folderService.findAllUntrashed().then((folders) { 
       setState(() { 
         _folders = folders;
-         _dropdownValue = _folders.firstWhere((folder) => folder.id == this.widget._note.folder.id);
+         _dropdownValueFolder = _folders.firstWhere((folder) => folder.id == this.widget._note.folder.id);
       });
     });
   }
@@ -144,7 +145,7 @@ class EditorState extends State<Editor> {
         this.widget._parentWidget.refresh();
         Navigator.of(context).pop();
       } else if(action == EDIT_ACTION){
-        showEditNoteDialog(context, this.widget._note, (note){
+        _showEditNoteDialog(context, this.widget._note, (note){
           setState(() {
             this.widget._note.title = note.title;
           });
@@ -161,48 +162,54 @@ class EditorState extends State<Editor> {
   }
 
   Widget _buildMobileLayout() {
-    return Column(
+    return Row(
+      mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        Flexible(flex: 1, 
-        child: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsetsDirectional.only(start: 10),
-                  child:  DropdownButton<FolderEntity> (    //TODO FolderEntity
-                    value: _dropdownValue, 
-                    underline: Container(), 
-                    icon: Icon(Icons.folder_open),
-                    items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
-                      value: folder,
-                      child: Text(folder.name)
-                    )).toList(),
-                    onChanged: (folder) {
-                        setState(() {
-                          _dropdownValue = folder;
-                        });
-                        this.widget._note.folder = folder;
-                        _noteService.save(this.widget._note);
-                      }
-                  )
-                ),
-                Row(
+       Expanded(
+         child:  Column(
+          children: <Widget>[
+           Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  IconButton(icon: Icon(Icons.label_outline), onPressed: () {}),
-                  IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
-                  ],
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child:  DropdownButton<FolderEntity> (    //TODO FolderEntity
+                      value: _dropdownValueFolder, 
+                      underline: Container(), 
+                      icon: Icon(Icons.folder_open),
+                      items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
+                        value: folder,
+                        child: Text(folder.name)
+                      )).toList(),
+                      onChanged: (folder) {
+                          setState(() {
+                            _dropdownValueFolder = folder;
+                          });
+                          this.widget._note.folder = folder;
+                          _noteService.save(this.widget._note);
+                        }
+                    )
+                  ),
+                  Row(
+                  children: <Widget>[
+                    IconButton(icon: Icon(Icons.label_outline), onPressed: () => _showTagDialog(context, this.widget._note.tags)),
+                    IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+                    ],
+                  ),
+                ],
+              ),
             ),
-          )
+            Flexible(flex: 12,
+              child: Align(
+                      alignment: Alignment.topLeft,
+                      child: _previewMode ? MarkdownPreview(this.widget._note.content, _launchURL) : MarkdownEditor(this.widget._note.content, _onTextChangedCallback),
+                    )
+            )
+          ],
         ),
-        Flexible(flex: 7,
-          child: Align(
-                  alignment: Alignment.topLeft,
-                  child: _previewMode ? MarkdownPreview(this.widget._note.content, _launchURL) : MarkdownEditor(this.widget._note.content, _onTextChangedCallback),
-                )
-        )
+       ),
       ],
     );
   }
@@ -236,7 +243,7 @@ class EditorState extends State<Editor> {
     }
   }
 
-  Future<MarkdownNote> showEditNoteDialog(BuildContext context, MarkdownNote note, Function(MarkdownNote) callback) => showDialog(
+  Future<MarkdownNote> _showEditNoteDialog(BuildContext context, MarkdownNote note, Function(MarkdownNote) callback) => showDialog( //TODO unused callback?
     context: context, 
     builder: (context){
       return EditMarkdownNoteDialog(
@@ -244,6 +251,21 @@ class EditorState extends State<Editor> {
         saveCallback: (note){
           NoteService service = NoteService();  //TODO: Presenter
           service.save(note);
+          Navigator.of(context).pop();
+        },
+        cancelCallback: (){
+          Navigator.of(context).pop();
+        },
+      );
+  }); 
+
+  Future<List<String>> _showTagDialog(BuildContext context, List<String> tags) => showDialog(
+    context: context, 
+    builder: (context){
+      return EditTagsDialog(
+        tags: tags, 
+        saveCallback: (tag){
+          
           Navigator.of(context).pop();
         },
         cancelCallback: (){

@@ -18,7 +18,7 @@ class EditTagsDialog extends StatefulWidget {
   
 class _EditTagsDialogState extends State<EditTagsDialog>{
 
-  TextEditingController _controller;
+  TextEditingController _textEditingController;
   List<String> _selectedTags;
   List<String> _allTags;
   TagService _tagService;
@@ -27,7 +27,7 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
   void initState() {
     super.initState();
     _tagService = TagService();
-    _controller = TextEditingController();
+    _textEditingController = TextEditingController();
     _selectedTags = this.widget.tags;
     _allTags = _selectedTags;
     _tagService.findAll(). then((tags) {
@@ -46,36 +46,59 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
         child: Text('Select Tags', style: TextStyle(color: Colors.black))
       ),
       content: Container(
-        height: 170,
+        height: 200,
         child: Column(
           children: <Widget>[
-            TextField(
-              controller: _controller,
-              style: TextStyle(color: Colors.black),
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 160,
+                  child:  TextField(
+                    decoration: InputDecoration(hintText: 'Add a new Tag', hintStyle: TextStyle(color: Colors.grey)),
+                    textInputAction: TextInputAction.done,
+                    controller: _textEditingController,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.check),
+                  onPressed: (){
+                    setState(() {
+                      _allTags.add(_textEditingController.text);
+                    });
+                    TagService().createTagIfNotExisting(_textEditingController.text);
+                    _textEditingController.clear();
+                  },
+                )
+             ],
             ),
-            ListView.builder(
-              itemCount: _allTags.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () => _onRowTap(_allTags[index]),
-                  child: Row(
-                    children: <Widget>[
-                      Flexible(
-                        flex: 1,
-                        child: Checkbox(
-                          value: _selectedTags.contains(_allTags[index]),
-                          onChanged: (bool selected) {
-                            selected ? _selectedTags.add(_allTags[index]) : _selectedTags.remove(_allTags[index]);
-                          }
-                        ),
-                      ), 
-                      Flexible(
-                        flex: 3,
-                        child: Text(_allTags[index]),)
-                    ],
-                  )
-                );
-              },
+            Expanded(
+              child:  ListView.builder(
+                itemCount: _allTags.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () => _onRowTap(_allTags[index]),
+                    child: Row(
+                      children: <Widget>[
+                        Flexible(
+                          flex: 1,
+                          child: Checkbox(
+                            value: _selectedTags.contains(_allTags[index]),
+                            onChanged: (bool selected) {
+                              setState(() {
+                                selected ? _selectedTags.add(_allTags[index]) : _selectedTags.remove(_allTags[index]);
+                              });
+                            }
+                          ),
+                        ), 
+                        Flexible(
+                          flex: 3,
+                          child: Text(_allTags[index]),)
+                      ],
+                    )
+                  );
+                },
+              )
             )
           ],
         ),
@@ -102,5 +125,9 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
       ],
     );
 
-  void _onRowTap(String tag) => _selectedTags.contains(tag) ? _selectedTags.remove(tag) : _selectedTags.add(tag);
+  void _onRowTap(String tag) {
+    setState(() {
+      _selectedTags.contains(tag) ? _selectedTags.remove(tag) : _selectedTags.add(tag);
+    });
+  }
 }

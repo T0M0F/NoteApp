@@ -2,6 +2,7 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
@@ -264,8 +265,10 @@ class EditorState extends State<Editor> {
     builder: (context){
       return EditTagsDialog(
         tags: tags, 
-        saveCallback: (tag){
-          
+        saveCallback: (selectedTags){
+          selectedTags.forEach((t) => print(t));
+          NoteService service = NoteService();  //TODO: Presenter
+          service.save(this.widget._note);
           Navigator.of(context).pop();
         },
         cancelCallback: (){

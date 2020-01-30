@@ -22,8 +22,9 @@ class FolderRepositoryImpl extends FolderRepository {
       print('Boostnote File doesnt exist');
       file.createSync();
       BoostnoteEntity boostnoteEntity = BoostnoteEntity(folders: List());
+      boostnoteEntity.tags = List();
       file.writeAsStringSync(jsonEncode(boostnoteEntity));
-      await save(Folder(name: 'Default', id: 'Default'.hashCode));
+      await save(Folder(name: 'Default', id: 'Default'.hashCode));  //Endlos Schleife?????
       await save(Folder(name: 'Trash', id: 'Trash'.hashCode));
       file = await localFile;
     }
@@ -35,6 +36,10 @@ class FolderRepositoryImpl extends FolderRepository {
     String content = file.readAsStringSync();
     print('Boostnote file content: ' + content);
     BoostnoteEntity boostnoteEntity = BoostnoteEntity.fromJson(jsonDecode(content));
+    if(boostnoteEntity.tags == null){
+      print('Tags are null');
+      boostnoteEntity.tags = List();
+    }
     return Future.value(boostnoteEntity);
   }
 

@@ -163,13 +163,186 @@ class EditorState extends State<Editor> {
   }
 
   Widget _buildMobileLayout() {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
+    return _previewMode ? _buildMarkdownPreview() : _buildMarkdownEditor();
+  }
+
+  Widget _buildMarkdownPreview(){
+    return ListView(
       children: <Widget>[
-       Expanded(
-         child:  Column(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-           Expanded(
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child:  DropdownButton<FolderEntity> (    //TODO FolderEntity
+                value: _dropdownValueFolder, 
+                underline: Container(), 
+                icon: Icon(Icons.folder_open),
+                items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
+                  value: folder,
+                  child: Text(folder.name)
+                )).toList(),
+                onChanged: (folder) {
+                    setState(() {
+                      _dropdownValueFolder = folder;
+                    });
+                    this.widget._note.folder = folder;
+                    _noteService.save(this.widget._note);
+                  }
+              )
+            ),
+            Row(
+            children: <Widget>[
+              IconButton(icon: Icon(Icons.label_outline), onPressed: () => _showTagDialog(context, this.widget._note.tags)),
+              IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+              ],
+            ),
+          ],
+        ),
+       Align(
+        alignment: Alignment.topLeft,
+        child: MarkdownPreview(this.widget._note.content, _launchURL),
+       )
+      ],
+    );
+  }
+
+
+  Widget _buildMarkdownEditor2(){   //use minLines for Textfield to make it work
+    return ListView(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child:  DropdownButton<FolderEntity> (    //TODO FolderEntity
+                value: _dropdownValueFolder, 
+                underline: Container(), 
+                icon: Icon(Icons.folder_open),
+                items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
+                  value: folder,
+                  child: Text(folder.name)
+                )).toList(),
+                onChanged: (folder) {
+                    setState(() {
+                      _dropdownValueFolder = folder;
+                    });
+                    this.widget._note.folder = folder;
+                    _noteService.save(this.widget._note);
+                  }
+              )
+            ),
+            Row(
+            children: <Widget>[
+              IconButton(icon: Icon(Icons.label_outline), onPressed: () => _showTagDialog(context, this.widget._note.tags)),
+              IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+              ],
+            ),
+          ],
+        ),
+       Align(
+        alignment: Alignment.topLeft,
+        child: MarkdownEditor(this.widget._note.content, _onTextChangedCallback),
+       )
+      ],
+    );
+  }
+
+  Widget _buildMarkdownEditor(){
+    return LayoutBuilder(
+      builder: (context, constraint) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraint.maxHeight),
+            child: IntrinsicHeight(
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child:  DropdownButton<FolderEntity> (    //TODO FolderEntity
+                          value: _dropdownValueFolder, 
+                          underline: Container(), 
+                          icon: Icon(Icons.folder_open),
+                          items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
+                            value: folder,
+                            child: Text(folder.name)
+                          )).toList(),
+                          onChanged: (folder) {
+                              setState(() {
+                                _dropdownValueFolder = folder;
+                              });
+                              this.widget._note.folder = folder;
+                              _noteService.save(this.widget._note);
+                            }
+                        )
+                      ),
+                      Row(
+                      children: <Widget>[
+                        IconButton(icon: Icon(Icons.label_outline), onPressed: () => _showTagDialog(context, this.widget._note.tags)),
+                        IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+                        ],
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child:  MarkdownEditor(this.widget._note.content, _onTextChangedCallback),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /*
+return ListView(
+      children: <Widget>[
+        Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child:  DropdownButton<FolderEntity> (    //TODO FolderEntity
+                      value: _dropdownValueFolder, 
+                      underline: Container(), 
+                      icon: Icon(Icons.folder_open),
+                      items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
+                        value: folder,
+                        child: Text(folder.name)
+                      )).toList(),
+                      onChanged: (folder) {
+                          setState(() {
+                            _dropdownValueFolder = folder;
+                          });
+                          this.widget._note.folder = folder;
+                          _noteService.save(this.widget._note);
+                        }
+                    )
+                  ),
+                  Row(
+                  children: <Widget>[
+                    IconButton(icon: Icon(Icons.label_outline), onPressed: () => _showTagDialog(context, this.widget._note.tags)),
+                    IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+                    ],
+                  ),
+                ],
+              ),
+       Align(
+                      alignment: Alignment.topLeft,
+                      child: _previewMode ? MarkdownPreview(this.widget._note.content, _launchURL) : MarkdownEditor(this.widget._note.content, _onTextChangedCallback),
+                    )
+      ],
+    );
+  */
+
+  /*
+     Expanded(
               flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -208,12 +381,7 @@ class EditorState extends State<Editor> {
                       child: _previewMode ? MarkdownPreview(this.widget._note.content, _launchURL) : MarkdownEditor(this.widget._note.content, _onTextChangedCallback),
                     )
             )
-          ],
-        ),
-       ),
-      ],
-    );
-  }
+  */
 
   Widget _buildTabletLayout() {
     return Column(

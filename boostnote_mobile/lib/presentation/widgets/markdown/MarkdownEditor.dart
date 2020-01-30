@@ -29,7 +29,6 @@ class _MarkdownEditorState extends State<MarkdownEditor>{
     _textEditingController.text = this.widget._text;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-      color: Colors.red,
       child: TextField(
         autocorrect: true,
         style: TextStyle(),
@@ -38,8 +37,7 @@ class _MarkdownEditorState extends State<MarkdownEditor>{
         maxLines: null,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(0),
-            border: InputBorder.none,
-            hintText: 'Note'),
+            border: InputBorder.none,),
         onChanged: (String text){
               this.widget.onChangedCallback(text);
         },

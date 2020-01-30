@@ -12,7 +12,7 @@ class TagRepositoryImpl implements TagRepository{
     return dir;
   }
   
-  Future<File> get localFile async {
+  Future<File> get localFile async {      //TODO: Merge with BN FolderRepo, weil wenn, das hier aufgerufen wird, bevor getter vom FolderRepo -> Problem
     final Directory dir = await directory;
     File file = File(dir.path + '/boostnote');
     bool fileExists = await file.exists();

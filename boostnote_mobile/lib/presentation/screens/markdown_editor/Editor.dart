@@ -163,7 +163,7 @@ class EditorState extends State<Editor> {
   }
 
   Widget _buildMobileLayout() {
-    return _previewMode ? _buildMarkdownPreview() : _buildMarkdownEditor();
+    return _previewMode ? _buildMarkdownPreview() : _buildMarkdownEditor2();
   }
 
   Widget _buildMarkdownPreview(){
@@ -400,7 +400,7 @@ return ListView(
   }
 
   void _onTextChangedCallback(String text){
-      this.widget._note.content = text;
+       this.widget._note.content = text;
   }
 
 //TODO: Presenter??

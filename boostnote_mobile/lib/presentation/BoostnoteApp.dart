@@ -1,7 +1,9 @@
 
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/presentation/screens/folder_overview/FolderOverview.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
+import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,8 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         '/AllNotes': (context) => Overview(mode: NaviagtionDrawerAction.ALL_NOTES),
         '/StarredNotes': (context) => Overview(mode: NaviagtionDrawerAction.STARRED),
         '/TrashedNotes': (context) => Overview(mode: NaviagtionDrawerAction.TRASH),
+        '/Folders': (context) => FolderOverview(),
+        '/Tags': (context) => TagOverview(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         //'/second': (context) => SecondScreen(),
       },

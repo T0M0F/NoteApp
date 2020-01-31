@@ -35,11 +35,12 @@ class _MarkdownEditorState extends State<MarkdownEditor>{
         controller: _textEditingController,
         keyboardType: TextInputType.multiline,
         maxLines: null,
+        minLines: 30,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(0),
             border: InputBorder.none,),
         onChanged: (String text){
-              this.widget.onChangedCallback(text);
+            this.widget.onChangedCallback(text);
         },
       ),
     );

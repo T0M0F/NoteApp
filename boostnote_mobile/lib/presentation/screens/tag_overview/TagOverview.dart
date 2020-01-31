@@ -1,5 +1,4 @@
 
-import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
@@ -8,8 +7,8 @@ import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dar
 import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
+import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/CreateFolderDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/CreateTagDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/RenameTagDialog.dart';
@@ -44,7 +43,6 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
         } else {
           _tags = tags;
         }
-        _tags.forEach((t)=> print('nameT ' + t));
       });
     });
   }
@@ -52,7 +50,6 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   @override
   void initState(){
     super.initState();
-    print('Init Tag Overview');
     _tags = List();
     _noteService = NoteService();
     _tagService = TagService();
@@ -69,7 +66,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     appBar: _buildAppBar(context),
     drawer: _buildDrawer(context),
     body: _buildBody(context),
-    floatingActionButton: _buildFloatingActionButton(context),
+    floatingActionButton: AddFloatingActionButton(onPressed: () => _createNoteDialog())
   );
 
   AppBar _buildAppBar(BuildContext context) {
@@ -115,7 +112,11 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
 
   Widget _buildMobileLayout(){
     return Container(
-      child: TagList(tags: _tags, onRowTap: _onTagTap, onRowLongPress: _onTagLongPress)
+      child: TagList(
+        tags: _tags, 
+        onRowTap: _onTagTap, 
+        onRowLongPress: _onTagLongPress
+      )
     );
   }
 
@@ -134,17 +135,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     );
   }
 
-//TODO Widget
-  FloatingActionButton _buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(Icons.add, color: Color(0xFFF6F5F5)),
-      onPressed: (){
-        _createNoteDialog(context);
-      },
-    );
-  }
-
-  Future<String> _createNoteDialog(BuildContext context) {
+  Future<String> _createNoteDialog() {
     return showDialog(context: context, 
     builder: (context){
       return CreateNoteDialog(
@@ -153,8 +144,8 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
         }, 
         saveCallback: (Note note) {
           Navigator.of(context).pop();
-          //_presenter.onCreateNotePressed(note); //TODO implement
-          //openNote(note);   
+          _createNote(note);
+          _openNote(note);   
         },
       );
     });
@@ -201,7 +192,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   }
 
   void _onTagLongPress(String tag) {
-    showModalBottomSheet(
+    showModalBottomSheet(     //TODO extract widget
       context: context,
       builder: (BuildContext buildContext){
         return Container(
@@ -231,25 +222,34 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   }
 
   void _createTag(String tag) {
-    _tagService.createTagIfNotExisting(tag)
-    .then((void v) {
-      refresh();
-    });
+    _tagService
+        .createTagIfNotExisting(tag)
+        .whenComplete(() => refresh());
   }
 
 
   void _renameTag(String oldTag, String newTag) {
-    _tagService.renameTag(oldTag, newTag);
-    refresh();
+    _tagService
+        .renameTag(oldTag, newTag)
+        .whenComplete(() => refresh());
   }
 
   void _removeTag(String tag) {
-    _tagService.delete(tag);
-    refresh();
+    _tagService
+        .delete(tag)
+        .whenComplete(() => refresh());
+  }
+
+  void _createNote(Note note) {
+    _noteService
+        .createNote(note)
+        .whenComplete(() => refresh());
   }
 
   void _openNote(Note note){
-     Widget editor = note is MarkdownNote ? Editor(_isTablet, note, this) : SnippetTestEditor(note, this);
+     Widget editor = note is MarkdownNote 
+                                  ? Editor(_isTablet, note, this) 
+                                  : SnippetTestEditor(note, this);
      Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => editor)

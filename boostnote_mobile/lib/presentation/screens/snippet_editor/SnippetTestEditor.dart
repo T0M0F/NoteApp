@@ -218,7 +218,8 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
       ),
       actions: _buildIcon()
       ),
-      body: Column(
+      body: _buildSnippetBody3(),
+      /*Column(
         children: <Widget>[
           Flexible(flex: 1, child: 
             Container(
@@ -251,7 +252,7 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
                   )
           )
         ],
-      ),
+      ),*/
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -297,7 +298,158 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
         ),
         actions: _buildIcon()
       ),
-      body:Container(),
+      body:Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    IconButton(icon: Icon(Icons.folder_open), onPressed: () {}),
+                    Text('Notizbuch', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                Row(
+                children: <Widget>[
+                  IconButton(icon: Icon(Icons.label_outline), onPressed: () {}),
+                  IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+                  ],
+                ),
+              ],
+            ),
+          ),
+    );
+  }
+
+  Widget _buildSnippetBody3(){
+      return LayoutBuilder(
+      builder: (context, constraint) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraint.maxHeight),
+            child: IntrinsicHeight(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: 100,
+                    alignment: Alignment.center,
+                    color: Colors.green,
+                    child: Text("Header"),
+                  ),
+                 Expanded(
+                    child:  TabBarView(
+                        controller: _tabController,
+                        children: <Widget>[
+                          TextField(
+                            expands: true,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                                fillColor: Colors.blue[200], filled: true),
+                          ),
+                          TextField(
+                            expands: true,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                                fillColor: Colors.blue[200], filled: true),
+                          ),
+                          TextField(
+                            expands: true,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                                fillColor: Colors.blue[200], filled: true),
+                          ),
+                        ]
+                      )
+                    )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSnippetBody(){
+     return LayoutBuilder(
+      builder: (context, constraint) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraint.maxHeight),
+            child: IntrinsicHeight(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            IconButton(icon: Icon(Icons.folder_open), onPressed: () {}),
+                            Text('Notizbuch', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        Row(
+                        children: <Widget>[
+                          IconButton(icon: Icon(Icons.label_outline), onPressed: () {}),
+                          IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                   Expanded(
+                    child: TextField(
+                      expands: true,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                          fillColor: Colors.blue[200], filled: true),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+   Widget _buildSnippetBody2(){
+     return ListView(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+           Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      IconButton(icon: Icon(Icons.folder_open), onPressed: () {}),
+                      Text('Notizbuch', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  Row(
+                  children: <Widget>[
+                    IconButton(icon: Icon(Icons.label_outline), onPressed: () {}),
+                    IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+       Align(
+        child: TextField(
+                expands: true,
+                maxLines: null,
+                decoration: InputDecoration(
+                    fillColor: Colors.blue[200], filled: true),
+              ),
+       )
+      ],
     );
   }
     
@@ -436,7 +588,7 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
         }
 
         //This is neccessary, because tabcontrollers length can't change dynamically -> setState() doesn't work.
-        Route route = PageRouteBuilder(
+        Route route = PageRouteBuilder( 
               pageBuilder: (c, a1, a2) =>  SnippetTestEditor.startAt(this.widget._note, this.widget._note.codeSnippets.length-1, this.widget._parentWidget),
               transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
               transitionDuration: Duration(milliseconds: 0),

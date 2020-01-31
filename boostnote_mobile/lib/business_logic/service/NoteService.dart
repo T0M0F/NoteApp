@@ -82,7 +82,7 @@ class NoteService {
     return filteredNotes;
   }
 
-  void createNote(Note note) {  //TODO Validation + kein note objekt als param sondern nur einzelne werte und created at selber genrieren
+  Future<void> createNote(Note note) async{  //TODO Validation + kein note objekt als param sondern nur einzelne werte und created at selber genrieren
     note.id = note.createdAt.hashCode;   //TODO CHECK if folder / tag exists
     note.folder.id = note.folder.name.hashCode;
     _noteRepository.save(note);

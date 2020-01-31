@@ -34,7 +34,7 @@ class FolderRepositoryImpl extends FolderRepository {
   Future<BoostnoteEntity> get boostnoteEntity async  {
     final File file = await localFile;
     String content = file.readAsStringSync();
-    print('Boostnote file content: ' + content);
+    print('Boostnote file content 1: ' + content);
     BoostnoteEntity boostnoteEntity = BoostnoteEntity.fromJson(jsonDecode(content));
     if(boostnoteEntity.tags == null){
       print('Tags are null');
@@ -44,14 +44,15 @@ class FolderRepositoryImpl extends FolderRepository {
   }
 
 
-  @override
-  void delete(Folder folder) {
-    deleteById(folder.id);
+  @override    
+  Future<void> delete(Folder folder) {
+    return deleteById(folder.id);
   }
 
   @override
-  void deleteAll(List<Folder> folders) {
-    folders.forEach((folder) => deleteById(folder.id));
+  Future<void> deleteAll(List<Folder> folders) async {      
+   // Future.forEach(folders, (folder) => deleteById(folder.id));  //TODO return
+   folders.forEach((folder) => deleteById(folder.id));
   }
 
   @override
@@ -85,7 +86,7 @@ class FolderRepositoryImpl extends FolderRepository {
   }
 
   @override
-  Future<void> save(Folder folder) async {  //TODO Future<void>?
+  Future<void> save(Folder folder) async { 
     print('saveFolder');
     if(folder.id == 'Trash'.hashCode && folder.name.hashCode != 'Trash'.hashCode) {
       throw Exception('Illegal Operation: Not allowed to rename Trash folder');
@@ -103,12 +104,13 @@ class FolderRepositoryImpl extends FolderRepository {
     }
     folder = FolderEntity(name: folder.name, id: folder.id); //TODO ugly
     bnEntity.folders.add(folder);
-    print('json folder: ' + jsonEncode(bnEntity));
+    print('json folder 2: ' + jsonEncode(bnEntity));
     file.writeAsString(jsonEncode(bnEntity));
   }
 
   @override
-  void saveAll(List<Folder> folders) {
+  Future<void> saveAll(List<Folder> folders) async {  
+    //Future.forEach(folders, (folder) => save(folder));  //TODO return
     folders.forEach((folder) => save(folder));
   }
 

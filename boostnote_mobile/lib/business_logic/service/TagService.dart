@@ -13,25 +13,25 @@ class TagService {
   }
 
   Future<void> createTagIfNotExisting(String tag) async {
-    _tagRepository.save(tag);
+    return _tagRepository.save(tag);
   }
 
-  void renameTag(String oldTag, String newTag) async {
+  Future<void> renameTag(String oldTag, String newTag) async {
     createTagIfNotExisting(newTag);
 
     List<Note> notesToBeMoved = await _noteService.findNotesByTag(oldTag);
     notesToBeMoved.forEach((note) =>note.tags.add(newTag));
     _noteService.saveAll(notesToBeMoved);
 
-    delete(oldTag);
+    return delete(oldTag);
   }
 
-  void delete(String oldTag) async {
+  Future<void> delete(String oldTag) async {
     List<Note> notesWithOldTag = await _noteService.findNotesByTag(oldTag);
     notesWithOldTag.forEach((note) => note.tags.remove(oldTag));
     _noteService.saveAll(notesWithOldTag);
 
-    _tagRepository.delete(oldTag);
+    return _tagRepository.delete(oldTag);
   }
 
 }

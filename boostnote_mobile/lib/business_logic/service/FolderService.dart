@@ -21,22 +21,22 @@ class FolderService {
 
   Future<void> createFolderIfNotExisting(Folder folder) async {
     folder.id = folder.name.hashCode;
-    _folderRepository.save(folder);
+    return _folderRepository.save(folder);
   }
 
-  void renameFolder(Folder oldFolder, String newName) async {
+  Future<void> renameFolder(Folder oldFolder, String newName) async {
     Folder newFolder = Folder(id: newName.hashCode, name: newName);
     createFolderIfNotExisting(newFolder);
     List<Note> notesToBeMoved = await _noteService.findNotesIn(oldFolder);
     notesToBeMoved.forEach((note) => note.folder = newFolder);
     _noteService.saveAll(notesToBeMoved);
-    delete(oldFolder);
+    return delete(oldFolder);
   }
 
-  void delete(Folder folder) async {
+  Future<void> delete(Folder folder) async {
     List<Note> notesToBeDeleted = await _noteService.findNotesIn(folder);
     _noteService.moveAllToTrash(notesToBeDeleted);
-    _folderRepository.delete(folder);
+    return _folderRepository.delete(folder);
   }
 
 }

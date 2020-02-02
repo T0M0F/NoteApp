@@ -4,10 +4,9 @@ import 'dart:collection';
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
-import 'package:boostnote_mobile/presentation/screens/folder_overview/FolderOverview.dart';
+import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
-import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/OverviewPresenter.dart';
@@ -52,6 +51,8 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   static const String EXPAND_ACTION = 'Expand';
   static const String COLLPASE_ACTION = 'Collapse';
 
+  NavigationService _navigationService;
+
   String _pageTitle;
   
   @override
@@ -64,9 +65,13 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     _notes = this.widget.notes;
     if(_notes == null) {
       _notes = List();
-      _presenter.loadNotes(this.widget.mode);
+      //_presenter.loadNotes(this.widget.mode);
     }
 
+    _navigationService = NavigationService();
+
+
+/*
     switch (this.widget.mode) {
       case NaviagtionDrawerAction.ALL_NOTES:
         _pageTitle = 'All Notes';
@@ -86,7 +91,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       default:
         _pageTitle = 'All Notes';
         break;
-    }
+    }*/
   }
 
  @override
@@ -105,14 +110,17 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    key: _drawerKey,
-    appBar: _editMode ? _buildAppBarForEditMode() :  _buildAppBar(),
-    drawer: _buildDrawer(_editMode, _isTablet),
-    body: _buildBody(),
-    floatingActionButton:_editMode ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
-    bottomNavigationBar: _buildBottomNavigationBarForEditMode(_editMode)
-  );
+  Widget build(BuildContext context) {
+     _pageTitle = _navigationService.overviewMode;
+    return Scaffold(
+      key: _drawerKey,
+      appBar: _editMode ? _buildAppBarForEditMode() :  _buildAppBar(),
+      drawer: _buildDrawer(_editMode, _isTablet),
+      body: _buildBody(),
+      floatingActionButton:_editMode ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
+      bottomNavigationBar: _buildBottomNavigationBarForEditMode(_editMode)
+    );
+  }
 
   AppBar _buildAppBarForEditMode() {    //TODO extract Widget
     return AppBar(
@@ -218,8 +226,9 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         child: isTablet 
           ? null 
           : NavigationDrawer(
-            onNavigate: (action) => _onNavigate(action), 
-            mode: _pageTitle
+          /*  onNavigate: (action) => _onNavigate(action), */
+           /* mode: _pageTitle,*/
+            overviewView: this
           ),
       );
   }
@@ -256,7 +265,10 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       children: <Widget>[
         Flexible(
           flex: 0,
-          child: NavigationDrawer(onNavigate: (action) => _onNavigate(action), mode: _pageTitle)
+          child: NavigationDrawer(/*onNavigate: (action) => _onNavigate(action),*/ 
+                 /* mode: _pageTitle,*/
+                  overviewView: this
+                 )
         ),
         Flexible(
           flex: 3,
@@ -379,6 +391,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
      );
   }
 
+/*
   _onNavigate(int action) {
     switch (action) {
       case NaviagtionDrawerAction.ALL_NOTES:
@@ -422,6 +435,6 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         );
         break;
     }
-  }
+  }*/
 }
 

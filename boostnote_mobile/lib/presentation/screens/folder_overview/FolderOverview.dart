@@ -93,8 +93,8 @@ class _FolderOverviewState extends State<FolderOverview>
           ),
       child: _isTablet
           ? null : NavigationDrawer(
-              onNavigate: (action) => _onNavigate(action), 
-              mode: _pageTitle
+             /* onNavigate: (action) => _onNavigate(action), 
+              mode: _pageTitle */
             ),
     );
   }
@@ -126,7 +126,7 @@ class _FolderOverviewState extends State<FolderOverview>
   Widget _buildTabletLayout() {
     return Row(
       children: <Widget>[
-        Flexible(flex: 0, child: NavigationDrawer(mode: _pageTitle)),
+        Flexible(flex: 0, child: NavigationDrawer(/*mode: _pageTitle*/)),
         Flexible(
             flex: 3,
             child: FolderList(
@@ -278,6 +278,7 @@ class _FolderOverviewState extends State<FolderOverview>
     Navigator.push(context, MaterialPageRoute(builder: (context) => editor));
   }
 
+/*
   _onNavigate(int action) {
     switch (action) {
       case NaviagtionDrawerAction.ALL_NOTES:
@@ -308,5 +309,9 @@ class _FolderOverviewState extends State<FolderOverview>
         //_presenter.showStarredNotes();
         break;
     }
-  }
+  } 
+  */
 }
+
+
+

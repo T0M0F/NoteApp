@@ -21,7 +21,7 @@ class TagOverview extends StatefulWidget {  //TODO combine with folderoverview?
   _TagOverviewState createState() => _TagOverviewState();
 
 }
-
+ 
 class _TagOverviewState extends State<TagOverview> implements Refreshable{
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -93,7 +93,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
                canvasColor: Theme.of(context).primaryColorLight, 
                textTheme: TextTheme(body1: TextStyle(color: Theme.of(context).primaryColorLight))
             ),
-      child: _isTablet ? null : NavigationDrawer(onNavigate: (action) => _onNavigate(action), mode: _pageTitle),
+      child: _isTablet ? null : NavigationDrawer(/*onNavigate: (action) => _onNavigate(action),mode: _pageTitle*/),
     );
   }
 
@@ -125,7 +125,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
       children: <Widget>[
         Flexible(
           flex: 0,
-          child: NavigationDrawer(mode: _pageTitle)
+          child: NavigationDrawer(/*mode: _pageTitle*/)
         ),
         Flexible(
           flex: 3,
@@ -256,6 +256,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
      );
   }
 
+/*
   _onNavigate(int action) {
     switch (action) {
       case NaviagtionDrawerAction.ALL_NOTES:
@@ -281,5 +282,6 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
       break;
     }
   }
+  */
 
 }

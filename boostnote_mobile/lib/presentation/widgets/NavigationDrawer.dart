@@ -1,19 +1,24 @@
  
+import 'package:boostnote_mobile/presentation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NavigationDrawer extends StatefulWidget {
 
-  final Function(int) onNavigate; 
-  String mode = 'All Notes';
+ // final Function(int) onNavigate; 
+  //String mode = 'All Notes';
+  OverviewView overviewView;
 
-  NavigationDrawer({Key key, this.onNavigate, this.mode}) : super(key: key); //TODO: Constructor
+  NavigationDrawer({Key key,/* this.onNavigate, this.mode, */this.overviewView}) : super(key: key); //TODO: Constructor
 
   @override
   State<StatefulWidget> createState() => NavigationDrawerState();
 }
 
 class NavigationDrawerState extends State<NavigationDrawer> {
+
+  NavigationService navigationService = NavigationService();
 
    @override
   Widget build(BuildContext context) {
@@ -45,47 +50,48 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
       ),
      ListTile(
-            leading: Icon(Icons.note, color: this.widget.mode == 'All Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-            title: Text('All Notes', style: TextStyle(color: this.widget.mode == 'All Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+            leading: Icon(Icons.note, color: navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+            title: Text('All Notes', style: TextStyle(color: navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
             onTap: () {
-              //TODO: Callback to Parent
               Navigator.pop(context);
-              this.widget.onNavigate(NaviagtionDrawerAction.ALL_NOTES);
-       
+              navigationService.navigateTo(context, OverviewMode.ALL_NOTES_MODE, overviewView: this.widget.overviewView);
+              //this.widget.onNavigate(NaviagtionDrawerAction.ALL_NOTES);
             },
       ),
       ListTile(
-        leading: Icon(Icons.label, color: this.widget.mode == 'Folders' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text('Folders', style: TextStyle(color: this.widget.mode == 'Folders' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.label, color: navigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text('Folders', style: TextStyle(color: navigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          this.widget.onNavigate(NaviagtionDrawerAction.FOLDERS);
+          navigationService.navigateTo(context, OverviewMode.FOLDERS_MODE);
+          //this.widget.onNavigate(NaviagtionDrawerAction.FOLDERS);
         },
       ),
       ListTile(
-        leading: Icon(Icons.label, color: this.widget.mode == 'Tags' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text('Tags', style: TextStyle(color: this.widget.mode == 'Tags' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.label, color: navigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text('Tags', style: TextStyle(color: navigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          this.widget.onNavigate(NaviagtionDrawerAction.TAGS);
+          navigationService.navigateTo(context, OverviewMode.TAGS_MODE);
+          //this.widget.onNavigate(NaviagtionDrawerAction.TAGS);
         },
       ),
       ListTile(
-        leading: Icon(Icons.star, color: this.widget.mode == 'Starred Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text('Starred', style: TextStyle(color: this.widget.mode == 'Starred Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.star, color: navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text('Starred', style: TextStyle(color: navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
-           //TODO: Callback to Parent
           Navigator.pop(context);
-          this.widget.onNavigate(NaviagtionDrawerAction.STARRED);
+          navigationService.navigateTo(context, OverviewMode.STARRED_NOTES_MODE, overviewView: this.widget.overviewView);
+          //this.widget.onNavigate(NaviagtionDrawerAction.STARRED);
         },
       ),
       ListTile(
-        leading: Icon(Icons.delete, color: this.widget.mode == 'Trashed Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text('Trash', style: TextStyle(color: this.widget.mode == 'Trashed Notes' ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.delete, color: navigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text('Trash', style: TextStyle(color: navigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
-           //TODO: Callback to Parent
           Navigator.pop(context);
-          this.widget.onNavigate(NaviagtionDrawerAction.TRASH);
+          navigationService.navigateTo(context, OverviewMode.TRASH_MODE, overviewView: this.widget.overviewView);
+          //this.widget.onNavigate(NaviagtionDrawerAction.TRASH);
         },
       ),
       Padding(

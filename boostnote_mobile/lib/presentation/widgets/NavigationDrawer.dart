@@ -54,7 +54,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             title: Text('All Notes', style: TextStyle(color: navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
             onTap: () {
               Navigator.pop(context);
-              navigationService.navigateTo(context, OverviewMode.ALL_NOTES_MODE, overviewView: this.widget.overviewView);
+              navigationService.navigateTo(context, NavigationMode.ALL_NOTES_MODE, overviewView: this.widget.overviewView);
               //this.widget.onNavigate(NaviagtionDrawerAction.ALL_NOTES);
             },
       ),
@@ -63,7 +63,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text('Folders', style: TextStyle(color: navigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          navigationService.navigateTo(context, OverviewMode.FOLDERS_MODE);
+          navigationService.navigateTo(context, NavigationMode.FOLDERS_MODE);
           //this.widget.onNavigate(NaviagtionDrawerAction.FOLDERS);
         },
       ),
@@ -72,7 +72,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text('Tags', style: TextStyle(color: navigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          navigationService.navigateTo(context, OverviewMode.TAGS_MODE);
+          navigationService.navigateTo(context, NavigationMode.TAGS_MODE);
           //this.widget.onNavigate(NaviagtionDrawerAction.TAGS);
         },
       ),
@@ -81,7 +81,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text('Starred', style: TextStyle(color: navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          navigationService.navigateTo(context, OverviewMode.STARRED_NOTES_MODE, overviewView: this.widget.overviewView);
+          navigationService.navigateTo(context, NavigationMode.STARRED_NOTES_MODE, overviewView: this.widget.overviewView);
           //this.widget.onNavigate(NaviagtionDrawerAction.STARRED);
         },
       ),
@@ -90,7 +90,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text('Trash', style: TextStyle(color: navigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          navigationService.navigateTo(context, OverviewMode.TRASH_MODE, overviewView: this.widget.overviewView);
+          navigationService.navigateTo(context, NavigationMode.TRASH_MODE, overviewView: this.widget.overviewView);
           //this.widget.onNavigate(NaviagtionDrawerAction.TRASH);
         },
       ),

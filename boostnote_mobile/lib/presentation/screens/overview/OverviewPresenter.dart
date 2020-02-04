@@ -1,6 +1,8 @@
 
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 
@@ -14,6 +16,31 @@ class OverviewPresenter {
     _noteService = NoteService();
   }
 
+  void loadAllNotes(){
+    print('loadAllNotes');
+    Future<List<Note>> notes = NoteService().findNotTrashed();
+    notes.then((result) { 
+      _overviewView.update(result);
+    });
+  }
+
+  void loadNotesInFolder(Folder folder) {
+    print('loadNotesInFolder');
+    Future<List<Note>> notes = NoteService().findNotesIn(folder);
+    notes.then((result) { 
+      _overviewView.update(result);
+    });
+  }
+
+  void loadNotesWithTag(String tag) {
+    print('loadNotesWithTag');
+    Future<List<Note>> notes = NoteService().findNotesByTag(tag);
+    notes.then((result) { 
+      _overviewView.update(result);
+    });
+  }
+
+/*
   void loadNotes(int mode) {
     print('laodnotes mode: ' + mode.toString());
     switch (mode) {
@@ -49,7 +76,7 @@ class OverviewPresenter {
         break;
     }
     
-  }
+  }*/
 
   void onCreateNotePressed(Note note){
     print('Create Note');

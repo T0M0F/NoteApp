@@ -3,6 +3,7 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
@@ -26,6 +27,7 @@ class _FolderOverviewState extends State<FolderOverview>
 
   NoteService _noteService;
   FolderService _folderService;
+  NavigationService _navigationService;
   List<Folder> _folders;
 
   bool _isTablet = false;
@@ -50,6 +52,7 @@ class _FolderOverviewState extends State<FolderOverview>
     super.initState();
     _folders = List();
     _noteService = NoteService();
+    _navigationService = NavigationService();
     _folderService = FolderService();
     _folderService.findAllUntrashed().then((folders) {
       setState(() {
@@ -187,16 +190,7 @@ class _FolderOverviewState extends State<FolderOverview>
   
 
   void _onFolderTap(Folder folder) {
-    _noteService.findUntrashedNotesIn(folder).then((notes) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Overview(
-                    notes: notes,
-                    mode: NaviagtionDrawerAction.NOTES_IN_FOLDER,
-                    selectedFolder: folder,
-                  )));
-    });
+    _navigationService.navigateTo(context, NavigationMode.NOTES_IN_FOLDER_MODE, folder: folder);
   }
 
   void _onFolderLongPress(Folder folder) {
@@ -272,6 +266,7 @@ class _FolderOverviewState extends State<FolderOverview>
   }
 
   void _openNote(Note note) {
+    _navigationService.noteIsOpen = true;
     Widget editor = note is MarkdownNote
         ? Editor(_isTablet, note, this)
         : SnippetTestEditor(note, this);

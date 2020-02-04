@@ -50,6 +50,9 @@ class NoteService {
   }
 
   Future<List<Note>> findNotesIn(Folder folder) async {   //TODO unelegant
+    if(folder == null) {
+      throw Exception('Folder should not be null');
+    }
     List<Note> notes = await _noteRepository.findAll();
     List<Note> filteredNotes = List();
       notes.forEach((note) {
@@ -72,6 +75,9 @@ class NoteService {
   }
 
   findNotesByTag(String tag) async {
+    if(tag == null) {
+      throw Exception('Tag should not be null');
+    }
     List<Note> notes = await _noteRepository.findAll();
     List<Note> filteredNotes = List();
       notes.forEach((note) {

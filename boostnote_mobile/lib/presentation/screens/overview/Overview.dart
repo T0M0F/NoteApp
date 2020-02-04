@@ -62,13 +62,30 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     _presenter = OverviewPresenter(this);
     _selectedNotes = List();
 
+    _navigationService = NavigationService();
+
     _notes = this.widget.notes;
+
+    //if no note list is provided, for example on StartUp when calling Overview() from BoostnoteApp or 
+    //when navigating back from open note
+    print('init');
     if(_notes == null) {
       _notes = List();
+      switch(_navigationService.navigationMode) {
+        case NavigationMode.NOTES_WITH_TAG_MODE:
+          _presenter.loadNotesWithTag(this.widget.selectedTag);
+          break;
+        case NavigationMode.NOTES_IN_FOLDER_MODE:
+          _presenter.loadNotesInFolder(this.widget.selectedFolder);
+          break;
+        default:
+          _presenter.loadAllNotes();
+          break;
+      } 
       //_presenter.loadNotes(this.widget.mode);
-    }
+  }
 
-    _navigationService = NavigationService();
+ 
 
 
 /*
@@ -111,7 +128,32 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
 
   @override
   Widget build(BuildContext context) {
-     _pageTitle = _navigationService.overviewMode;
+
+    print('naviagtionmmode: ' + _navigationService.navigationMode);
+    print(_notes);
+   /* if(_notes == null) {
+      _notes = List();
+      switch(_navigationService.navigationMode) {
+        case NavigationMode.NOTES_WITH_TAG_MODE:
+          _presenter.loadNotesWithTag(this.widget.selectedTag);
+          break;
+        case NavigationMode.NOTES_IN_FOLDER_MODE:
+          _presenter.loadNotesInFolder(this.widget.selectedFolder);
+          break;
+        default:
+          _presenter.loadAllNotes();
+          break;
+      } 
+    }
+*/
+    if(_navigationService.isNotesInFolderMode()){
+      _pageTitle = this.widget.selectedFolder.name;
+    } else if(_navigationService.isNotesWithTagMode()) {
+      _pageTitle = this.widget.selectedTag;
+    } else {
+      _pageTitle = _navigationService.navigationMode;
+    }
+
     return Scaffold(
       key: _drawerKey,
       appBar: _editMode ? _buildAppBarForEditMode() :  _buildAppBar(),
@@ -202,11 +244,11 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   }
 
   IconButton _buildLeadingIcon() {
-    return this.widget.mode == NaviagtionDrawerAction.NOTES_IN_FOLDER 
+    return (_navigationService.isNotesWithTagMode() || _navigationService.isNotesInFolderMode())
         ? IconButton(
           icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor), 
           onPressed: () {
-            Navigator.of(context).pop();
+            _navigationService.navigateBack(context);
           },
         ) : IconButton(
           icon: Icon(Icons.menu, color: Theme.of(context).accentColor), 
@@ -360,9 +402,11 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
           }, 
           saveCallback: (Note note) {
             Navigator.of(context).pop();
-            if(this.widget.mode == NaviagtionDrawerAction.NOTES_IN_FOLDER) {
+            if(_navigationService.isNotesInFolderMode()) {
               note.folder = this.widget.selectedFolder;
-            } 
+            } else if(_navigationService.isNotesWithTagMode()){
+              note.tags.add(this.widget.selectedTag);
+            }
             _presenter.onCreateNotePressed(note);
             openNote(note);   //TODO: Presenter???
           },
@@ -384,6 +428,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   }
 
   void openNote(Note note){
+    _navigationService.noteIsOpen = true;
      Widget editor = note is MarkdownNote ? Editor(_isTablet, note, this) : SnippetTestEditor(note, this);
      Navigator.push(
       context,

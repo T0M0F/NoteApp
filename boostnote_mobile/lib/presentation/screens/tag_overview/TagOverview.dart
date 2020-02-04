@@ -3,6 +3,7 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
+import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
@@ -26,6 +27,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
+  NavigationService _navigationService;
   NoteService _noteService;
   TagService _tagService;
   List<String> _tags;
@@ -51,6 +53,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   void initState(){
     super.initState();
     _tags = List();
+    _navigationService = NavigationService();
     _noteService = NoteService();
     _tagService = TagService();
     _tagService.findAll().then((tags) {
@@ -114,8 +117,8 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     return Container(
       child: TagList(
         tags: _tags, 
-        onRowTap: _onTagTap, 
-        onRowLongPress: _onTagLongPress
+        onRowTap: _onRowTap, 
+        onRowLongPress: _onRowLongPress
       )
     );
   }
@@ -129,7 +132,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
         ),
         Flexible(
           flex: 3,
-          child: TagList(tags: _tags, onRowTap: _onTagTap, onRowLongPress: _onTagLongPress)
+          child: TagList(tags: _tags, onRowTap: _onRowTap, onRowLongPress: _onRowLongPress)
         ),
       ],
     );
@@ -182,16 +185,11 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     });
   }
 
-  void _onTagTap(String tag) {
-    _noteService.findNotesByTag(tag).then((notes) {
-     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Overview(notes: notes, mode: NaviagtionDrawerAction.NOTES_WITH_TAG, selectedTag: tag,))
-     );
-   });
+  void _onRowTap(String tag) {
+    _navigationService.navigateTo(context, NavigationMode.NOTES_WITH_TAG_MODE, tag: tag);
   }
 
-  void _onTagLongPress(String tag) {
+  void _onRowLongPress(String tag) {
     showModalBottomSheet(     //TODO extract widget
       context: context,
       builder: (BuildContext buildContext){
@@ -247,6 +245,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   }
 
   void _openNote(Note note){
+    _navigationService.noteIsOpen = true;
      Widget editor = note is MarkdownNote 
                                   ? Editor(_isTablet, note, this) 
                                   : SnippetTestEditor(note, this);

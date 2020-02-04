@@ -4,6 +4,7 @@ import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
+import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownEditor.dart';
@@ -28,6 +29,7 @@ class Editor extends StatefulWidget {
 
 class EditorState extends State<Editor> {
 
+  NavigationService _navigatiorService;
   NoteService _noteService;
   FolderService _folderService;
 
@@ -44,6 +46,7 @@ class EditorState extends State<Editor> {
   @override
   void initState() {
     super.initState();
+    _navigatiorService = NavigationService();
     _noteService = NoteService();
     _folderService = FolderService();
     _folders = List();
@@ -77,7 +80,7 @@ class EditorState extends State<Editor> {
     super.dispose();
     print('DISPOSE');
     NoteService().save(this.widget._note);
-    this.widget._parentWidget.refresh();
+    //this.widget._parentWidget.refresh();
   }
 
   AppBar _buildAppBar(BuildContext context) {
@@ -86,7 +89,7 @@ class EditorState extends State<Editor> {
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Color(0xFFF6F5F5)), 
         onPressed: () {
-         Navigator.of(context).pop();  
+          _navigatiorService.closeNote(context);
         },
       ),
       actions: <Widget>[

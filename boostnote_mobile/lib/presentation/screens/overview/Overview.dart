@@ -124,6 +124,22 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
 
  @override
  void refresh() => _presenter.refresh();
+
+ @override
+ void dispose(){
+   super.dispose();
+
+   switch(_navigationService.navigationMode) {      //Abweichende Logik
+        case NavigationMode.NOTES_IN_FOLDER_MODE:
+          print('NOTES_IN_FOLDER_MODE');
+          _navigationService.navigationMode = NavigationMode.FOLDERS_MODE;
+          break;
+        case NavigationMode.NOTES_WITH_TAG_MODE:
+          print('NOTES_WITH_TAG_MODE');
+          _navigationService.navigationMode = NavigationMode.TAGS_MODE;
+          break;
+      }
+ }
   
 
   @override

@@ -80,6 +80,7 @@ class EditorState extends State<Editor> {
     super.dispose();
     print('DISPOSE');
     NoteService().save(this.widget._note);
+    _navigatiorService.noteIsOpen = false; //ABweichende Logik
     //this.widget._parentWidget.refresh();
   }
 

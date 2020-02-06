@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 
 class NoteSearch extends SearchDelegate {
 
-  final Stream<UnmodifiableListView<Note>> notes;
-  final ValueChanged<Note> itemSelectedCallback;
+  final List<Note> _notes;
+  final ValueChanged<Note> _itemSelectedCallback;
 
-  NoteSearch(this.notes, this.itemSelectedCallback) : super(searchFieldLabel: 'Search');
+  NoteSearch(this._notes, this._itemSelectedCallback) : super(searchFieldLabel: 'Search');
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -37,62 +37,62 @@ class NoteSearch extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return _buildStreamBuilder();
+    return _buildStreamBuilder(context);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return _buildStreamBuilder();
+    return _buildStreamBuilder(context);
   }
 
-  StreamBuilder<UnmodifiableListView<Note>> _buildStreamBuilder() {
-    return StreamBuilder<UnmodifiableListView<Note>>(
-      stream: notes,
-      builder: (context, AsyncSnapshot<UnmodifiableListView<Note>> snapshot) {
-        if(!snapshot.hasData){
-          return Center(
-            child: Text('No data', style: TextStyle(fontSize: 18)),
-          );
-          } else {
-          final results = snapshot.data.where((note){
-            if(note is MarkdownNote){
-              return note.title.toLowerCase().contains(query.toLowerCase()) || 
-              note.content.toLowerCase().contains(query.toLowerCase()) || 
-              note.tags.any((tag){
-                  return tag.toLowerCase().contains(query.toLowerCase());
-              });
-            } else if(note is SnippetNote){
-              return note.title.toLowerCase().contains(query.toLowerCase()) ||
-              note.codeSnippets.any((codeSnippet){
-                return codeSnippet.name.toLowerCase().contains(query.toLowerCase()) ||
-                codeSnippet.content.toLowerCase().contains(query.toLowerCase());
-              }) || 
-              note.tags.any((tag){
-                return tag.toLowerCase().contains(query.toLowerCase());
-              });
-            }
-            return false;
+  Widget _buildStreamBuilder(BuildContext context) {
+    List<Note> results = List();
+
+    if(_notes.isEmpty){
+      return Center(
+        child: Text('No data', style: TextStyle(fontSize: 18)),
+      );
+    } else {
+      results = _notes.where((note){
+        if(note is MarkdownNote){
+          return note.title.toLowerCase().contains(query.toLowerCase()) || 
+          note.content.toLowerCase().contains(query.toLowerCase()) || 
+          note.tags.any((tag){
+              return tag.toLowerCase().contains(query.toLowerCase());
           });
-          return ListView(
-            children: results.map<ListTile>((note) => ListTile(
-              contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-              title: Text(note.title,
-                maxLines: 1,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-              subtitle: Text(
-                _getSubtitle(note),
-                maxLines: 2,
-                style: TextStyle(fontSize: 16.0, color: Colors.black)),
-              onTap: () {
-                close(context, results);
-                itemSelectedCallback(note);
-              },
-            )).toList()  
-          );
+        } else if(note is SnippetNote){
+          return note.title.toLowerCase().contains(query.toLowerCase()) ||
+          note.codeSnippets.any((codeSnippet){
+            return codeSnippet.name.toLowerCase().contains(query.toLowerCase()) ||
+            codeSnippet.content.toLowerCase().contains(query.toLowerCase());
+          }) || 
+          note.tags.any((tag){
+            return tag.toLowerCase().contains(query.toLowerCase());
+          });
         }
-      },
+        return false;
+      }).toList();
+    }
+    
+    return ListView(
+      children: results.map<ListTile>((note) => ListTile(
+        contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+        title: Text(note.title,
+          maxLines: 1,
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+        subtitle: Text(
+          _getSubtitle(note),
+          maxLines: 2,
+          style: TextStyle(fontSize: 16.0, color: Colors.black)),
+        onTap: () {
+          close(context, results);
+          _itemSelectedCallback(note);
+        },
+      )).toList()  
     );
   }
+      
+    
 
   @override
   ThemeData appBarTheme(BuildContext context) {

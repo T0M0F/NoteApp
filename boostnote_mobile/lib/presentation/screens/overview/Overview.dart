@@ -433,7 +433,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   void search() {
     //TODO: Presenter?
     NoteSearch noteSearch = NoteSearch(
-      Stream.value(UnmodifiableListView<Note>(_notes)).asBroadcastStream(), (note) {
+      _notes, (note) {
       openNote(note);
     });
 

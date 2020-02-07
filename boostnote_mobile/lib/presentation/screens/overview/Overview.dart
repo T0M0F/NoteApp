@@ -23,9 +23,8 @@ class Overview extends StatefulWidget {   //TODO imutable
   final List<Note> notes;   
   final Folder selectedFolder;
   String selectedTag;
-  int mode;
 
-  Overview({this.mode, this.notes, this.selectedFolder, this.selectedTag});   //TODO constructor
+  Overview({this.notes, this.selectedFolder, this.selectedTag});   //TODO constructor
 
   @override
   _OverviewState createState() => _OverviewState();
@@ -82,34 +81,8 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
           _presenter.loadAllNotes();
           break;
       } 
-      //_presenter.loadNotes(this.widget.mode);
   }
-
- 
-
-
-/*
-    switch (this.widget.mode) {
-      case NaviagtionDrawerAction.ALL_NOTES:
-        _pageTitle = 'All Notes';
-        break;
-      case NaviagtionDrawerAction.TRASH:
-        _pageTitle = 'Trashed Notes';
-        break;
-      case NaviagtionDrawerAction.STARRED:
-        _pageTitle = 'Starred Notes';
-        break;
-      case NaviagtionDrawerAction.NOTES_IN_FOLDER:
-        _pageTitle = this.widget.selectedFolder.name;
-        break;
-      case NaviagtionDrawerAction.NOTES_WITH_TAG:
-        _pageTitle = this.widget.selectedTag;
-        break;
-      default:
-        _pageTitle = 'All Notes';
-        break;
-    }*/
-  }
+}
 
  @override
  void update(List<Note> notes){
@@ -129,7 +102,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
  void dispose(){
    super.dispose();
 
-   switch(_navigationService.navigationMode) {      //Abweichende Logik
+   switch(_navigationService.navigationMode) {      //TODO sucky sucky
         case NavigationMode.NOTES_IN_FOLDER_MODE:
           print('NOTES_IN_FOLDER_MODE');
           _navigationService.navigationMode = NavigationMode.FOLDERS_MODE;
@@ -145,23 +118,6 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   @override
   Widget build(BuildContext context) {
 
-    print('naviagtionmmode: ' + _navigationService.navigationMode);
-    print(_notes);
-   /* if(_notes == null) {
-      _notes = List();
-      switch(_navigationService.navigationMode) {
-        case NavigationMode.NOTES_WITH_TAG_MODE:
-          _presenter.loadNotesWithTag(this.widget.selectedTag);
-          break;
-        case NavigationMode.NOTES_IN_FOLDER_MODE:
-          _presenter.loadNotesInFolder(this.widget.selectedFolder);
-          break;
-        default:
-          _presenter.loadAllNotes();
-          break;
-      } 
-    }
-*/
     if(_navigationService.isNotesInFolderMode()){
       _pageTitle = this.widget.selectedFolder.name;
     } else if(_navigationService.isNotesWithTagMode()) {
@@ -283,11 +239,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
               ),
         child: isTablet 
           ? null 
-          : NavigationDrawer(
-          /*  onNavigate: (action) => _onNavigate(action), */
-           /* mode: _pageTitle,*/
-            overviewView: this
-          ),
+          : NavigationDrawer(overviewView: this),
       );
   }
 
@@ -323,10 +275,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       children: <Widget>[
         Flexible(
           flex: 0,
-          child: NavigationDrawer(/*onNavigate: (action) => _onNavigate(action),*/ 
-                 /* mode: _pageTitle,*/
-                  overviewView: this
-                 )
+          child: NavigationDrawer(overviewView: this)
         ),
         Flexible(
           flex: 3,
@@ -362,7 +311,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       });
 
     } else {
-      openNote(selectedNotes.elementAt(0));
+      _navigationService.openNote(selectedNotes.elementAt(0), context, this, _isTablet);
     }
   }
 
@@ -424,7 +373,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
               note.tags.add(this.widget.selectedTag);
             }
             _presenter.onCreateNotePressed(note);
-            openNote(note);   //TODO: Presenter???
+            _navigationService.openNote(note, context, this, _isTablet);   //TODO: Presenter???
           },
         );
     });
@@ -434,7 +383,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     //TODO: Presenter?
     NoteSearch noteSearch = NoteSearch(
       _notes, (note) {
-      openNote(note);
+      _navigationService.openNote(note, context, this, _isTablet);
     });
 
     showSearch(
@@ -442,60 +391,5 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       delegate: noteSearch
     );
   }
-
-  void openNote(Note note){
-    _navigationService.noteIsOpen = true;
-     Widget editor = note is MarkdownNote ? Editor(_isTablet, note, this) : SnippetTestEditor(note, this);
-     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => editor)
-     );
-  }
-
-/*
-  _onNavigate(int action) {
-    switch (action) {
-      case NaviagtionDrawerAction.ALL_NOTES:
-        this.widget.mode = NaviagtionDrawerAction.ALL_NOTES;
-        _pageTitle = 'All Notes';
-        _presenter.showAllNotes();
-        break;
-      case NaviagtionDrawerAction.TRASH:
-        this.widget.mode = NaviagtionDrawerAction.TRASH;
-        _pageTitle = 'Trashed Notes';
-        _presenter.showTrashedNotes();
-        break;
-      case NaviagtionDrawerAction.STARRED:
-        this.widget.mode = NaviagtionDrawerAction.STARRED;
-        _pageTitle = 'Starred Notes';
-        _presenter.showStarredNotes();
-        break;
-      case NaviagtionDrawerAction.FOLDERS:
-        this.widget.mode = NaviagtionDrawerAction.FOLDERS;
-        _pageTitle = 'Folders';
-        /*Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => FolderOverview())
-        );*/
-        Route route = PageRouteBuilder( 
-              pageBuilder: (c, a1, a2) =>  FolderOverview(),
-              transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
-              transitionDuration: Duration(milliseconds: 0),
-            );
-        Navigator.of(context).pushReplacement(
-          route
-        );
-        //Navigator.of(context).removeRouteBelow(route);
-        break;
-      case NaviagtionDrawerAction.TAGS:
-        this.widget.mode = NaviagtionDrawerAction.TAGS;
-        _pageTitle = 'Tags';
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TagOverview())
-        );
-        break;
-    }
-  }*/
 }
 

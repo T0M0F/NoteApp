@@ -5,7 +5,6 @@ import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
@@ -96,7 +95,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
                canvasColor: Theme.of(context).primaryColorLight, 
                textTheme: TextTheme(body1: TextStyle(color: Theme.of(context).primaryColorLight))
             ),
-      child: _isTablet ? null : NavigationDrawer(/*onNavigate: (action) => _onNavigate(action),mode: _pageTitle*/),
+      child: _isTablet ? null : NavigationDrawer(),
     );
   }
 
@@ -128,7 +127,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
       children: <Widget>[
         Flexible(
           flex: 0,
-          child: NavigationDrawer(/*mode: _pageTitle*/)
+          child: NavigationDrawer()
         ),
         Flexible(
           flex: 3,
@@ -148,7 +147,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           _createNote(note);
-          _openNote(note);   
+          _navigationService.openNote(note, context, this, _isTablet);
         },
       );
     });
@@ -243,44 +242,4 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
         .createNote(note)
         .whenComplete(() => refresh());
   }
-
-  void _openNote(Note note){
-    _navigationService.noteIsOpen = true;
-     Widget editor = note is MarkdownNote 
-                                  ? Editor(_isTablet, note, this) 
-                                  : SnippetTestEditor(note, this);
-     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => editor)
-     );
-  }
-
-/*
-  _onNavigate(int action) {
-    switch (action) {
-      case NaviagtionDrawerAction.ALL_NOTES:
-        _pageTitle = 'All Notes';
-        Navigator.pushNamed(context, '/AllNotes');
-        break;
-      case NaviagtionDrawerAction.TRASH:
-        _pageTitle = 'Trashed Notes';
-         Navigator.pushNamed(context, '/TrashedNotes');
-        break;
-      case NaviagtionDrawerAction.STARRED:
-        _pageTitle = 'Starred Notes';
-         Navigator.pushNamed(context, '/StarredNotes');
-        //_presenter.showStarredNotes();
-       break;
-      case NaviagtionDrawerAction.FOLDERS:
-        Navigator.of(context).pop();
-        //_presenter.showStarredNotes();
-      break;
-      case NaviagtionDrawerAction.NOTES_WITH_TAG:
-        Navigator.of(context).pop();
-        //_presenter.showStarredNotes();
-      break;
-    }
-  }
-  */
-
 }

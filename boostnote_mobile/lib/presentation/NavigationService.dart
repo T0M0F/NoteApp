@@ -1,10 +1,14 @@
 
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
+import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/screens/folder_overview/FolderOverview.dart';
+import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
+import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
+import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
 import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
 import 'package:flutter/material.dart';
 
@@ -150,8 +154,12 @@ class NavigationService {
     }
   } 
 
-  void openNote(Note note) {
+  void openNote(Note note,  BuildContext context, Refreshable refreshable, bool isTablet) {
     noteIsOpen = true;
+    Widget editor = note is MarkdownNote
+        ? Editor(isTablet, note, refreshable)
+        : SnippetTestEditor(note, refreshable);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => editor));
   }
 
   void closeNote(BuildContext context){

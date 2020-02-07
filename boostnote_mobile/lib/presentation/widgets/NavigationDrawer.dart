@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 
 class NavigationDrawer extends StatefulWidget {
 
- // final Function(int) onNavigate; 
-  //String mode = 'All Notes';
   OverviewView overviewView;
 
-  NavigationDrawer({Key key,/* this.onNavigate, this.mode, */this.overviewView}) : super(key: key); //TODO: Constructor
+  NavigationDrawer({Key key, this.overviewView}) : super(key: key); //TODO: Constructor
 
   @override
   State<StatefulWidget> createState() => NavigationDrawerState();
@@ -55,7 +53,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             onTap: () {
               Navigator.pop(context);
               navigationService.navigateTo(context, NavigationMode.ALL_NOTES_MODE, overviewView: this.widget.overviewView);
-              //this.widget.onNavigate(NaviagtionDrawerAction.ALL_NOTES);
             },
       ),
       ListTile(
@@ -64,7 +61,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         onTap: () {
           Navigator.pop(context);
           navigationService.navigateTo(context, NavigationMode.FOLDERS_MODE);
-          //this.widget.onNavigate(NaviagtionDrawerAction.FOLDERS);
         },
       ),
       ListTile(
@@ -73,7 +69,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         onTap: () {
           Navigator.pop(context);
           navigationService.navigateTo(context, NavigationMode.TAGS_MODE);
-          //this.widget.onNavigate(NaviagtionDrawerAction.TAGS);
         },
       ),
       ListTile(
@@ -82,7 +77,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         onTap: () {
           Navigator.pop(context);
           navigationService.navigateTo(context, NavigationMode.STARRED_NOTES_MODE, overviewView: this.widget.overviewView);
-          //this.widget.onNavigate(NaviagtionDrawerAction.STARRED);
         },
       ),
       ListTile(
@@ -91,7 +85,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         onTap: () {
           Navigator.pop(context);
           navigationService.navigateTo(context, NavigationMode.TRASH_MODE, overviewView: this.widget.overviewView);
-          //this.widget.onNavigate(NaviagtionDrawerAction.TRASH);
         },
       ),
       Padding(
@@ -130,17 +123,5 @@ class NavigationDrawerState extends State<NavigationDrawer> {
 
     return widgets;
   }
-
-}
- 
-class NaviagtionDrawerAction {
-
-  static const int TRASH = 0;
-  static const int ALL_NOTES = 1;
-  static const int STARRED = 2;
-  static const int FOLDERS = 3;
-  static const int NOTES_IN_FOLDER = 4; //TODO Refactor, move in other class??
-  static const int NOTES_WITH_TAG = 5;
-  static const int TAGS = 6;
 }
 

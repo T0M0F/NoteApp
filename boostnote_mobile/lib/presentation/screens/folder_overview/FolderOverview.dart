@@ -5,7 +5,6 @@ import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
@@ -21,8 +20,7 @@ class FolderOverview extends StatefulWidget {
   _FolderOverviewState createState() => _FolderOverviewState();
 }
 
-class _FolderOverviewState extends State<FolderOverview>
-    implements Refreshable {
+class _FolderOverviewState extends State<FolderOverview> implements Refreshable {
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   NoteService _noteService;
@@ -95,10 +93,7 @@ class _FolderOverviewState extends State<FolderOverview>
             )
           ),
       child: _isTablet
-          ? null : NavigationDrawer(
-             /* onNavigate: (action) => _onNavigate(action), 
-              mode: _pageTitle */
-            ),
+          ? null : NavigationDrawer(),
     );
   }
 
@@ -152,7 +147,7 @@ class _FolderOverviewState extends State<FolderOverview>
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           _createNote(note);
-          _openNote(note);
+          _navigationService.openNote(note, context, this, _isTablet);
         },
       );
   });
@@ -264,48 +259,6 @@ class _FolderOverviewState extends State<FolderOverview>
         .createNote(note)
         .whenComplete(() => refresh());
   }
-
-  void _openNote(Note note) {
-    _navigationService.noteIsOpen = true;
-    Widget editor = note is MarkdownNote
-        ? Editor(_isTablet, note, this)
-        : SnippetTestEditor(note, this);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => editor));
-  }
-
-/*
-  _onNavigate(int action) {
-    switch (action) {
-      case NaviagtionDrawerAction.ALL_NOTES:
-        _pageTitle = 'All Notes';
-        Navigator.pushNamed(context, '/AllNotes');
-        break;
-      case NaviagtionDrawerAction.TRASH:
-        _pageTitle = 'Trashed Notes';
-        Navigator.pushNamed(context, '/TrashedNotes');
-        break;
-      case NaviagtionDrawerAction.STARRED:
-        _pageTitle = 'Starred Notes';
-        Navigator.pushNamed(context, '/StarredNotes');
-        //_presenter.showStarredNotes();
-        break;
-      case NaviagtionDrawerAction.FOLDERS:
-        Route route = PageRouteBuilder( 
-              pageBuilder: (c, a1, a2) =>  FolderOverview(),
-              transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
-              transitionDuration: Duration(milliseconds: 0),
-            );
-        Navigator.of(context).pushReplacement(
-          route
-        );
-        break;
-      case NaviagtionDrawerAction.TAGS:
-        Navigator.of(context).pop();
-        //_presenter.showStarredNotes();
-        break;
-    }
-  } 
-  */
 }
 
 

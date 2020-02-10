@@ -10,6 +10,9 @@ import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
 import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
+import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/material.dart';
 
 class NavigationService {
@@ -154,11 +157,40 @@ class NavigationService {
     }
   } 
 
+  void openNoteResponsive(List<Note> notes, Note note,  BuildContext context, Refreshable refreshable, bool isTablet) {
+    noteIsOpen = true;
+    Widget editor = note is MarkdownNote
+        ? Editor(isTablet, note, refreshable)
+        : SnippetTestEditor(note, refreshable);
+
+    Widget responisveWidget = ResponsiveWidget(widgets: <ResponsiveChild> [
+     ResponsiveChild(
+       smallFlex: 0, 
+       largeFlex: 2, 
+       child: Overview(notes: notes)
+      ),
+      ResponsiveChild(
+       smallFlex: 1, 
+       largeFlex: 3, 
+       child: editor
+      )
+    ]
+   );
+   
+   Route route = PageRouteBuilder( 
+            pageBuilder: (c, a1, a2) =>  responisveWidget,
+            transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+            transitionDuration: Duration(milliseconds: 0),
+          );
+   Navigator.of(context).push(route);
+  }
+
   void openNote(Note note,  BuildContext context, Refreshable refreshable, bool isTablet) {
     noteIsOpen = true;
     Widget editor = note is MarkdownNote
         ? Editor(isTablet, note, refreshable)
         : SnippetTestEditor(note, refreshable);
+   
     Navigator.push(context, MaterialPageRoute(builder: (context) => editor));
   }
 

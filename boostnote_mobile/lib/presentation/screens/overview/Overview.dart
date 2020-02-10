@@ -15,6 +15,8 @@ import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTest
 import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
 import 'package:boostnote_mobile/presentation/widgets/NoteSearch.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -130,7 +132,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       key: _drawerKey,
       appBar: _editMode ? _buildAppBarForEditMode() :  _buildAppBar(),
       drawer: _buildDrawer(_editMode, _isTablet),
-      body: _buildBody(),
+      body: buildBody2(),
       floatingActionButton:_editMode ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
       bottomNavigationBar: _buildBottomNavigationBarForEditMode(_editMode)
     );
@@ -243,12 +245,50 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       );
   }
 
+  Widget buildBody2() {
+    return Container(
+      child: NoteList(
+              notes: _notes, 
+              selectedNotes: _selectedNotes,
+              editMode: _editMode, 
+              expandedMode: _listTilesAreExpanded,
+              rowSelectedCallback: (selectedNotes){
+              _rowSelectedCallback(selectedNotes, _notes);
+              }
+      )
+    );
+  }
+
+  Widget _buildResponisveBody() {
+    return ResponsiveWidget(widgets: <ResponsiveChild> [
+      ResponsiveChild(
+        smallFlex: 0, 
+        largeFlex: 2, 
+        child: NoteList(
+              notes: _notes, 
+              selectedNotes: _selectedNotes,
+              editMode: _editMode, 
+              expandedMode: _listTilesAreExpanded,
+              rowSelectedCallback: (selectedNotes){
+                _rowSelectedCallback(selectedNotes, _notes);
+              }
+            )
+        ),
+        ResponsiveChild(
+        smallFlex: 1, 
+        largeFlex: 3, 
+        child: Container()
+        )
+      ]
+    );
+  }
+
   Widget _buildBody() {
     double shortestSide = MediaQuery.of(context).size.shortestSide;
     _isTablet = shortestSide >= 600;
     
     Widget body;
-    if (_isTablet) {
+    if (false) {
       body = _buildTabletLayout(_notes);
     } else {
       body = _buildMobileLayout(_notes);
@@ -293,7 +333,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     );
   }
 
-  void _rowSelectedCallback(List<Note> selectedNotes, List<Note> notes) {
+  void _rowSelectedCallback(List<Note> selectedNotes, List<Note> notes) {  
     //TODO: Presenter???
     if(_editMode) {
       _selectedNotes = selectedNotes;
@@ -311,7 +351,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       });
 
     } else {
-      _navigationService.openNote(selectedNotes.elementAt(0), context, this, _isTablet);
+      _navigationService.openNoteResponsive(_notes, selectedNotes.elementAt(0), context, this, _isTablet);
     }
   }
 

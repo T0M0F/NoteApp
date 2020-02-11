@@ -10,7 +10,6 @@ import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart
 import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
 import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
-import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +19,8 @@ class NavigationService {
   String navigationMode;
   bool noteIsOpen;
 
+  List<Note> noteListCache;
+
   NoteService _noteService;
 
   static final NavigationService navigationService = new NavigationService._internal();
@@ -28,6 +29,7 @@ class NavigationService {
     navigationMode = NavigationMode.ALL_NOTES_MODE;
     _noteService = NoteService();
     noteIsOpen = false;
+    noteListCache = List();
   }
 
   factory NavigationService(){
@@ -42,8 +44,24 @@ class NavigationService {
           this.navigationMode = NavigationMode.ALL_NOTES_MODE;
           _noteService.findNotTrashed().then((notes) {
             print(notes.length);
+            noteListCache = notes;
             Route route = PageRouteBuilder( 
-              pageBuilder: (c, a1, a2) =>  Overview(notes: notes),
+              pageBuilder: (c, a1, a2) =>  ResponsiveWidget(widgets: <ResponsiveChild> [
+                ResponsiveChild(
+                  smallFlex: 1, 
+                  largeFlex: 2, 
+                  child: Overview(notes: notes)
+                ),
+                ResponsiveChild(
+                  smallFlex: 0, 
+                  largeFlex: 3, 
+                  child: Scaffold(
+                   appBar: AppBar(),
+                   body: Container()
+                  )
+                )
+               ]
+              ),
               transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
               transitionDuration: Duration(milliseconds: 0),
             );
@@ -55,7 +73,10 @@ class NavigationService {
           if(overviewView == null) throw Exception('OverviewView must be provided to navigate to ' + overviewMode +'. Current mode is ' + this.navigationMode);
           else {
             this.navigationMode = NavigationMode.ALL_NOTES_MODE;
-            _noteService.findNotTrashed().then((notes) => overviewView.update(notes));
+            _noteService.findNotTrashed().then((notes) {
+              noteListCache = notes;
+              overviewView.update(notes);
+            });
           }
         }
         break;
@@ -64,8 +85,24 @@ class NavigationService {
         if(this.navigationMode == NavigationMode.FOLDERS_MODE || this.navigationMode == NavigationMode.TAGS_MODE) {
           this.navigationMode = NavigationMode.TRASH_MODE;
           _noteService.findTrashed().then((notes) {
+            noteListCache = notes;
             Route route = PageRouteBuilder( 
-              pageBuilder: (c, a1, a2) =>  Overview(notes: notes),
+              pageBuilder: (c, a1, a2) =>  ResponsiveWidget(widgets: <ResponsiveChild> [
+                ResponsiveChild(
+                  smallFlex: 1, 
+                  largeFlex: 2, 
+                  child: Overview(notes: notes)
+                ),
+                ResponsiveChild(
+                  smallFlex: 0, 
+                  largeFlex: 3, 
+                  child: Scaffold(
+                   appBar: AppBar(),
+                   body: Container()
+                  )
+                )
+               ]
+              ),
               transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
               transitionDuration: Duration(milliseconds: 0),
             );
@@ -77,7 +114,10 @@ class NavigationService {
           if(overviewView == null) throw Exception('OverviewView must be provided to navigate to ' + overviewMode +'. Current mode is ' + this.navigationMode);
           else {
             this.navigationMode = NavigationMode.TRASH_MODE;
-            _noteService.findTrashed().then((notes) => overviewView.update(notes));
+            _noteService.findTrashed().then((notes) {
+              noteListCache = notes;
+              overviewView.update(notes);
+            });
           }
         }
         break;
@@ -86,8 +126,24 @@ class NavigationService {
         if(this.navigationMode == NavigationMode.FOLDERS_MODE || this.navigationMode == NavigationMode.TAGS_MODE) {
           this.navigationMode = NavigationMode.STARRED_NOTES_MODE;
           _noteService.findStarred().then((notes) {
+            noteListCache = notes;
             Route route = PageRouteBuilder( 
-              pageBuilder: (c, a1, a2) =>  Overview(notes: notes),
+              pageBuilder: (c, a1, a2) =>  ResponsiveWidget(widgets: <ResponsiveChild> [
+                ResponsiveChild(
+                  smallFlex: 1, 
+                  largeFlex: 2, 
+                  child: Overview(notes: notes)
+                ),
+                ResponsiveChild(
+                  smallFlex: 0, 
+                  largeFlex: 3, 
+                  child: Scaffold(
+                   appBar: AppBar(),
+                   body: Container()
+                  )
+                )
+               ]
+              ),
               transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
               transitionDuration: Duration(milliseconds: 0),
             );
@@ -99,7 +155,10 @@ class NavigationService {
           if(overviewView == null) throw Exception('OverviewView must be provided to navigate to ' + overviewMode +'. Current mode is ' + this.navigationMode);
           else {
             this.navigationMode = NavigationMode.STARRED_NOTES_MODE;
-            _noteService.findStarred().then((notes) => overviewView.update(notes));
+            _noteService.findStarred().then((notes) {
+              noteListCache = notes;
+              overviewView.update(notes);
+            });
           }
         }
         break;
@@ -107,7 +166,22 @@ class NavigationService {
       case NavigationMode.FOLDERS_MODE:
         this.navigationMode = NavigationMode.FOLDERS_MODE;
         Route route = PageRouteBuilder( 
-          pageBuilder: (c, a1, a2) =>  FolderOverview(),
+          pageBuilder: (c, a1, a2) =>  ResponsiveWidget(widgets: <ResponsiveChild> [
+                ResponsiveChild(
+                  smallFlex: 1, 
+                  largeFlex: 2, 
+                  child: FolderOverview()
+                ),
+                ResponsiveChild(
+                  smallFlex: 0, 
+                  largeFlex: 3, 
+                  child: Scaffold(
+                   appBar: AppBar(),
+                   body: Container()
+                  )
+                )
+               ]
+              ),
           transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
           transitionDuration: Duration(milliseconds: 0),
         );
@@ -119,10 +193,26 @@ class NavigationService {
       case NavigationMode.NOTES_IN_FOLDER_MODE:
           this.navigationMode = NavigationMode.NOTES_IN_FOLDER_MODE;
           _noteService.findUntrashedNotesIn(folder).then((notes) {
+            noteListCache = notes;
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Overview(notes: notes, selectedFolder: folder)
+                    builder: (context) => ResponsiveWidget(widgets: <ResponsiveChild> [
+                      ResponsiveChild(
+                        smallFlex: 1, 
+                        largeFlex: 2, 
+                        child: Overview(notes: notes, selectedFolder: folder)
+                      ),
+                      ResponsiveChild(
+                        smallFlex: 0, 
+                        largeFlex: 3, 
+                        child: Scaffold(
+                        appBar: AppBar(),
+                        body: Container()
+                        )
+                      )
+                    ]
+                  ),
                 )
             );
          });
@@ -131,7 +221,22 @@ class NavigationService {
       case NavigationMode.TAGS_MODE:
         this.navigationMode = NavigationMode.TAGS_MODE;
         Route route = PageRouteBuilder( 
-              pageBuilder: (c, a1, a2) =>  TagOverview(),
+              pageBuilder: (c, a1, a2) => ResponsiveWidget(widgets: <ResponsiveChild> [
+                ResponsiveChild(
+                  smallFlex: 1, 
+                  largeFlex: 2, 
+                  child: TagOverview()
+                ),
+                ResponsiveChild(
+                  smallFlex: 0, 
+                  largeFlex: 3, 
+                  child: Scaffold(
+                   appBar: AppBar(),
+                   body: Container()
+                  )
+                )
+               ]
+              ),
               transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
               transitionDuration: Duration(milliseconds: 0),
             );
@@ -143,21 +248,38 @@ class NavigationService {
       case NavigationMode.NOTES_WITH_TAG_MODE:
           this.navigationMode = NavigationMode.NOTES_WITH_TAG_MODE;
           _noteService.findNotesByTag(tag).then((notes) {
+            noteListCache = notes;
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Overview(notes: notes, selectedTag: tag)
+                    builder: (context) => ResponsiveWidget(widgets: <ResponsiveChild> [
+                      ResponsiveChild(
+                        smallFlex: 1, 
+                        largeFlex: 2, 
+                        child: Overview(notes: notes, selectedTag: tag)
+                      ),
+                      ResponsiveChild(
+                        smallFlex: 0, 
+                        largeFlex: 3, 
+                        child: Scaffold(
+                        appBar: AppBar(),
+                        body: Container()
+                        )
+                      )
+                    ]
+                  ),
                 )
             );
          });
         break;
+
       default:
-        Navigator.pushNamed(context, '/AllNotes');
+        Navigator.pushNamed(context, '/');
         break;
     }
   } 
 
-  void openNoteResponsive(List<Note> notes, Note note,  BuildContext context, Refreshable refreshable, bool isTablet) {
+  void openNoteResponsive(List<Note> notes, Note note,  BuildContext context, Refreshable refreshable, bool isTablet) { //TODO isTablet remove?
     noteIsOpen = true;
     Widget editor = note is MarkdownNote
         ? Editor(isTablet, note, refreshable)
@@ -186,12 +308,7 @@ class NavigationService {
   }
 
   void openNote(Note note,  BuildContext context, Refreshable refreshable, bool isTablet) {
-    noteIsOpen = true;
-    Widget editor = note is MarkdownNote
-        ? Editor(isTablet, note, refreshable)
-        : SnippetTestEditor(note, refreshable);
-   
-    Navigator.push(context, MaterialPageRoute(builder: (context) => editor));
+    openNoteResponsive(noteListCache, note, context, refreshable, isTablet);
   }
 
   void closeNote(BuildContext context){

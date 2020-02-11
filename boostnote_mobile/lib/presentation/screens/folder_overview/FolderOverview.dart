@@ -98,20 +98,6 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
   }
 
   Widget _buildBody(BuildContext context) {
-    double shortestSide = MediaQuery.of(context).size.shortestSide;
-    _isTablet = shortestSide >= 600;
-
-    Widget body;
-    if (_isTablet) {
-      body = _buildTabletLayout();
-    } else {
-      body = _buildMobileLayout();
-    }
-
-    return body;
-  }
-
-  Widget _buildMobileLayout() {
     return Container(
         child: FolderList(
             folders: _folders,
@@ -121,21 +107,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
     );
   }
 
-  Widget _buildTabletLayout() {
-    return Row(
-      children: <Widget>[
-        Flexible(flex: 0, child: NavigationDrawer(/*mode: _pageTitle*/)),
-        Flexible(
-            flex: 3,
-            child: FolderList(
-                folders: _folders,
-                onRowTap: _onFolderTap,
-                onRowLongPress: _onFolderLongPress
-            )
-        ),
-      ],
-    );
-  }
+
 
   void _createNoteDialog() => showDialog(
     context: context,

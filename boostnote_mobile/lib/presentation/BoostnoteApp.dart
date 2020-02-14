@@ -1,5 +1,5 @@
 
-import 'package:boostnote_mobile/presentation/screens/overview/Overview.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,16 +36,16 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
                               smallFlex: 1, 
                               largeFlex: 2, 
                               child: Overview()
-                              ),
-                              ResponsiveChild(
+                            ),
+                            ResponsiveChild(
                               smallFlex: 0, 
                               largeFlex: 3, 
                               child: Scaffold(
                                 appBar: AppBar(),
                                 body: Container()
                                )
-                              )
-                            ]
+                            )
+                           ]
                           ),
         /*
         '/AllNotes': (context) => Overview(mode: NaviagtionDrawerAction.ALL_NOTES),

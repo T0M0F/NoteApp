@@ -1,40 +1,57 @@
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
-import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
-import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
+import 'package:boostnote_mobile/presentation/widgets/appbar/FolderOverviewAppbar.dart';
+import 'package:boostnote_mobile/presentation/widgets/bottom_sheets/FolderOverviewBottomSheet.dart';
+import 'package:boostnote_mobile/presentation/widgets/bottom_sheets/FolderOverviewErrorBottomSheet.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/CreateFolderDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/RenameFolderDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/folderlist/FolderList.dart';
 import 'package:flutter/material.dart';
 
+
 class FolderOverview extends StatefulWidget {
+
   @override
   _FolderOverviewState createState() => _FolderOverviewState();
+
 }
 
 class _FolderOverviewState extends State<FolderOverview> implements Refreshable {
-  GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   NoteService _noteService;
   FolderService _folderService;
   NavigationService _navigationService;
   List<Folder> _folders;
 
-  bool _isTablet = false;
+  GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
-  String _pageTitle = 'Folders';
+  @override
+  void initState() {
+    super.initState();
+
+    _folders = List();
+    _noteService = NoteService();
+    _navigationService = NavigationService();
+    _folderService = FolderService();
+
+    _folderService.findAllUntrashed().then((folders) {
+      setState(() {
+        _folders = folders;
+      });
+    });
+  }
 
   @override
   void refresh() {
     _folderService.findAllUntrashed().then((folders) {
+       //TODO update navigationListCache??
       setState(() {
         if (_folders != null) {
           _folders.replaceRange(0, _folders.length, folders);
@@ -46,56 +63,16 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
   }
 
   @override
-  void initState() {
-    super.initState();
-    _folders = List();
-    _noteService = NoteService();
-    _navigationService = NavigationService();
-    _folderService = FolderService();
-    _folderService.findAllUntrashed().then((folders) {
-      setState(() {
-        _folders = folders;
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) => Scaffold(
-        key: _drawerKey,
-        appBar: _buildAppBar(context),
-        drawer: _buildDrawer(context),
-        body: _buildBody(context),
-        floatingActionButton: AddFloatingActionButton(onPressed: () => _createNoteDialog())
-      );
-
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(_pageTitle),
-      leading: IconButton(
-        icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
-        onPressed: () => _drawerKey.currentState.openDrawer(),
-      ),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.create_new_folder),
-          onPressed: _createFolderDialog,
-        )
-      ],
-    );
-  }
-
-  Theme _buildDrawer(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-          canvasColor: Theme.of(context).primaryColorLight,
-          textTheme: TextTheme(
-              body1: TextStyle(color: Theme.of(context).primaryColorLight)
-            )
-          ),
-      child: _isTablet
-          ? null : NavigationDrawer(),
-    );
-  }
+    key: _drawerKey,
+    appBar: FolderOverviewAppbar(
+      onCreateFolderCallback: () => _createFolderDialog(),
+      onMenuClickCallback: () => _drawerKey.currentState.openDrawer()
+    ),
+    drawer: NavigationDrawer(),
+    body: _buildBody(context),
+    floatingActionButton: AddFloatingActionButton(onPressed: () => _createNoteDialog())
+  );
 
   Widget _buildBody(BuildContext context) {
     return Container(
@@ -107,8 +84,6 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
     );
   }
 
-
-
   void _createNoteDialog() => showDialog(
     context: context,
     builder: (context) {
@@ -119,12 +94,11 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           _createNote(note);
-          _navigationService.openNote(note, context, this, _isTablet);
+          _navigationService.openNote(note, context, this);
         },
       );
   });
   
-
   void _createFolderDialog() => showDialog(
     context: context,
     builder: (context) {
@@ -138,7 +112,6 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
         },
       );
   });
-  
 
   void _renameFolderDialog(Folder folder) => showDialog(
     context: context,
@@ -154,7 +127,6 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
         },
       );
   });
-  
 
   void _onFolderTap(Folder folder) {
     _navigationService.navigateTo(context, NavigationMode.NOTES_IN_FOLDER_MODE, folder: folder);
@@ -162,28 +134,18 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
 
   void _onFolderLongPress(Folder folder) {
     if (folder.id != 'Default'.hashCode && folder.id != 'Trash'.hashCode) {
-      showModalBottomSheet(     //TODO extract Widget
+      showModalBottomSheet(    
         context: context,
         builder: (BuildContext buildContext) {
-          return Container(
-            child: Wrap(
-              children: <Widget>[
-                 ListTile(
-                    leading:  Icon(Icons.delete),
-                    title:  Text('Remove Folder'),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      _removeFolder(folder);
-                    }),
-                 ListTile(
-                    leading:  Icon(Icons.folder),
-                    title:  Text('Rename Folder'),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      _renameFolderDialog(folder);
-                    }),
-              ],
-            ),
+          return FolderOverviewBottomSheet(
+            removeFolderCallback: () {
+              Navigator.of(context).pop();
+              _removeFolder(folder);
+            },
+            renameFolderCallback: () {
+              Navigator.of(context).pop();
+              _renameFolderDialog(folder);
+            },
           );
         }
       );
@@ -191,18 +153,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
       showModalBottomSheet(
         context: context,
         builder: (BuildContext buildContext) {
-          return Container(
-            child: Wrap(
-              children: <Widget>[
-                ListTile(
-                    title:  Text(
-                      'Folder can\'t be changed', 
-                      style: TextStyle(color: Colors.red)
-                    )
-                )
-              ],
-            ),
-          );
+          return FolderOverviewErrorBottomSheet();
         }
       );
     }

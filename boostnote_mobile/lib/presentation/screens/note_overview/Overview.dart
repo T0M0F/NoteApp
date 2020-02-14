@@ -6,11 +6,11 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/OverviewPresenter.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewPresenter.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
 import 'package:boostnote_mobile/presentation/widgets/NoteSearch.dart';
@@ -131,7 +131,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     return Scaffold(
       key: _drawerKey,
       appBar: _editMode ? _buildAppBarForEditMode() :  _buildAppBar(),
-      drawer: _buildDrawer(_editMode, _isTablet),
+      drawer: _editMode ? null : NavigationDrawer(),
       body: buildBody2(),
       floatingActionButton:_editMode ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
       bottomNavigationBar: _buildBottomNavigationBarForEditMode(_editMode)
@@ -230,19 +230,6 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
             _drawerKey.currentState.openDrawer();
           },
         );
-  }
-
-  Theme _buildDrawer(bool editMode, bool isTablet) {
-    return editMode ? 
-      null : Theme(
-        data: Theme.of(context).copyWith(
-                canvasColor: Theme.of(context).primaryColorLight, 
-                textTheme: TextTheme(body1: TextStyle(color: Theme.of(context).primaryColorLight))
-              ),
-        child: isTablet 
-          ? null 
-          : NavigationDrawer(overviewView: this),
-      );
   }
 
   Widget buildBody2() {
@@ -351,7 +338,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       });
 
     } else {
-      _navigationService.openNoteResponsive(_notes, selectedNotes.elementAt(0), context, this, _isTablet);
+      _navigationService.openNoteResponsive(_notes, selectedNotes.elementAt(0), context, this);
     }
   }
 
@@ -413,7 +400,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
               note.tags.add(this.widget.selectedTag);
             }
             _presenter.onCreateNotePressed(note);
-            _navigationService.openNote(note, context, this, _isTablet);   //TODO: Presenter???
+            _navigationService.openNote(note, context, this);   //TODO: Presenter???
           },
         );
     });
@@ -423,7 +410,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     //TODO: Presenter?
     NoteSearch noteSearch = NoteSearch(
       _notes, (note) {
-      _navigationService.openNote(note, context, this, _isTablet);
+      _navigationService.openNote(note, context, this);
     });
 
     showSearch(

@@ -54,35 +54,5 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
     result.removeLast();
 
     return result;
-
-    /*
-    Iterator iterator = this.widget.widgets.iterator;
-
-    iterator.moveNext();
-    ResponsiveChild current = iterator.current;
-
-    while(current != null) {
-
-      iterator.moveNext();
-      ResponsiveChild next = iterator.current;
-
-      int flex = _isTablet? current.largeFlex : current.smallFlex;
-
-      if(flex > 0) {
-        result.add(
-          Flexible(
-            flex: flex,
-            child: current.child
-          )
-        );
-      
-        if(this.widget.showDivider && next != null){
-          result.add(Container(width: 0.5, color: Colors.grey));
-        }
-      } 
-
-      current = next;
-    }*/
-   
   }
 }

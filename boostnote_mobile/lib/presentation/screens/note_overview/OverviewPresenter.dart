@@ -3,7 +3,7 @@ import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 
 class OverviewPresenter {
 

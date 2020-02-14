@@ -1,21 +1,20 @@
-
-import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
-import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
+import 'package:boostnote_mobile/presentation/widgets/appbar/TagOverviewAppbar.dart';
+import 'package:boostnote_mobile/presentation/widgets/bottom_sheets/TagOverviewBottomSheet.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/CreateTagDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/RenameTagDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/taglist/TagList.dart';
 import 'package:flutter/material.dart';
 
-class TagOverview extends StatefulWidget {  //TODO combine with folderoverview?
+
+class TagOverview extends StatefulWidget {  
 
   @override
   _TagOverviewState createState() => _TagOverviewState();
@@ -24,20 +23,33 @@ class TagOverview extends StatefulWidget {  //TODO combine with folderoverview?
  
 class _TagOverviewState extends State<TagOverview> implements Refreshable{
 
-  GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
-
   NavigationService _navigationService;
   NoteService _noteService;
   TagService _tagService;
   List<String> _tags;
 
-  bool _isTablet = false;
+  GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
-  String _pageTitle = 'Tags';
+  @override
+  void initState(){
+    super.initState();
+
+    _tags = List();
+    _navigationService = NavigationService();
+    _noteService = NoteService();
+    _tagService = TagService();
+
+    _tagService.findAll().then((tags) {
+      setState((){ 
+        _tags = tags;
+      });
+    });
+  }
 
   @override
   void refresh() {
     _tagService.findAll().then((tags) {
+      //TODO update navigationListCahe??
       setState((){ 
         if(_tags != null){
             _tags.replaceRange(0, _tags.length, tags);
@@ -47,57 +59,18 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
       });
     });
   }
-  
-  @override
-  void initState(){
-    super.initState();
-    _tags = List();
-    _navigationService = NavigationService();
-    _noteService = NoteService();
-    _tagService = TagService();
-    _tagService.findAll().then((tags) {
-      setState((){ 
-        _tags = tags;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
     key: _drawerKey,
-    appBar: _buildAppBar(context),
-    drawer: _buildDrawer(context),
+    appBar: TagOverviewAppbar(
+      onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
+      onCreateTagCallback: _createTagDialog,
+    ),
+    drawer: NavigationDrawer(),
     body: _buildBody(context),
     floatingActionButton: AddFloatingActionButton(onPressed: () => _createNoteDialog())
   );
-
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(_pageTitle),
-      leading: IconButton(
-        icon: Icon(Icons.menu, color: Theme.of(context).accentColor), 
-        onPressed: () {
-          _drawerKey.currentState.openDrawer();
-        },
-      ),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.label_outline), 
-          onPressed: _createTagDialog,
-        )
-      ],
-    );
-  }
-
-  Theme _buildDrawer(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-               canvasColor: Theme.of(context).primaryColorLight, 
-               textTheme: TextTheme(body1: TextStyle(color: Theme.of(context).primaryColorLight))
-            ),
-      child: _isTablet ? null : NavigationDrawer(),
-    );
-  }
 
   Widget _buildBody(BuildContext context) {
     return Container(
@@ -119,7 +92,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           _createNote(note);
-          _navigationService.openNote(note, context, this, _isTablet);
+          _navigationService.openNote(note, context, this);
         },
       );
     });
@@ -161,30 +134,18 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   }
 
   void _onRowLongPress(String tag) {
-    showModalBottomSheet(     //TODO extract widget
+    showModalBottomSheet(     
       context: context,
       builder: (BuildContext buildContext){
-        return Container(
-          child: new Wrap(
-          children: <Widget>[
-            new ListTile(
-              leading: new Icon(Icons.delete),
-              title: new Text('Remove Tag'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _removeTag(tag);
-              }      
-            ),
-            new ListTile(
-              leading: new Icon(Icons.folder),
-              title: new Text('Rename Tag'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _renameTagDialog(tag);
-              }      
-            ),
-          ],
-          ),
+        return TagOverviewBottomSheet(
+          removeTagCallback: () {
+            Navigator.of(context).pop();
+            _removeTag(tag);
+          } ,
+          renameTagCallback: () {
+            Navigator.of(context).pop();
+            _renameTagDialog(tag);
+          } 
         );
       }
     );
@@ -195,7 +156,6 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
         .createTagIfNotExisting(tag)
         .whenComplete(() => refresh());
   }
-
 
   void _renameTag(String oldTag, String newTag) {
     _tagService

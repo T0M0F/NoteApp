@@ -1,7 +1,7 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/AddSnippetDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNoteDialog.dart';

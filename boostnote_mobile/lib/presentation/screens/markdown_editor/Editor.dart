@@ -2,10 +2,9 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/Refreshable.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownPreview.dart';
@@ -17,10 +16,9 @@ import 'package:url_launcher/url_launcher.dart';
 class Editor extends StatefulWidget {
 
   final Refreshable _parentWidget;
-  final bool _isTablet;
   final MarkdownNote _note;
 
-  Editor(this._isTablet, this._note, this._parentWidget);
+  Editor(this._note, this._parentWidget);
 
   @override
   State<StatefulWidget> createState() => EditorState();
@@ -61,17 +59,9 @@ class EditorState extends State<Editor> {
 
   @override
   Widget build(BuildContext context) {
-
-    Widget body;
-    if (this.widget._isTablet) {
-      body = _buildTabletLayout();
-    } else {
-      body = _buildMobileLayout();
-    }
-
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: body,
+      body: _previewMode ? _buildMarkdownPreview() : _buildMarkdownEditor2(),
     );
   }
 
@@ -164,10 +154,6 @@ class EditorState extends State<Editor> {
         this.widget._note.isStarred = false;
         noteService.save(this.widget._note);
       } 
-  }
-
-  Widget _buildMobileLayout() {
-    return _previewMode ? _buildMarkdownPreview() : _buildMarkdownEditor2();
   }
 
   Widget _buildMarkdownPreview(){
@@ -386,22 +372,6 @@ return ListView(
                     )
             )
   */
-
-  Widget _buildTabletLayout() {
-    return Column(
-      children: <Widget>[
-        Flexible(
-          flex: 1,
-          child: MarkdownEditor(this.widget._note.content, _onTextChangedCallback)
-        ),
-        Divider(),
-        Flexible(
-          flex: 1,
-          child: MarkdownPreview(this.widget._note.content, _launchURL)
-        ),
-      ],
-    );
-  }
 
   void _onTextChangedCallback(String text){
        this.widget._note.content = text;

@@ -1,6 +1,6 @@
  
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/screens/overview/OverviewView.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -21,12 +21,20 @@ class NavigationDrawerState extends State<NavigationDrawer> {
    @override
   Widget build(BuildContext context) {
 
-    return Drawer(
-      elevation: 20.0,
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: buildWidgetList(context, List()) //TODO: use repo
-      ),
+    return Theme(
+      data: Theme.of(context).copyWith(
+          canvasColor: Theme.of(context).primaryColorLight,
+          textTheme: TextTheme(
+              body1: TextStyle(color: Theme.of(context).primaryColorLight)
+            )
+          ),
+      child: Drawer(
+        elevation: 20.0,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: buildWidgetList(context, List()) //TODO: use repo
+        ),
+      )
     );
   }
 

@@ -35,8 +35,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
         alignment: Alignment.center,
         child: Text('Make a Note', style: TextStyle(color: Colors.black))
       ),
-      content: Container(
-        height: 170,
+      content: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             TextField(
@@ -71,8 +70,6 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
       actions: <Widget>[
         MaterialButton(
           minWidth:100,
-          elevation: 5.0,
-          color: Color(0xFFF6F5F5),
           child: Text('Cancel', style: TextStyle(color: Colors.black),),
           onPressed: (){
             Navigator.of(context).pop();

@@ -1,4 +1,5 @@
 
+import 'package:boostnote_mobile/presentation/screens/Splashscreen.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
@@ -10,6 +11,7 @@ class BoostnoteApp extends StatefulWidget {
 
   @override
   _BoostnoteAppState createState() => _BoostnoteAppState();
+
 }
 
 class _BoostnoteAppState extends State<BoostnoteApp> {
@@ -31,29 +33,27 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
       initialRoute: '/',
       routes: {
         '/test': (context) => Overview(),
-        '/': (context) => ResponsiveWidget(widgets: <ResponsiveChild> [
-                            ResponsiveChild(
-                              smallFlex: 1, 
-                              largeFlex: 2, 
-                              child: Overview()
-                            ),
-                            ResponsiveChild(
-                              smallFlex: 0, 
-                              largeFlex: 3, 
-                              child: Scaffold(
-                                appBar: AppBar(),
-                                body: Container()
-                               )
-                            )
-                           ]
-                          ),
-        /*
-        '/AllNotes': (context) => Overview(mode: NaviagtionDrawerAction.ALL_NOTES),
-        '/StarredNotes': (context) => Overview(mode: NaviagtionDrawerAction.STARRED),
-        '/TrashedNotes': (context) => Overview(mode: NaviagtionDrawerAction.TRASH),
-        '/Folders': (context) => FolderOverview(),
-        '/Tags': (context) => TagOverview(),*/
+        '/': (context) => _buildBody(),
       },
+    );
+  }
+
+  Widget _buildBody() {
+    return ResponsiveWidget(widgets: <ResponsiveChild> [
+      ResponsiveChild(
+        smallFlex: 1, 
+        largeFlex: 2, 
+        child: Overview()
+      ),
+      ResponsiveChild(
+        smallFlex: 0, 
+        largeFlex: 3, 
+        child: Scaffold(
+          appBar: AppBar(),
+          body: Container()
+          )
+      )
+     ]
     );
   }
 }

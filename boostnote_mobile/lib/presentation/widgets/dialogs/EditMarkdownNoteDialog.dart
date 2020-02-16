@@ -22,8 +22,7 @@ class EditMarkdownNoteDialog extends StatelessWidget {    //TODO: Stateful Widge
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-          return Container(
-            height: 75,
+           return SingleChildScrollView(
             child: Column(
               children: <Widget>[
                 TextField(
@@ -38,8 +37,6 @@ class EditMarkdownNoteDialog extends StatelessWidget {    //TODO: Stateful Widge
       actions: <Widget>[
       MaterialButton(
           minWidth:100,
-          elevation: 5.0,
-          color: Color(0xFFF6F5F5),
           child: Text('Cancel', style: TextStyle(color: Colors.black),),
           onPressed: (){
             cancelCallback();

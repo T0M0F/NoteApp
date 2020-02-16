@@ -43,8 +43,6 @@ class _CreateTagDialogState extends State<RenameTagDialog> {
       actions: <Widget>[
        MaterialButton(
           minWidth:100,
-          elevation: 5.0,
-          color: Color(0xFFF6F5F5),
           child: Text('Cancel', style: TextStyle(color: Colors.black),),
           onPressed: (){
             this.widget.cancelCallback();

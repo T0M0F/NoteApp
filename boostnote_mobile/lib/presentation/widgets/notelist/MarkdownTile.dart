@@ -72,11 +72,14 @@ class MarkdownTile extends StatelessWidget{
 
   Widget buildBodyRow() => Padding(
     padding:  expanded ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
-    child: Text(
-      note.content, 
-      maxLines: 2,
-      style: TextStyle(fontSize: 16.0)
-    ),
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        note.content.trim().isEmpty ? 'No Content' : note.content, 
+        maxLines: 2,
+        style: note.content.trim().isEmpty ? TextStyle(fontSize: 16.0, fontStyle: FontStyle.italic) : TextStyle(fontSize: 16.0)
+      ),
+    )
   );
 
   Widget buildFooterRow() {

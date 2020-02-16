@@ -45,9 +45,12 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
         alignment: Alignment.center,
         child: Text('Select Tags', style: TextStyle(color: Colors.black))
       ),
-      content: Container(
-        height: 200,
+      content: ConstrainedBox(
+        constraints: new BoxConstraints(
+          minHeight: 50,
+        ),
         child: Column(
+          mainAxisSize: MainAxisSize.min ,
           children: <Widget>[
             Row(
               children: <Widget>[
@@ -72,8 +75,9 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
                 )
              ],
             ),
-            Expanded(
+            Container(
               child:  ListView.builder(
+                shrinkWrap: true,
                 itemCount: _allTags.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
@@ -102,12 +106,10 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
             )
           ],
         ),
-      ),
+       ),
       actions: <Widget>[
         MaterialButton(
           minWidth:100,
-          elevation: 5.0,
-          color: Color(0xFFF6F5F5),
           child: Text('Cancel', style: TextStyle(color: Colors.black),),
           onPressed: (){
             Navigator.of(context).pop();

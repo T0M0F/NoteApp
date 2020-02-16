@@ -1,9 +1,8 @@
 
-import 'dart:collection';
-
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/widgets/search/SearchListTile.dart';
 import 'package:flutter/material.dart';
 
 class NoteSearch extends SearchDelegate {
@@ -36,14 +35,11 @@ class NoteSearch extends SearchDelegate {
   }
 
   @override
-  Widget buildResults(BuildContext context) {
-    return _buildStreamBuilder(context);
-  }
+  Widget buildResults(BuildContext context) => _buildStreamBuilder(context);
 
   @override
-  Widget buildSuggestions(BuildContext context) {
-    return _buildStreamBuilder(context);
-  }
+  Widget buildSuggestions(BuildContext context) => _buildStreamBuilder(context);
+  
 
   Widget _buildStreamBuilder(BuildContext context) {
     List<Note> results = List();
@@ -75,24 +71,14 @@ class NoteSearch extends SearchDelegate {
     }
     
     return ListView(
-      children: results.map<ListTile>((note) => ListTile(
-        contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-        title: Text(note.title,
-          maxLines: 1,
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-        subtitle: Text(
-          _getSubtitle(note),
-          maxLines: 2,
-          style: TextStyle(fontSize: 16.0, color: Colors.black)),
-        onTap: () {
+      children: results.map<SearchListTile>((note) => 
+        SearchListTile(note: note, onTapCallback: (Note note) {
           close(context, results);
           _itemSelectedCallback(note);
-        },
-      )).toList()  
+        })
+      ).toList()  
     );
   }
-      
-    
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -104,15 +90,6 @@ class NoteSearch extends SearchDelegate {
             title:   TextStyle(color: Colors.white),
         ),
     );
-  }
-
-  String _getSubtitle(Note note) {
-    if(note is MarkdownNote){
-      return note.content;
-    } else if (note is SnippetNote){
-      return note.description;
-    }
-    return "";
   }
 
 }

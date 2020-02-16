@@ -1,11 +1,10 @@
 
-import 'package:boostnote_mobile/presentation/widgets/SyntaxHighlighter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' ;
 import 'package:markdown/markdown.dart';
 
-import '../synatx_highlighter.dart';
+/*import '../synatx_highlighter.dart';*/
 
 class MarkdownPreview extends StatefulWidget {
 

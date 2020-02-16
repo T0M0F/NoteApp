@@ -72,12 +72,26 @@ class SnippetTile extends StatelessWidget{
 
   Widget buildBodyRow() => Padding(
     padding: expanded ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
-    child: Text(
-      note.description, 
-      maxLines: 2,
-      style: TextStyle(fontSize: 16.0)
-    ),
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        getPreviewText(note), 
+        maxLines: 2,
+        style: getPreviewText(note) == 'No Content' ? TextStyle(fontSize: 16.0, fontStyle: FontStyle.italic) : TextStyle(fontSize: 16.0)
+      ),
+    )
   );
+
+  String getPreviewText(SnippetNote note) {
+    if(note.description.trim().isEmpty) {
+       if(note.codeSnippets.isNotEmpty) {
+         return note.codeSnippets.first.content;
+       } 
+       return 'No Content';
+    } else {
+      return note.description;
+    }
+  }
 
   Widget buildFooterRow() {
    List<Widget> widgets;

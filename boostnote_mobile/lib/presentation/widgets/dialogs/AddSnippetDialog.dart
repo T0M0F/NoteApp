@@ -49,8 +49,6 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
     return <Widget>[
       MaterialButton(
         minWidth:100,
-        elevation: 5.0,
-        color: Color(0xFFF6F5F5),
         child: Text('Cancel', style: TextStyle(color: Colors.black),),
         onPressed: (){
           Navigator.of(context).pop();

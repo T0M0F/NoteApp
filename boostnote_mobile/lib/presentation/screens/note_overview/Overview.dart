@@ -1,22 +1,17 @@
-
-import 'dart:collection';
-
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
-import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewPresenter.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
-import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
+import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewAppbar.dart';
+import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewEditModeAppbar.dart';
+import 'package:boostnote_mobile/presentation/widgets/notelist/EditModeBottomNavigationBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
-import 'package:boostnote_mobile/presentation/widgets/NoteSearch.dart';
+import 'package:boostnote_mobile/presentation/widgets/search/NoteSearch.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
-import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -35,15 +30,16 @@ class Overview extends StatefulWidget {   //TODO imutable
 
 class _OverviewState extends State<Overview> implements OverviewView, Refreshable{
 
-  GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   OverviewPresenter _presenter;
+  NavigationService _navigationService;
+
+  GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   List<Note> _notes;
   List<Note> _selectedNotes;
   NoteList _noteListWidget;
 
-  bool _isTablet = false;
-  bool _editMode = false;
+  bool _isEditMode = false;
   bool _listTilesAreExpanded = false;
 
   String _titleEditMode = 'Select Notes';
@@ -52,8 +48,6 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   static const String EXPAND_ACTION = 'Expand';
   static const String COLLPASE_ACTION = 'Collapse';
 
-  NavigationService _navigationService;
-
   String _pageTitle;
   
   @override
@@ -61,15 +55,13 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     super.initState();
 
     _presenter = OverviewPresenter(this);
-    _selectedNotes = List();
-
     _navigationService = NavigationService();
 
+    _selectedNotes = List();
     _notes = this.widget.notes;
 
     //if no note list is provided, for example on StartUp when calling Overview() from BoostnoteApp or 
     //when navigating back from open note
-    print('init');
     if(_notes == null) {
       _notes = List();
       switch(_navigationService.navigationMode) {
@@ -115,7 +107,6 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
           break;
       }
  }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -130,78 +121,45 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
 
     return Scaffold(
       key: _drawerKey,
-      appBar: _editMode ? _buildAppBarForEditMode() :  _buildAppBar(),
-      drawer: _editMode ? null : NavigationDrawer(),
-      body: buildBody2(),
-      floatingActionButton:_editMode ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
-      bottomNavigationBar: _buildBottomNavigationBarForEditMode(_editMode)
+      appBar: _buildAppBar(),
+      drawer: _isEditMode ? null : NavigationDrawer(),
+      body: _buildBody(),
+      floatingActionButton:_isEditMode ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
+      bottomNavigationBar: _buildBottomNavigationBar(_isEditMode)
     );
   }
 
-  AppBar _buildAppBarForEditMode() {    //TODO extract Widget
-    return AppBar(
-      title: Text(_titleEditMode),
-      leading: _editMode ? null : IconButton(
-        icon: Icon(Icons.menu, color: Theme.of(context).accentColor), 
-        onPressed: () {
+  PreferredSizeWidget _buildAppBar() {   
+    if(_isEditMode) {                     //TODO extract Widget
+      return OverviewEditModeAppbar(
+        titleEditMode: _titleEditMode,
+        isEditMode: _isEditMode,
+        onMenuClickCallback: () {
           Scaffold.of(context).openDrawer();
         },
-      ),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.cancel),
-          onPressed: () {
-            setState(() {
-              _editMode = false;
-            });
-          },
-        )
-      ],
-    );
-  }
-
-  AppBar _buildAppBar() {   //TODO extract Widget
-    return AppBar(
-      title: Text(_pageTitle),
-      leading: _buildLeadingIcon(),
-      actions: _buildActions(),
-    );
-  }
-
- List<Widget> _buildActions() {
-    return <Widget>[
-      IconButton(
-        icon: Icon(Icons.search),
-        onPressed: () => search()
-      ),
-      PopupMenuButton<String>(
-        icon: Icon(Icons.more_vert),
-        onSelected: _selectedAction,
-        itemBuilder: (BuildContext context) {
-          return <PopupMenuEntry<String>>[
-            PopupMenuItem(
-              value: EDIT_ACTION,
-              child: ListTile(
-                title: Text(EDIT_ACTION)
-              )
-            ),
-            PopupMenuItem(
-              value: _listTilesAreExpanded ? COLLPASE_ACTION: EXPAND_ACTION,
-              child: ListTile(
-                title: _listTilesAreExpanded ? Text(COLLPASE_ACTION) : Text(EXPAND_ACTION)
-              )
-            ),
-          ];
-        }
-      )
-    ];
+        onCancelClickCallback: () {
+          setState(() {
+            _isEditMode = false;
+          });
+        });
+    } else {
+      return OverviewAppbar(
+        pageTitle: _pageTitle,
+        actions: {'EDIT_ACTION':EDIT_ACTION, 'EXPAND_ACTION':EXPAND_ACTION, 'COLLPASE_ACTION':COLLPASE_ACTION},
+        listTilesAreExpanded: _listTilesAreExpanded,
+        onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
+        onNaviagteBackCallback: () => _navigationService.navigateBack(context),
+        onSearchClickCallback: () => search(),
+        onSelectedActionCallback: (String action) => _selectedAction(action)
+      );
+    }
   }
 
   void _selectedAction(String action){
     switch (action) {
       case EDIT_ACTION:
         setState(() {
-          _editMode = true;
+          _isEditMode = true;
         });
         break;
       case COLLPASE_ACTION:
@@ -217,27 +175,12 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     }
   }
 
-  IconButton _buildLeadingIcon() {
-    return (_navigationService.isNotesWithTagMode() || _navigationService.isNotesInFolderMode())
-        ? IconButton(
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor), 
-          onPressed: () {
-            _navigationService.navigateBack(context);
-          },
-        ) : IconButton(
-          icon: Icon(Icons.menu, color: Theme.of(context).accentColor), 
-          onPressed: () {
-            _drawerKey.currentState.openDrawer();
-          },
-        );
-  }
-
-  Widget buildBody2() {
+  Widget _buildBody() {
     return Container(
       child: NoteList(
               notes: _notes, 
               selectedNotes: _selectedNotes,
-              editMode: _editMode, 
+              editMode: _isEditMode, 
               expandedMode: _listTilesAreExpanded,
               rowSelectedCallback: (selectedNotes){
               _rowSelectedCallback(selectedNotes, _notes);
@@ -246,83 +189,9 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     );
   }
 
-  Widget _buildResponisveBody() {
-    return ResponsiveWidget(widgets: <ResponsiveChild> [
-      ResponsiveChild(
-        smallFlex: 0, 
-        largeFlex: 2, 
-        child: NoteList(
-              notes: _notes, 
-              selectedNotes: _selectedNotes,
-              editMode: _editMode, 
-              expandedMode: _listTilesAreExpanded,
-              rowSelectedCallback: (selectedNotes){
-                _rowSelectedCallback(selectedNotes, _notes);
-              }
-            )
-        ),
-        ResponsiveChild(
-        smallFlex: 1, 
-        largeFlex: 3, 
-        child: Container()
-        )
-      ]
-    );
-  }
-
-  Widget _buildBody() {
-    double shortestSide = MediaQuery.of(context).size.shortestSide;
-    _isTablet = shortestSide >= 600;
-    
-    Widget body;
-    if (false) {
-      body = _buildTabletLayout(_notes);
-    } else {
-      body = _buildMobileLayout(_notes);
-    }
-    return body;
-  }
-
-  Widget _buildMobileLayout(List<Note> notes){
-    return Container(
-      child: NoteList(
-              notes: notes, 
-              selectedNotes: _selectedNotes,
-              editMode: _editMode, 
-              expandedMode: _listTilesAreExpanded,
-              rowSelectedCallback: (selectedNotes){
-                _rowSelectedCallback(selectedNotes, notes);
-              }
-      )
-    );
-  }
-
-  Widget _buildTabletLayout(List<Note> notes){
-    return Row(
-      children: <Widget>[
-        Flexible(
-          flex: 0,
-          child: NavigationDrawer(overviewView: this)
-        ),
-        Flexible(
-          flex: 3,
-          child: NoteList(
-                  notes: notes, 
-                  selectedNotes: _selectedNotes,
-                  editMode: _editMode, 
-                  expandedMode: _listTilesAreExpanded,
-                  rowSelectedCallback: (selectedNotes){
-                    _rowSelectedCallback(selectedNotes, notes);
-                  }
-          )
-        ),
-      ],
-    );
-  }
-
   void _rowSelectedCallback(List<Note> selectedNotes, List<Note> notes) {  
     //TODO: Presenter???
-    if(_editMode) {
+    if(_isEditMode) {
       _selectedNotes = selectedNotes;
     
       setState(() {
@@ -342,47 +211,24 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     }
   }
 
-  Container _buildBottomNavigationBarForEditMode(bool editMode) {  //TODO extract Widget
-    return editMode ? Container(
-      height: 50,
-      padding: EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          MaterialButton(
-            child: Column(
-              children: <Widget>[
-                Icon(Icons.check),
-                Text('Select All')
-              ],
-            ),
-            onPressed: () {
-              setState(() {
+  Widget _buildBottomNavigationBar(bool editMode) {  //TODO extract Widget
+    return !editMode ? null : EditModeBottomNavigationBar(
+      deleteCallback: () {
+        //TODO: change
+        _presenter.delete(_selectedNotes);
+        setState(() {
+          _selectedNotes.clear();
+          _noteListWidget.clearSelectedElements();
+          _isEditMode = false;
+        });
+      },
+      selecetAllNotesCallback:() {
+        setState(() {
                 _selectedNotes.clear();
                 _selectedNotes.addAll(_notes);
               });
-            }
-          ),
-          MaterialButton(
-            child: Column(
-              children: <Widget>[
-                Icon(Icons.delete),
-                Text('Delete')
-              ],
-            ),
-            onPressed: () {
-              //TODO: change
-              _presenter.delete(_selectedNotes);
-              setState(() {
-                _selectedNotes.clear();
-                _noteListWidget.clearSelectedElements();
-                _editMode = false;
-              });
-            }
-          ),
-        ],
-      ),
-    ) : null;
+      },
+    );
   }
 
   Future<String> _createNoteDialog() {

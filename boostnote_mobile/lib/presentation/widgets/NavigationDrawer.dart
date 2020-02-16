@@ -6,19 +6,20 @@ import 'package:flutter/material.dart';
 
 class NavigationDrawer extends StatefulWidget {
 
-  OverviewView overviewView;
+  final OverviewView overviewView;
 
   NavigationDrawer({Key key, this.overviewView}) : super(key: key); //TODO: Constructor
 
   @override
   State<StatefulWidget> createState() => NavigationDrawerState();
+
 }
 
 class NavigationDrawerState extends State<NavigationDrawer> {
 
   NavigationService navigationService = NavigationService();
 
-   @override
+  @override
   Widget build(BuildContext context) {
 
     return Theme(
@@ -40,7 +41,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
 
   List<Widget> buildWidgetList(BuildContext context, List<String> folders) {
 
-      List<Widget> widgets = [
+    List<Widget> widgets = [
       Container(
           height: 90,
           child: DrawerHeader(
@@ -64,7 +65,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             },
       ),
       ListTile(
-        leading: Icon(Icons.label, color: navigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        leading: Icon(Icons.folder, color: navigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
         title: Text('Folders', style: TextStyle(color: navigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);

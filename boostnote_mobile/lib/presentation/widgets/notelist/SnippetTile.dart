@@ -2,23 +2,29 @@
 
 import 'package:boostnote_mobile/presentation/converter/DateTimeConverter.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/converter/TagListConverter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 //TODO: Merge with MarkdownTile
 class SnippetTile extends StatelessWidget{
   
-  final DateTimeConverter _dateTimeConverter = new DateTimeConverter();  
+  final DateTimeConverter _dateTimeConverter = DateTimeConverter(); 
+  final TagListConverter tagListConverter = TagListConverter();
+   
   final SnippetNote note;
   final bool expanded;
+
+  bool expandedAndNotEmpty;
 
   SnippetTile({this.note, this.expanded});
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> widgets;
-    if (expanded) {
+
+    expandedAndNotEmpty = expanded && (note.isStarred || note.tags.isNotEmpty);
+    if (expandedAndNotEmpty) {
       widgets = <Widget>[
         buildHeaderRow(),
         buildBodyRow(),
@@ -71,7 +77,7 @@ class SnippetTile extends StatelessWidget{
   );
 
   Widget buildBodyRow() => Padding(
-    padding: expanded ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
+    padding: expandedAndNotEmpty ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
     child: Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -96,14 +102,22 @@ class SnippetTile extends StatelessWidget{
   Widget buildFooterRow() {
    List<Widget> widgets;
     if(note.isStarred){
-      widgets = [ Text(note.tags.toString(), 
-                  maxLines: 1,
-                  style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey)),
-                  Icon(Icons.star, color: Colors.yellow) ];
+      widgets = [ Text(
+                    tagListConverter.convert(note.tags), 
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Icon(Icons.star, color: Colors.yellow) 
+                ];
     } else {
-      widgets = [ Text(note.tags.toString(), 
-                      maxLines: 1,
-                      style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey))];
+      widgets = [ Text(
+                    tagListConverter.convert(note.tags), 
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
+                  )
+                ];
     }
 
     return Padding(

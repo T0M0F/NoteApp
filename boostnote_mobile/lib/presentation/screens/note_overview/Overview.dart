@@ -8,6 +8,7 @@ import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewPres
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewEditModeAppbar.dart';
+import 'package:boostnote_mobile/presentation/widgets/notelist/DeleteAllBottomNavigationBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/EditModeBottomNavigationBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
 import 'package:boostnote_mobile/presentation/widgets/search/NoteSearch.dart';
@@ -124,7 +125,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       appBar: _buildAppBar(),
       drawer: _isEditMode ? null : NavigationDrawer(),
       body: _buildBody(),
-      floatingActionButton:_isEditMode ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
+      floatingActionButton:_isEditMode || _navigationService.isTrashMode() ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
       bottomNavigationBar: _buildBottomNavigationBar(_isEditMode)
     );
   }
@@ -212,23 +213,33 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   }
 
   Widget _buildBottomNavigationBar(bool editMode) {  //TODO extract Widget
-    return !editMode ? null : EditModeBottomNavigationBar(
-      deleteCallback: () {
-        //TODO: change
-        _presenter.delete(_selectedNotes);
-        setState(() {
-          _selectedNotes.clear();
-          _noteListWidget.clearSelectedElements();
-          _isEditMode = false;
-        });
-      },
-      selecetAllNotesCallback:() {
-        setState(() {
-                _selectedNotes.clear();
-                _selectedNotes.addAll(_notes);
-              });
-      },
-    );
+    if(editMode) {
+      EditModeBottomNavigationBar(
+        deleteCallback: () {
+          //TODO: change
+          _presenter.trash(_selectedNotes);
+          setState(() {
+            _selectedNotes.clear();
+            _noteListWidget.clearSelectedElements();
+            _isEditMode = false;
+          });
+        },
+        selecetAllNotesCallback:() {
+          setState(() {
+                  _selectedNotes.clear();
+                  _selectedNotes.addAll(_notes);
+                });
+        },
+      );
+    } else if(_navigationService.isTrashMode()) {
+       return DeleteAllBottomNavigationBar(
+         deleteAllCallback: () {
+           _presenter.deleteForever(_notes);
+         }
+       );
+    }
+
+    return null;
   }
 
   Future<String> _createNoteDialog() {

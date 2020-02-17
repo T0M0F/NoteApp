@@ -57,7 +57,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
       ),
      ListTile(
-            leading: Icon(Icons.note, color: navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+            leading: Icon(Icons.description, color: navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
             title: Text('All Notes', style: TextStyle(color: navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
             onTap: () {
               Navigator.pop(context);

@@ -6,6 +6,7 @@ import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownPreview.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditMarkdownNoteDialog.dart';
@@ -58,20 +59,20 @@ class EditorState extends State<Editor> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(context),
-      body: _previewMode ? _buildMarkdownPreview() : _buildMarkdownEditor2(),
-    );
-  }
-
-  @override
   void dispose() {
     super.dispose();
     print('DISPOSE');
     NoteService().save(this.widget._note);
     _navigatiorService.noteIsOpen = false; //ABweichende Logik
     //this.widget._parentWidget.refresh();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _buildAppBar(context),
+      body: _previewMode ? _buildMarkdownPreview() : _buildMarkdownEditor2(),
+    );
   }
 
   AppBar _buildAppBar(BuildContext context) {
@@ -201,36 +202,66 @@ class EditorState extends State<Editor> {
   Widget _buildMarkdownEditor2(){   //use minLines for Textfield to make it work
     return ListView(
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+       Padding(
+         padding: EdgeInsets.symmetric(vertical: 10),
+         child: Column(
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child:  DropdownButton<FolderEntity> (    //TODO FolderEntity
-                value: _dropdownValueFolder, 
-                underline: Container(), 
-                icon: Icon(Icons.folder_open),
-                items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
-                  value: folder,
-                  child: Text(folder.name)
-                )).toList(),
-                onChanged: (folder) {
-                    setState(() {
-                      _dropdownValueFolder = folder;
-                    });
-                    this.widget._note.folder = folder;
-                    _noteService.save(this.widget._note);
-                  }
-              )
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Text('Your Title', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black54)),
+              ),
             ),
             Row(
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.label_outline), onPressed: () => _showTagDialog(context, this.widget._note.tags)),
-              IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child:  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(right: 5), 
+                        child: Icon(Icons.folder_open)
+                      ),
+                      DropdownButton<FolderEntity> (    //TODO FolderEntity
+                        value: _dropdownValueFolder, 
+                        underline: Container(), 
+                        iconEnabledColor: Colors.transparent,
+                        style: TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.bold),
+                        items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
+                          value: folder,
+                          child: Text(folder.name)
+                        )).toList(),
+                        onChanged: (folder) {
+                            setState(() {
+                              _dropdownValueFolder = folder;
+                            });
+                            this.widget._note.folder = folder;
+                            _noteService.save(this.widget._note);
+                          }
+                      ),
+                    ],
+                  )
+                ),
+                Row(
+                children: <Widget>[
+                  IconButton(icon: Icon(Icons.label_outline), onPressed: () => _showTagDialog(context, this.widget._note.tags)),
+                  IconButton(icon: Icon(Icons.info_outline), onPressed: () => _showNoteInfoDialog(this.widget._note)),
+                  ],
+                ),
               ],
             ),
+            FractionallySizedBox(
+              widthFactor: 0.95,
+              child: Container(
+                height: 1,
+                color: Colors.black26,
+              ),
+            )
           ],
         ),
+       ),
        Align(
         alignment: Alignment.topLeft,
         child: MarkdownEditor(this.widget._note.content, _onTextChangedCallback),
@@ -417,7 +448,14 @@ return ListView(
           Navigator.of(context).pop();
         },
       );
-  }); 
+  });
+
+  Future<List<String>> _showNoteInfoDialog(MarkdownNote note) => showDialog(
+    context: context, 
+    builder: (context){
+      return NoteInfoDialog(note);
+  });
+
 }
 
 

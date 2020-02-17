@@ -1,23 +1,28 @@
 
 import 'package:boostnote_mobile/presentation/converter/DateTimeConverter.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
+import 'package:boostnote_mobile/presentation/converter/TagListConverter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 //TODO: Merge with SnippetTile
 class MarkdownTile extends StatelessWidget{
   
-  final DateTimeConverter dateTimeConverter = new DateTimeConverter();
+  final DateTimeConverter dateTimeConverter = DateTimeConverter();
+  final TagListConverter tagListConverter = TagListConverter();
+
   final MarkdownNote note;
   final bool expanded;
+
+  bool expandedAndNotEmpty;
   
   MarkdownTile({this.note, this.expanded});
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> widgets;
-    if (expanded) {
+    expandedAndNotEmpty = expanded && (note.isStarred || note.tags.isNotEmpty);
+    if (expandedAndNotEmpty) {
       widgets = <Widget>[
         buildHeaderRow(),
         buildBodyRow(),
@@ -56,7 +61,7 @@ class MarkdownTile extends StatelessWidget{
       children: <Widget>[
         Row(
           children: <Widget>[
-            Icon(Icons.note, color: Colors.grey),
+            Icon(Icons.description, color: Colors.grey),
             Padding(
               padding: EdgeInsets.only(left: 7),
               child: Text(note.title, 
@@ -71,7 +76,7 @@ class MarkdownTile extends StatelessWidget{
   );
 
   Widget buildBodyRow() => Padding(
-    padding:  expanded ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
+    padding:  expandedAndNotEmpty ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
     child: Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -83,17 +88,25 @@ class MarkdownTile extends StatelessWidget{
   );
 
   Widget buildFooterRow() {
-
     List<Widget> widgets;
+
     if(note.isStarred){
-      widgets = [ Text(note.tags.toString(), 
-                  maxLines: 1,
-                  style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey)),
-                  Icon(Icons.star, color: Colors.yellow) ];
-    } else {
-      widgets = [ Text(note.tags.toString(), 
-                      maxLines: 1,
-                      style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey))];
+      widgets = [ Text(
+                    tagListConverter.convert(note.tags), 
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Icon(Icons.star, color: Colors.yellow) 
+                ];
+    } else if(note.tags.isNotEmpty) {
+      widgets = [ Text(
+                    tagListConverter.convert(note.tags), 
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
+                  )
+                ];
     }
 
     return Padding(

@@ -24,6 +24,7 @@ class NoteService {
           notTrashedNotes.add(note);
         }
     });
+    notTrashedNotes.sort((a,b) => b.updatedAt.compareTo(a.updatedAt));
     return notTrashedNotes;
   }
 
@@ -35,6 +36,7 @@ class NoteService {
           starredNotes.add(note);
         }
     });
+    starredNotes.sort((a,b) => b.updatedAt.compareTo(a.updatedAt));
     return starredNotes;
   }
 
@@ -46,6 +48,7 @@ class NoteService {
           trashedNotes.add(note);
         }
     });
+    trashedNotes.sort((a,b) => b.updatedAt.compareTo(a.updatedAt));
     return trashedNotes;
   }
 
@@ -60,6 +63,7 @@ class NoteService {
           filteredNotes.add(note);
         }
     });
+    filteredNotes.sort((a,b) => b.updatedAt.compareTo(a.updatedAt));
     return filteredNotes;
   }
 
@@ -71,6 +75,7 @@ class NoteService {
           filteredNotes.add(note);
         }
     });
+    filteredNotes.sort((a,b) => b.updatedAt.compareTo(a.updatedAt));
     return filteredNotes;
   }
 
@@ -85,6 +90,7 @@ class NoteService {
           filteredNotes.add(note);
         }
     });
+    filteredNotes.sort((a,b) => b.updatedAt.compareTo(a.updatedAt));
     return filteredNotes;
   }
 
@@ -96,6 +102,7 @@ class NoteService {
 
   void save(Note note) {  //TODO check if note already exists, if it doesnt exist throw exception -> use createNote method instead
                           //TODO CHECK if folder / tag exists
+    note.updatedAt = DateTime.now();
     _noteRepository.save(note);
   }
 

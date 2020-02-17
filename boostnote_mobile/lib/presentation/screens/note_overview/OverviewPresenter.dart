@@ -50,9 +50,16 @@ class OverviewPresenter {
     refresh();
   }
 
-   void delete(List<Note> selectedNotes) {
-    _noteService.deleteAll(selectedNotes);
+  void trash(List<Note> selectedNotes) {
+    _noteService.deleteAll(selectedNotes);    //TODO trash not delete
     refresh();
+  }
+
+  void deleteForever(List<Note> selectedNotes) {
+    _noteService.deleteAll(selectedNotes);
+    _noteService.findTrashed().then((notes) {
+      _overviewView.update(notes);
+    });
   }
 
   void refresh() {

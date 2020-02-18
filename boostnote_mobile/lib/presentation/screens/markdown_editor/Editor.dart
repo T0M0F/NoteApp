@@ -8,6 +8,7 @@ import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownEditor.dart';
+import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownNoteHeader.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownPreview.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditMarkdownNoteDialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,7 +39,7 @@ class EditorState extends State<Editor> {
 
   static const String DELETE_ACTION = 'Delete';
   static const String SAVE_ACTION = 'Save';
-  static const String EDIT_ACTION = 'Edit Note';
+  /*static const String EDIT_ACTION = 'Edit Note';*/
   static const String MARK_ACTION = 'Mark Note';
   static const String UNMARK_ACTION = 'Unmark Note';
 
@@ -77,7 +78,7 @@ class EditorState extends State<Editor> {
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      title: Text(this.widget._note.title),
+      /*title: Text(this.widget._note.title),*/
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Color(0xFFF6F5F5)), 
         onPressed: () {
@@ -110,12 +111,12 @@ class EditorState extends State<Editor> {
                   title: Text(DELETE_ACTION)
                 )
               ),
-              PopupMenuItem(
+              /*PopupMenuItem(
                 value: EDIT_ACTION,
                 child: ListTile(
                   title: Text(EDIT_ACTION)
                 )
-              ),
+              ),*/
               PopupMenuItem(
                 value: this.widget._note.isStarred ?  UNMARK_ACTION : MARK_ACTION,
                 child: ListTile(
@@ -140,7 +141,7 @@ class EditorState extends State<Editor> {
         noteService.save(this.widget._note);
         this.widget._parentWidget.refresh();
         Navigator.of(context).pop();
-      } else if(action == EDIT_ACTION){
+      }/* else if(action == EDIT_ACTION){
         _showEditNoteDialog(context, this.widget._note, (note){
           setState(() {
             this.widget._note.title = note.title;
@@ -148,7 +149,7 @@ class EditorState extends State<Editor> {
           noteService.save(this.widget._note);
           Navigator.of(context).pop();
         });
-      } else if(action == MARK_ACTION){
+      } */else if(action == MARK_ACTION){
         this.widget._note.isStarred = true;
         noteService.save(this.widget._note);
       } else if(action == UNMARK_ACTION){
@@ -160,112 +161,46 @@ class EditorState extends State<Editor> {
   Widget _buildMarkdownPreview(){
     return ListView(
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child:  DropdownButton<FolderEntity> (    //TODO FolderEntity
-                value: _dropdownValueFolder, 
-                underline: Container(), 
-                icon: Icon(Icons.folder_open),
-                items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
-                  value: folder,
-                  child: Text(folder.name)
-                )).toList(),
-                onChanged: (folder) {
-                    setState(() {
-                      _dropdownValueFolder = folder;
-                    });
-                    this.widget._note.folder = folder;
-                    _noteService.save(this.widget._note);
-                  }
-              )
-            ),
-            Row(
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.label_outline), onPressed: () => _showTagDialog(context, this.widget._note.tags)),
-              IconButton(icon: Icon(Icons.info_outline), onPressed: () {})
-              ],
-            ),
-          ],
+        MarkdownNoteHeader(
+          note: this.widget._note,
+          selectedFolder: _dropdownValueFolder,
+          folders: _folders,
+          onTitleChangedCallback: (String title) => this.widget._note.title = title,
+          onFolderChangedCallback: (FolderEntity folder) {
+            this.widget._note.folder = folder;
+            _noteService.save(this.widget._note);
+          },
+          onTagClickedCallback: () => _showTagDialog(context, this.widget._note.tags),
+          onInfoClickedCallback: () => _showNoteInfoDialog(this.widget._note),
         ),
-       Align(
-        alignment: Alignment.topLeft,
-        child: MarkdownPreview(this.widget._note.content, _launchURL),
-       )
+        Align(
+          alignment: Alignment.topLeft,
+          child: MarkdownPreview(this.widget._note.content, _launchURL),
+        )
       ],
     );
   }
 
 
-  Widget _buildMarkdownEditor2(){   //use minLines for Textfield to make it work
+  Widget _buildMarkdownEditor2(){ //use minLines for Textfield to make it work
     return ListView(
       children: <Widget>[
-       Padding(
-         padding: EdgeInsets.symmetric(vertical: 10),
-         child: Column(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: 10),
-                child: Text('Your Title', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black54)),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child:  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(right: 5), 
-                        child: Icon(Icons.folder_open)
-                      ),
-                      DropdownButton<FolderEntity> (    //TODO FolderEntity
-                        value: _dropdownValueFolder, 
-                        underline: Container(), 
-                        iconEnabledColor: Colors.transparent,
-                        style: TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.bold),
-                        items: _folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
-                          value: folder,
-                          child: Text(folder.name)
-                        )).toList(),
-                        onChanged: (folder) {
-                            setState(() {
-                              _dropdownValueFolder = folder;
-                            });
-                            this.widget._note.folder = folder;
-                            _noteService.save(this.widget._note);
-                          }
-                      ),
-                    ],
-                  )
-                ),
-                Row(
-                children: <Widget>[
-                  IconButton(icon: Icon(Icons.label_outline), onPressed: () => _showTagDialog(context, this.widget._note.tags)),
-                  IconButton(icon: Icon(Icons.info_outline), onPressed: () => _showNoteInfoDialog(this.widget._note)),
-                  ],
-                ),
-              ],
-            ),
-            FractionallySizedBox(
-              widthFactor: 0.95,
-              child: Container(
-                height: 1,
-                color: Colors.black26,
-              ),
-            )
-          ],
+        MarkdownNoteHeader(
+          note: this.widget._note,
+          selectedFolder: _dropdownValueFolder,
+          folders: _folders,
+          onTitleChangedCallback: (String title) => this.widget._note.title = title,
+          onFolderChangedCallback: (FolderEntity folder) {
+            this.widget._note.folder = folder;
+            _noteService.save(this.widget._note);
+          },
+          onTagClickedCallback: () => _showTagDialog(context, this.widget._note.tags),
+          onInfoClickedCallback: () => _showNoteInfoDialog(this.widget._note),
         ),
-       ),
-       Align(
-        alignment: Alignment.topLeft,
-        child: MarkdownEditor(this.widget._note.content, _onTextChangedCallback),
-       )
+        Align(
+          alignment: Alignment.topLeft,
+          child: MarkdownEditor(this.widget._note.content, _onTextChangedCallback),
+        )
       ],
     );
   }

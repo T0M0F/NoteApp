@@ -11,9 +11,10 @@ class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
 
   String pageTitle;
   bool listTilesAreExpanded;
+  bool showListView;
   Map<String, String> actions;
 
-  OverviewAppbar({this.listTilesAreExpanded, this.pageTitle, this.actions, this.onSearchClickCallback, this.onMenuClickCallback, this.onNaviagteBackCallback, this.onSelectedActionCallback});
+  OverviewAppbar({this.listTilesAreExpanded, this.showListView, this.pageTitle, this.actions, this.onSearchClickCallback, this.onMenuClickCallback, this.onNaviagteBackCallback, this.onSelectedActionCallback});
 
   @override
   _OverviewAppbarState createState() => _OverviewAppbarState();
@@ -55,6 +56,12 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
               value: this.widget.listTilesAreExpanded ? this.widget.actions['COLLPASE_ACTION']: this.widget.actions['EXPAND_ACTION'],
               child: ListTile(
                 title: this.widget.listTilesAreExpanded ? Text(this.widget.actions['COLLPASE_ACTION']) : Text(this.widget.actions['EXPAND_ACTION'])
+              )
+            ),
+            PopupMenuItem(
+              value: this.widget.showListView ? this.widget.actions['SHOW_GRIDVIEW_ACTION']: this.widget.actions['SHOW_LISTVIEW_ACTION'],
+              child: ListTile(
+                title: this.widget.showListView ? Text(this.widget.actions['SHOW_GRIDVIEW_ACTION']) : Text(this.widget.actions['SHOW_LISTVIEW_ACTION'])
               )
             ),
           ];

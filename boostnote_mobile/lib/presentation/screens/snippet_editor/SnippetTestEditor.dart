@@ -573,7 +573,6 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
   void _addCodeSnippet() {  
     _showAddSnippetDialog(context, (text){
       setState(() {
-        print('sfjsdhak');
         List<String> s = text.split('.');
         if(s.length > 1){
             this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: new List(),  //TODO CodeSnippetEntity...

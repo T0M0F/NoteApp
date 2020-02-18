@@ -42,12 +42,15 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
 
   bool _isEditMode = false;
   bool _listTilesAreExpanded = false;
+  bool _showListView = true;
 
   String _titleEditMode = 'Select Notes';
 
   static const String EDIT_ACTION = 'Edit';
   static const String EXPAND_ACTION = 'Expand';
   static const String COLLPASE_ACTION = 'Collapse';
+  static const String SHOW_GRIDVIEW_ACTION = 'Gridview';
+  static const String SHOW_LISTVIEW_ACTION = 'Listview';
 
   String _pageTitle;
   
@@ -124,7 +127,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       key: _drawerKey,
       appBar: _buildAppBar(),
       drawer: _isEditMode ? null : NavigationDrawer(),
-      body: _buildBody(),
+      body: _showListView ? _buildListViewBody() : _buildGridViewBody(),
       floatingActionButton:_isEditMode || _navigationService.isTrashMode() ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
       bottomNavigationBar: _buildBottomNavigationBar(_isEditMode)
     );
@@ -146,8 +149,9 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     } else {
       return OverviewAppbar(
         pageTitle: _pageTitle,
-        actions: {'EDIT_ACTION':EDIT_ACTION, 'EXPAND_ACTION':EXPAND_ACTION, 'COLLPASE_ACTION':COLLPASE_ACTION},
+        actions: {'EDIT_ACTION':EDIT_ACTION, 'EXPAND_ACTION':EXPAND_ACTION, 'COLLPASE_ACTION':COLLPASE_ACTION, 'SHOW_LISTVIEW_ACTION': SHOW_LISTVIEW_ACTION, 'SHOW_GRIDVIEW_ACTION' : SHOW_GRIDVIEW_ACTION},
         listTilesAreExpanded: _listTilesAreExpanded,
+        showListView: _showListView,
         onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
         onNaviagteBackCallback: () => _navigationService.navigateBack(context),
         onSearchClickCallback: () => search(),
@@ -173,10 +177,20 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
             _listTilesAreExpanded = true;
           });
         break;
+      case SHOW_GRIDVIEW_ACTION:
+        setState(() {
+          _showListView = false;
+        });
+        break;
+      case SHOW_LISTVIEW_ACTION:
+        setState(() {
+          _showListView = true;
+        });
+        break;
     }
   }
 
-  Widget _buildBody() {
+  Widget _buildListViewBody() {
     return Container(
       child: NoteList(
               notes: _notes, 
@@ -187,6 +201,12 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
               _rowSelectedCallback(selectedNotes, _notes);
               }
       )
+    );
+  }
+
+  Widget _buildGridViewBody() {
+    return Container(
+      child: Container()
     );
   }
 

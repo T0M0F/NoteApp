@@ -1,5 +1,5 @@
 
-import 'package:boostnote_mobile/presentation/screens/Splashscreen.dart';
+import 'package:boostnote_mobile/data/CsonParser.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
@@ -20,6 +20,11 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
   Widget build(BuildContext context) {
     
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
+    CsonParser csonParser = CsonParser();
+    Map<String,dynamic> result = csonParser.parse(csonParser.cson);
+    print('---------------------Result--------------------');
+    result.forEach((key,value) => print('key is: ' + key + ' value is: ' + value));
 
     return MaterialApp(
       title: 'Boostnote',

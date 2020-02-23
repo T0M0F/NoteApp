@@ -1,4 +1,5 @@
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
+import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
@@ -8,6 +9,7 @@ import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewPres
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewEditModeAppbar.dart';
+import 'package:boostnote_mobile/presentation/widgets/notegrid/NoteGridTile.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/DeleteAllBottomNavigationBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/EditModeBottomNavigationBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
@@ -15,6 +17,7 @@ import 'package:boostnote_mobile/presentation/widgets/search/NoteSearch.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class Overview extends StatefulWidget {   //TODO imutable
 
@@ -41,7 +44,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   NoteList _noteListWidget;
 
   bool _isEditMode = false;
-  bool _listTilesAreExpanded = false;
+  bool _tilesAreExpanded = false;
   bool _showListView = true;
 
   String _titleEditMode = 'Select Notes';
@@ -150,7 +153,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       return OverviewAppbar(
         pageTitle: _pageTitle,
         actions: {'EDIT_ACTION':EDIT_ACTION, 'EXPAND_ACTION':EXPAND_ACTION, 'COLLPASE_ACTION':COLLPASE_ACTION, 'SHOW_LISTVIEW_ACTION': SHOW_LISTVIEW_ACTION, 'SHOW_GRIDVIEW_ACTION' : SHOW_GRIDVIEW_ACTION},
-        listTilesAreExpanded: _listTilesAreExpanded,
+        listTilesAreExpanded: _tilesAreExpanded,
         showListView: _showListView,
         onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
         onNaviagteBackCallback: () => _navigationService.navigateBack(context),
@@ -169,12 +172,12 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         break;
       case COLLPASE_ACTION:
         setState(() {
-            _listTilesAreExpanded = false;
+            _tilesAreExpanded = false;
           });
         break;
       case EXPAND_ACTION:
         setState(() {
-            _listTilesAreExpanded = true;
+            _tilesAreExpanded = true;
           });
         break;
       case SHOW_GRIDVIEW_ACTION:
@@ -196,7 +199,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
               notes: _notes, 
               selectedNotes: _selectedNotes,
               editMode: _isEditMode, 
-              expandedMode: _listTilesAreExpanded,
+              expandedMode: _tilesAreExpanded,
               rowSelectedCallback: (selectedNotes){
               _rowSelectedCallback(selectedNotes, _notes);
               }
@@ -204,10 +207,33 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     );
   }
 
-  Widget _buildGridViewBody() {
+  Widget _buildGridViewBody() {   //Todo extract widget
+    double _displayWidth = MediaQuery.of(context).size.width;
+    int _cardWidth = 200;
+    int _axisCount = (_displayWidth/_cardWidth).round();
     return Container(
-      child: Container()
+      child: StaggeredGridView.countBuilder(
+        crossAxisCount: _axisCount,
+        itemCount: _notes.length,
+        itemBuilder: (BuildContext context, int index) => Card(
+            child: GestureDetector(
+              onTap: () {
+                 _rowSelectedCallback([_notes[index]], _notes);
+              },
+              child: NoteGridTile(note: _notes[index], expanded: _tilesAreExpanded)
+            )
+        ),
+        staggeredTileBuilder: (int index) => StaggeredTile.count(1, calculateHeightFactor(_notes[index]))
+      )
     );
+  }
+
+  double calculateHeightFactor(Note note) {
+    if(_tilesAreExpanded) {
+      return 0.95;
+    } else {
+      return 0.8;
+    }
   }
 
   void _rowSelectedCallback(List<Note> selectedNotes, List<Note> notes) {  

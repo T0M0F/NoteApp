@@ -2,19 +2,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class MarkdownEditor extends StatefulWidget{
+class MarkdownBody extends StatefulWidget{
 
   final String _text;
   final Function(String) onChangedCallback;
 
-  MarkdownEditor(this._text, this.onChangedCallback); //TODO: Constructor
+  MarkdownBody(this._text, this.onChangedCallback); //TODO: Constructor
 
   @override
-  State<StatefulWidget> createState() => _MarkdownEditorState();
+  State<StatefulWidget> createState() => _MarkdownBodyState();
 
 }
   
-class _MarkdownEditorState extends State<MarkdownEditor>{
+class _MarkdownBodyState extends State<MarkdownBody>{
 
   TextEditingController _textEditingController;
 

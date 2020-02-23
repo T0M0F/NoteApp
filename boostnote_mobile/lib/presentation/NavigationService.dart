@@ -4,12 +4,11 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/screens/folder_overview/FolderOverview.dart';
-import 'package:boostnote_mobile/presentation/screens/markdown_editor/Editor.dart';
+import 'package:boostnote_mobile/presentation/screens/markdown_editor/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
-import 'package:boostnote_mobile/presentation/screens/snippet_editor/CodeSnippetEdior.dart';
-import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
+import 'package:boostnote_mobile/presentation/screens/snippet_editor/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
@@ -283,7 +282,7 @@ class NavigationService {
   void openNoteResponsive(List<Note> notes, Note note,  BuildContext context, Refreshable refreshable) { //TODO isTablet remove?
     noteIsOpen = true;
     Widget editor = note is MarkdownNote
-        ? Editor(note, refreshable)
+        ? MarkdownEditor(note, refreshable)
         : CodeSnippetEditor(note, refreshable);
 
     Widget responisveWidget = ResponsiveWidget(widgets: <ResponsiveChild> [

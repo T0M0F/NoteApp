@@ -24,7 +24,24 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
     CsonParser csonParser = CsonParser();
     Map<String,dynamic> result = csonParser.parse(csonParser.cson);
     print('---------------------Result--------------------');
-    result.forEach((key,value) => print('key is: ' + key + ' value is: ' + value));
+    result.forEach((key,value) {
+      if(value is List) {
+        print('key is: ' + key + ' value is List: ' );
+        value.forEach((val) {
+          if(val is List) {
+            print('----------');
+            val.forEach((item) => print(item));
+          } else if(val is Map) {
+            print('-------------------------------');
+            val.forEach((k,v) =>  print('------key : ' + k + ' value : ' + v.toString()));
+          } else {
+            print(val);
+          }
+        });
+      } else {
+        print('key is: ' + key + ' value is: ' + value);
+      }
+    });
 
     return MaterialApp(
       title: 'Boostnote',

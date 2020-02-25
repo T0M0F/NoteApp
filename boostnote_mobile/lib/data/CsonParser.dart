@@ -18,14 +18,44 @@ class CsonParser {
     "Gucci"
     "Abcd"
   ]
+  snippets: [
+  {
+    linesHighlighted: []
+    name: "example.html"
+    mode: "html"
+    content:  \'''
+      <html>
+      <body>
+      <h1 id='hello'>Enjoy Boostnote!</h1>
+      </body>
+      </html>
+     \'''
+  }
+  {
+    linesHighlighted: []
+    name: "example.js"
+    mode: "javascript"
+    content:  \'''
+      var boostnote = document.getElementById('hello').innerHTML
+      createdAt:
+      
+      console.log(boostnote)
+     \'''
+  }
+  {
+    linesHighlighted: []
+    name: "example.js"
+    mode: "javascript"
+    content:  \'''
+      var boostnote = document.getElementById('hello').innerHTML
+      createdAt:
+      
+      console.log(boostnote)
+     \'''
+  }
+]
 ''';
-/*
-tags: [
-    "Gucci"
-    "Abcd"
-  ]
 
-  */
 
   Map<String, dynamic> parse(String cson) {
 
@@ -39,13 +69,10 @@ tags: [
 
     for(int i = 0; i < splittedByLine.length; i++) {
 
-      print('current Line: ' + splittedByLine[i]);
       
       if(skipLine && i <= skipUntilIndex){
-        print('skip line: ' + splittedByLine[i]);
         continue;
       } else if (skipLine && i > skipUntilIndex) {
-        print('stop skipping in: '  + splittedByLine[i]);
         skipLine = false;
         skipUntilIndex = -1;
       }
@@ -53,18 +80,14 @@ tags: [
       List<String> splittedByDoublePoint = splittedByLine[i].split(':');  //Außer wenn : in ' ' (oder " " ? )
              
       key = splittedByDoublePoint[0];   //tags,linesHighlighted, CodeSnippets
-
-      print('key is ' + key);
       
-      if(key.contains('linesHighlighted')) {   //wird nicht geskippt irgendwie......
+      if(key.contains('linesHighlighted')) {   
         print('Skip linesHighlighted');
         continue;
-      } else if(key.contains('tags')) {    //klappt nicht
-        print('Tags found');
+      } else if(key.contains('tags')) {    
         skipLine = true;
         List<String> tags = List();
         for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
-          print('tag is ' + splittedByLine[i2]);
           if(splittedByLine[i2].contains(']')){   //Außer wenn escaped
             skipUntilIndex = i2;
             break;
@@ -73,30 +96,64 @@ tags: [
         }
         value = tags;
 
-        print('tags----------------');
-        tags.forEach((tag) => print(tag));
-        print('--------------------');
-
       } else if(key.contains('snippets')) {
-        //Implement
-        continue;
+        print('contains snnippets');
+        List<Map<String,dynamic>> snippets = List();
+        String currentSnippet = '';
+        for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
+          if(splittedByLine[i2].contains('{')) {
+            print('{');
+            skipLine = true;
+            currentSnippet = currentSnippet + '\n' + splittedByLine[i2];
+          } else if(splittedByLine[i2].contains('}')){   //Außer wenn escaped
+            print('}');
+            skipUntilIndex = i2;
+            currentSnippet = currentSnippet + '\n' + splittedByLine[i2];
+            print('----------------------------current Snippet--------------------------------');
+            print(currentSnippet);
+            print('---------------------------------------------------------------------------');
+            snippets.add(parse(currentSnippet));
+            currentSnippet = '';
+          } else {
+            currentSnippet = currentSnippet + '\n' + splittedByLine[i2];
+          }
+         /* if(splittedByLine[i2].contains(']')){   //Außer wenn im objekt drinne         //TOOOOOOODDDDDDDDD000000000 Endet nicht, bei ]
+            print(']');
+            break;
+          }*/
+        
+        }
+
+        /*snippets.forEach((snippet) {
+          print('-----------new snippet-------------');
+          snippet.forEach((line) => print(line));
+        });*/
+        
+          
+
+        value = snippets;
       } 
 
-      value = splittedByDoublePoint[1];
-      
-      if(splittedByLine[i].contains('\'\'\'')){   //Außer wenn escaped
-          
-          skipLine = true;
-          for(int i2 = i+1; i2 < splittedByLine.length; i2++){
-              value = value + '\n' + splittedByLine[i2];
-              if(splittedByLine[i2].contains('\'\'\'')){
-                  skipUntilIndex = i2;
-                  break;
-              }
-          }
+      if(splittedByDoublePoint.length > 1) {
+        if(value == null) {
+          value = splittedByDoublePoint[1];
+        } 
+        if(splittedByLine[i].contains('\'\'\'')){   //Außer wenn escaped
+            
+            skipLine = true;
+            for(int i2 = i+1; i2 < splittedByLine.length; i2++){
+                value = value + '\n' + splittedByLine[i2];
+                if(splittedByLine[i2].contains('\'\'\'')){
+                    skipUntilIndex = i2;
+                    break;
+                }
+            }
+        }
+        
+        resutlMap[key] = value;
+        value = null;
       }
-      
-      resutlMap[key] = value;
+     
     }
 
     return resutlMap;

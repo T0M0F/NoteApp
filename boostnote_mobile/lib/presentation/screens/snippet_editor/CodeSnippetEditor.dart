@@ -29,7 +29,7 @@ class CodeSnippetEditor extends StatefulWidget {
 }
   
 
-class CodeSnippetEditorState extends State<CodeSnippetEditor> {
+class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindingObserver {
 
   NavigationService _navigatiorService;
   NoteService _noteService;
@@ -42,6 +42,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
 
     _navigatiorService = NavigationService();
@@ -61,10 +62,18 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
 
     NoteService().save(this.widget._note);
     _navigatiorService.noteIsOpen = false; //ABweichende Logik
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      NoteService().save(this.widget._note);
+    }
   }
 
   @override

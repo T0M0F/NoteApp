@@ -1,15 +1,25 @@
 import 'dart:convert';
 
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 
 class CsonParser {
 
+  //Problem, wenn ''' in einem MultiLineString am Ende der Zeile ist 
+  /*
+  '''
+  avb
+  asf'''           <---Problem
+  asd
+  '''
+  */
+
   String cson = '''
   updatedAt: "2020-01-10T08:53:46.162Z"
   description:       \''' rfgew
-  \'''Snippet note example
+  \'''Snippet note example 
     You can store \''' a series of snippets 
     as a single note, like Gist.
     agse \'''   
@@ -18,6 +28,8 @@ class CsonParser {
   folder: "6d31fec6b0e523025716"
   title: "Snippet note example"
   linesHighlighted: []
+  isStarred: false
+  isTrashed: false
   snippets: [
   {
     linesHighlighted: []
@@ -33,8 +45,8 @@ class CsonParser {
   }
   {
     linesHighlighted: []
-    name: "example.js"
-    mode: "javascript"
+    name: "example.js\'''"
+    mode: "{javascript]"
     content:  \'''
       var boostnote = document.getElementById('hello').innerHTML
       createdAt:
@@ -44,7 +56,7 @@ class CsonParser {
   }
   {
     linesHighlighted: []
-    name: "example.js"
+    name: "\'''example.js"
     mode: "javascript"
     content:  \'''
       var boostnote = document.getElementById('hello').innerHTML
@@ -54,8 +66,9 @@ class CsonParser {
      \'''
   }
 ]
-tags: ["Gucci"
-  "Abcd" ] 
+tags: ["[Gu[cci"
+"jK]"
+  "A]bcd]" ] 
 ''';
 
 
@@ -114,15 +127,24 @@ tags: ["Gucci"
         List<String> tags = List();
         for(int i2 = i; i2 < splittedByLine.length; i2++) {
           if(i2 == i){
-            //remove [
+            int index = splittedByLine[i2].indexOf('[');
+            if(index > 0) {
+              
+              splittedByLine[i2] = splittedByLine[i2].substring(index + 1);
+            }
           }
           if(splittedByLine[i2].trimRight().endsWith(']')){   //Außer wenn escaped
-            tags.add(splittedByLine[i2].trimRight().substring(0,splittedByLine[i2].trimRight().length-2));
+            splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0,splittedByLine[i2].trimRight().length-2);
+            splittedByLine[i2] = splittedByLine[i2].trimLeft().substring(1);
+            splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].length-1);
+            tags.add(splittedByLine[i2]);
             skipUntilIndex = i2;
             break;
           } 
+           splittedByLine[i2] = splittedByLine[i2].trimLeft().substring(1);
+            splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].length-1);
           tags.add(splittedByLine[i2]);
-          //remove first [ and last ]
+         
         }
         value = tags;
 
@@ -162,28 +184,31 @@ tags: ["Gucci"
 
         /*set value if not set before*/
         if(value == null) {
-          if(splittedByDoublePoint[1].startsWith('"')){
-            splittedByDoublePoint[1] = splittedByDoublePoint[1].substring(1,splittedByDoublePoint[1].length-1);
-          }
-          if(splittedByDoublePoint[1].endsWith('"')){
-            splittedByDoublePoint[1] = splittedByDoublePoint[1].substring(0,splittedByDoublePoint[1].length-2);
-          }
+          
           value = splittedByDoublePoint[1];
         } 
 
         /*Check for multiline String*/
+        //Skip until indem zählvariable von schlefe verändert wird
         if(value is String) {
           String s = value;
           if(s.trimLeft().startsWith('\'\'\'')){   //Außer wenn escaped    //IDEE: check if left getrimmter String mit ''' startet. Wenn ja dann: multiline true -> ''' als Content interpretieren else ...
             skipLine = true;
             value = s.trimLeft().substring(3, s.trimLeft().length);
             for(int i2 = i+1; i2 < splittedByLine.length; i2++){
-                if(splittedByLine[i2].trimRight().endsWith('\'\'\'')){
+                if(splittedByLine[i2].trimRight().endsWith('\'\'\'')){    //Problem, wenn in Zeile am Ende ''' ist
                     value = value + splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].trimRight().length-3);
                     skipUntilIndex = i2;
                     break;
                 }
                 value = value + '\n' + splittedByLine[i2];
+            }
+          } else {
+            if(splittedByDoublePoint[1].trimLeft().startsWith('"')){
+              splittedByDoublePoint[1] = splittedByDoublePoint[1].trimLeft().substring(1);
+            }
+            if(splittedByDoublePoint[1].trimRight().endsWith('"')){
+              value = splittedByDoublePoint[1].trimRight().substring(0,splittedByDoublePoint[1].length-1);
             }
           }
         }
@@ -208,11 +233,11 @@ tags: ["Gucci"
         id: 1,
         title: map['title'],
         description: map['description'],
-        folder: map['folder'],
-        isStarred: map['isStarred'],
-        isTrashed: map['isTrashed'],
+        folder: Folder(name: map['folder'], id: map['folder'].hashCode),
+        isStarred: bool.fromEnvironment(map['isStarred']),
+        isTrashed:  bool.fromEnvironment(map['isTrashed']),
         tags:  List<String>.from(map['tags']), 
-        codeSnippets: List<Map<String,dynamic>>.from(['codeSnippets']).map((snippetMap) => CodeSnippet(
+        codeSnippets: List<Map<String,dynamic>>.from(map['snippets']).map((snippetMap) => CodeSnippet(
             content: snippetMap['content'],
             mode: snippetMap['mode'],
             name: snippetMap['name']
@@ -225,7 +250,7 @@ tags: ["Gucci"
         id: 1,
         title: map['title'],
         content: map['content'],
-        folder: map['folder'],
+        folder: Folder(name: map['folder'], id: map['folder'].hashCode),
         isStarred: bool.fromEnvironment(map['isStarred']),
         isTrashed:  bool.fromEnvironment(map['isTrashed']),
         tags:  List<String>.from(map['tags'])
@@ -236,23 +261,61 @@ tags: ["Gucci"
   }
 
   String convertToCson(Note note){
+    return note is SnippetNote ? convertSnippetNoteToCson(note) : convertMarkdownNoteToCson(note);
+  }
+
+  String convertMarkdownNoteToCson(MarkdownNote note){
 
     String tagString = '';
     note.tags.forEach((tag) => tagString = tagString + '\n"' + tag + '"');
 
-    
-    String result = 
-  '''
-  createdAt: "''' + note.createdAt.toString() + '''"
-  updatedAt: "''' + note.updatedAt.toString() + '''"
-  type: "''' + (note is SnippetNote ? 'SNIPPET_NOTE' : 'MARKDOWN_NOTE') + '''"
-  folder: "''' + note.folder.name + '''"
-  title: "''' + note.title + '''"
-  tags: [''' + tagString + '''\n]
-  isStarred: ''' + note.isStarred.toString() + '''
+    return
+    '''
+    createdAt: "''' + note.createdAt.toString() + '''"    //Chage Date format
+    updatedAt: "''' + note.updatedAt.toString() + '''"
+    type: "''' + (note is SnippetNote ? 'SNIPPET_NOTE' : 'MARKDOWN_NOTE') + '''"
+    folder: "''' + note.folder.name + '''"
+    content: \'\'\'''' + note.content + '''\'\'\'
+    title: "''' + note.title + '''"
+    tags: [''' + tagString + '''\n]
+    isStarred: ''' + note.isStarred.toString() + '''
+    isTrashed: ''' + note.isTrashed.toString() + ''' 
   isTrashed: ''' + note.isTrashed.toString() + ''' 
-  ''';
+    isTrashed: ''' + note.isTrashed.toString() + ''' 
+    linesHighlighted: []
+    ''';
+  }
 
-    return result;
+  String convertSnippetNoteToCson(SnippetNote note){
+    
+    String tagString = '';
+    note.tags.forEach((tag) => tagString = tagString + '\n"' + tag + '"');
+
+    String snippets = '';
+    note.codeSnippets.forEach((snippet) {
+      return
+      '''
+      linesHighlighted: []
+      name: "''' + snippet.name + '''"
+      mode: "''' + snippet.mode + '''"
+      content: \'\'\'''' + snippet.content + '''\'\'\'
+      ''';
+    });
+
+    return
+    '''
+    createdAt: "''' + note.createdAt.toString() + '''"
+    updatedAt: "''' + note.updatedAt.toString() + '''"
+    type: "''' + (note is SnippetNote ? 'SNIPPET_NOTE' : 'MARKDOWN_NOTE') + '''"
+    folder: \'\'\'''' + note.folder.name + '''\'\'\'
+    description: "''' + note.description + '''"
+    snippets: [
+      ''' + snippets + '''
+    ]
+    title: "''' + note.title + '''"
+    tags: [''' + tagString + '''\n]
+    isStarred: ''' + note.isStarred.toString() + '''
+    isTrashed: ''' + note.isTrashed.toString() + ''' 
+    ''';
   }
 }

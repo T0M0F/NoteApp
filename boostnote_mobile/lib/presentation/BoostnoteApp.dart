@@ -45,7 +45,13 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
       }
     });
 
-    //Note note = csonParser.convertToNote(result);
+    Note note = csonParser.convertToNote(result);
+    
+    print('--------------------------------------- MarkdownNote to cson----------------------------');
+    print(csonParser.convertMarkdownNoteToCson(NoteService().generateMarkdownNote()));
+    print('--------------------------------------- SnippetNote to cson----------------------------');
+    print(csonParser.convertSnippetNoteToCson(NoteService().generateSnippetNote()));
+
 
     return MaterialApp(
       title: 'Boostnote',

@@ -28,7 +28,7 @@ class MarkdownEditor extends StatefulWidget {
 }
   
 
-class MarkdownEditorState extends State<MarkdownEditor> {
+class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObserver{
 
   NavigationService _navigatiorService;
   NoteService _noteService;
@@ -41,6 +41,7 @@ class MarkdownEditorState extends State<MarkdownEditor> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
 
     _navigatiorService = NavigationService();
@@ -58,10 +59,18 @@ class MarkdownEditorState extends State<MarkdownEditor> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
 
     NoteService().save(this.widget._note);
     _navigatiorService.noteIsOpen = false; //ABweichende Logik
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      NoteService().save(this.widget._note);
+    }
   }
 
   @override

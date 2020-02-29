@@ -9,7 +9,7 @@ import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/data/entity/MarkdownNoteEntity.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
-import 'package:boostnote_mobile/data/repositoryImpl/FolderRepositoryImpl.dart';
+import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/FolderRepositoryImpl.dart';
 import 'package:path_provider/path_provider.dart';
 
 //TODO: Make functions async
@@ -39,7 +39,7 @@ class NoteRepositoryImpl extends NoteRepository {
   }
   */
   Future<Directory> get directory async {
-    final Directory dir = await getApplicationDocumentsDirectory();
+    final Directory dir = await getExternalStorageDirectory();
     print('Application Directory: ' + dir.toString());
    
     Directory noteDirectory = Directory(dir.path + '/notes');

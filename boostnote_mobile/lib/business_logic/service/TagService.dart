@@ -1,7 +1,7 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/repository/TagRepository.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/data/repositoryImpl/TagRepositoryImp.dart';
+import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/TagRepositoryImp.dart';
 
 class TagService {
  

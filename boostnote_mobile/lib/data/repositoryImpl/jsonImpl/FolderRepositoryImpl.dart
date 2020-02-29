@@ -10,13 +10,13 @@ import 'package:path_provider/path_provider.dart';
 class FolderRepositoryImpl extends FolderRepository {
 
    Future<Directory> get directory async {
-    final Directory dir = await getApplicationDocumentsDirectory();
+    final Directory dir = await getExternalStorageDirectory();
     return dir;
   }
   
   Future<File> get localFile async {
     final Directory dir = await directory;
-    File file = File(dir.path + '/boostnote');
+    File file = File(dir.path + '/boostnote.json');
     bool fileExists = await file.exists();
     if(!fileExists){
       print('Boostnote File doesnt exist');

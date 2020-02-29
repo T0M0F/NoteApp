@@ -8,6 +8,7 @@ import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidge
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class BoostnoteApp extends StatefulWidget {
 
@@ -62,6 +63,15 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         accentColor: Color(0xFF1EC38B),
         hintColor: Colors.white,
       ),
+     localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale("en", ""),
+        const Locale("ger", ""),
+      ],
       initialRoute: '/',
       routes: {
         '/test': (context) => Overview(),
@@ -88,4 +98,5 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
      ]
     );
   }
+
 }

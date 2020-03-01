@@ -4,6 +4,7 @@ import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/widgets/CodeSnippetAppBar.dart';
@@ -31,6 +32,7 @@ class CodeSnippetEditor extends StatefulWidget {
 
 class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindingObserver {
 
+  NewNavigationService _newNavigationService;
   NavigationService _navigatiorService;
   NoteService _noteService;
   FolderService _folderService;
@@ -45,6 +47,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     WidgetsBinding.instance.addObserver(this);
     super.initState();
 
+    _newNavigationService = NewNavigationService();
     _navigatiorService = NavigationService();
     _noteService = NoteService();
     _folderService = FolderService();
@@ -91,7 +94,8 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Color(0xFFF6F5F5)), 
           onPressed: () {
-            _navigatiorService.closeNote(context);
+            //_navigatiorService.closeNote(context);
+            _newNavigationService.navigateBack(context);
           },
         ),
         actions: <Widget>[
@@ -110,7 +114,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
         note: this.widget._note, 
         selectedCodeSnippet: _selectedCodeSnippet,
         selectedActionCallback: (String action) => _selectedAction(action),
-        onNavigateBackCallback: () => _navigatiorService.closeNote(context),
+        onNavigateBackCallback: () => _newNavigationService.navigateBack(context), //_navigatiorService.closeNote(context),
         onSelectedSnippetChanged: (CodeSnippet codeSnippet) {
           setState(() {
             _selectedCodeSnippet = codeSnippet;

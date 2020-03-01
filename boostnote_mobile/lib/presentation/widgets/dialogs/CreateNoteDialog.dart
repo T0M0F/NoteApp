@@ -1,4 +1,5 @@
 
+import 'package:boostnote_mobile/data/internationalization%20%20%20%20/Translation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +34,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       title: Container( 
         alignment: Alignment.center,
-        child: Text('Make a Note', style: TextStyle(color: Colors.black))
+        child: Text(Translation.of(context).text("make_a_note"), style: TextStyle(color: Colors.black))
       ),
       content: SingleChildScrollView(
         child: Column(
@@ -43,7 +44,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
               style: TextStyle(color: Colors.black),
             ),
             RadioListTile(
-              title: Text('Markdown Note'),
+              title: Text(Translation.of(context).text("markdown_note")),
               value: _createMarkdowNote,
               groupValue: _createMarkdowNote,
               onChanged: (bool value){
@@ -54,7 +55,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
               },
             ),
             RadioListTile(
-              title: Text('Snippet Note'),
+              title: Text(Translation.of(context).text("snippet_note")),
               value: !_createMarkdowNote,
               groupValue: _createMarkdowNote,
               onChanged: (bool value){
@@ -70,7 +71,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
       actions: <Widget>[
         MaterialButton(
           minWidth:100,
-          child: Text('Cancel', style: TextStyle(color: Colors.black),),
+          child: Text(Translation.of(context).text("cancel"), style: TextStyle(color: Colors.black),),
           onPressed: (){
             Navigator.of(context).pop();
           }
@@ -79,7 +80,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
           minWidth:100,
           elevation: 5.0,
           color: Theme.of(context).accentColor,
-          child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
+          child: Text(Translation.of(context).text("save"), style: TextStyle(color: Color(0xFFF6F5F5))),
           onPressed: (){
             
           }

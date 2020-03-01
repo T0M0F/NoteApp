@@ -13,6 +13,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 class BoostnoteApp extends StatefulWidget {
 
+  List<Locale> supportedLanguages =  [
+    const Locale("en", ""),
+    const Locale("ger", ""),
+  ];
+
   @override
   _BoostnoteAppState createState() => _BoostnoteAppState();
 
@@ -69,10 +74,7 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale("en", ""),
-        const Locale("ger", ""),
-      ],
+      supportedLocales: this.widget.supportedLanguages,
       initialRoute: '/',
       routes: {
         '/test': (context) => Overview(),
@@ -99,7 +101,7 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         )
       ]
       ), 
-      onWillPop: () {NewNavigationService().navigateBack();});
+      onWillPop: () {NewNavigationService().navigateBack(context);});
     return widget;
   }
 

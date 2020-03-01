@@ -1,7 +1,9 @@
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
@@ -24,6 +26,7 @@ class Overview extends StatefulWidget {   //TODO imutable
   final List<Note> notes;   
   final Folder selectedFolder;
   String selectedTag;
+  String title; 
 
   Overview({this.notes, this.selectedFolder, this.selectedTag});   //TODO constructor
 
@@ -254,7 +257,13 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       });
 
     } else {
-      _navigationService.openNoteResponsive(_notes, selectedNotes.elementAt(0), context, this);
+      //_navigationService.openNoteResponsive(_notes, selectedNotes.elementAt(0), context, this);
+      if(selectedNotes.first is MarkdownNote) {
+        NewNavigationService().navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: selectedNotes.first, parentWidget: this);
+      } else if (selectedNotes.first is SnippetNote) {
+        NewNavigationService().navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: selectedNotes.first, parentWidget: this);
+      }
+     
     }
   }
 

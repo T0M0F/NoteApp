@@ -4,6 +4,7 @@ import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/widgets/MarkdownEditorAppBar.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
@@ -30,6 +31,7 @@ class MarkdownEditor extends StatefulWidget {
 
 class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObserver{
 
+  NewNavigationService _newNavigationService;
   NavigationService _navigatiorService;
   NoteService _noteService;
   FolderService _folderService;
@@ -44,6 +46,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     WidgetsBinding.instance.addObserver(this);
     super.initState();
 
+    _newNavigationService = NewNavigationService();
     _navigatiorService = NavigationService();
     _noteService = NoteService();
     _folderService = FolderService();
@@ -85,7 +88,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     return MarkdownEditorAppBar(
       isPreviewMode: _previewMode,
       isNoteStarred: this.widget._note.isStarred,
-      onNavigateBackCallback: () => _navigatiorService.closeNote(context),
+      onNavigateBackCallback: () => _newNavigationService.navigateBack(context),//_navigatiorService.closeNote(context),
       onViewModeSwitchedCallback: (bool value) {
          setState(() {
               _previewMode = value;

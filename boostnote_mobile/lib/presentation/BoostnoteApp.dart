@@ -2,6 +2,7 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/CsonParser.dart';
+import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
@@ -81,22 +82,25 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
   }
 
   Widget _buildBody() {
-    return ResponsiveWidget(widgets: <ResponsiveChild> [
-      ResponsiveChild(
-        smallFlex: 1, 
-        largeFlex: 2, 
-        child: Overview()
-      ),
-      ResponsiveChild(
-        smallFlex: 0, 
-        largeFlex: 3, 
-        child: Scaffold(
-          appBar: AppBar(),
-          body: Container()
-          )
-      )
-     ]
-    );
+    Widget widget = WillPopScope(
+      child: ResponsiveWidget(widgets: <ResponsiveChild> [
+        ResponsiveChild(
+          smallFlex: 1, 
+          largeFlex: 2, 
+          child: Overview()
+        ),
+        ResponsiveChild(
+          smallFlex: 0, 
+          largeFlex: 3, 
+          child: Scaffold(
+            appBar: AppBar(),
+            body: Container()
+            )
+        )
+      ]
+      ), 
+      onWillPop: () {NewNavigationService().navigateBack();});
+    return widget;
   }
 
 }

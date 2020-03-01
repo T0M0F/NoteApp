@@ -1,6 +1,11 @@
  
+import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
+import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -77,7 +82,12 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text('Tags', style: TextStyle(color: navigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          navigationService.navigateTo(context, NavigationMode.TAGS_MODE);
+          //navigationService.navigateTo(context, NavigationMode.TAGS_MODE);
+          NewNavigationService().navigateTo(destinationWidget:   ResponsiveChild(
+                  smallFlex: 1, 
+                  largeFlex: 2, 
+                  child: TagOverview()
+                ), destinationMode: NavigationMode.TAGS_MODE);
         },
       ),
       ListTile(
@@ -93,7 +103,15 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text('Trash', style: TextStyle(color: navigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          navigationService.navigateTo(context, NavigationMode.TRASH_MODE, overviewView: this.widget.overviewView);
+          //navigationService.navigateTo(context, NavigationMode.TRASH_MODE, overviewView: this.widget.overviewView);
+          NoteService().findTrashed().then((notes) {
+              NewNavigationService().navigateTo(destinationMode: NavigationMode.TRASH_MODE, destinationWidget:  ResponsiveChild(
+                smallFlex: 1, 
+                largeFlex: 2, 
+                child: Overview(notes: notes)
+              ));
+          });
+          
         },
       ),
       Padding(

@@ -1,3 +1,5 @@
+import 'package:boostnote_mobile/presentation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +19,16 @@ class ResponsiveWidget extends StatefulWidget {
 class ResponsiveWidgetState extends State<ResponsiveWidget> {
 
   bool _isTablet;
+  List<ResponsiveChild> widgets;
+
+  @override
+  void initState() {
+    super.initState();
+    widgets = this.widget.widgets;
+    NewNavigationService().init(this);
+    NewNavigationService().widgetHistory.add(widgets);
+    NewNavigationService().navigationModeHistory.add(NavigationMode2.ALL_NOTES_MODE);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +36,15 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
     _isTablet = MediaQuery.of(context).size.width > this.widget.breakPoint;
 
     return Row(
-      children: getWidgets(),
+      children: _getWidgets(),
     );
 
   }
 
-  List<Widget> getWidgets() {
-
+  List<Widget> _getWidgets() {
     List<Widget> result = List();
 
-     for(ResponsiveChild responsiveChild in this.widget.widgets) {
+     for(ResponsiveChild responsiveChild in widgets) {
 
       int flex = _isTablet? responsiveChild.largeFlex : responsiveChild.smallFlex;
 
@@ -54,5 +65,12 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
     result.removeLast();
 
     return result;
+  }
+
+  void update(List<ResponsiveChild> widgets) {
+    print('update widget');
+    setState(() {
+      this.widgets = widgets;
+    });
   }
 }

@@ -1,3 +1,5 @@
+
+
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
@@ -38,7 +40,8 @@ class Overview extends StatefulWidget {   //TODO imutable
 class _OverviewState extends State<Overview> implements OverviewView, Refreshable{
 
   OverviewPresenter _presenter;
-  NavigationService _navigationService;
+  //NavigationService _navigationService;
+  NewNavigationService _newNavigationService;
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
@@ -63,18 +66,20 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   @override
   void initState(){
     super.initState();
-
+    print('init Overview');
     _presenter = OverviewPresenter(this);
-    _navigationService = NavigationService();
+    //_navigationService = NavigationService();
+    _newNavigationService = NewNavigationService();
 
     _selectedNotes = List();
     _notes = this.widget.notes;
+   
 
     //if no note list is provided, for example on StartUp when calling Overview() from BoostnoteApp or 
     //when navigating back from open note
-    if(_notes == null) {
+    if(_notes == null) {                                                  //TODO ugly
       _notes = List();
-      switch(_navigationService.navigationMode) {
+      switch(_newNavigationService.navigationModeHistory.last) {
         case NavigationMode.NOTES_WITH_TAG_MODE:
           _presenter.loadNotesWithTag(this.widget.selectedTag);
           break;
@@ -99,14 +104,17 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     });
   }
 
- @override
- void refresh() => _presenter.refresh();
 
+ @override
+ void refresh() {} //=> _presenter.refresh();
+
+/*
  @override
  void dispose(){
    super.dispose();
 
-   switch(_navigationService.navigationMode) {      //TODO sucky sucky
+/*
+   switch( _navigationService.navigationMode) {      //TODO sucky sucky
         case NavigationMode.NOTES_IN_FOLDER_MODE:
           print('NOTES_IN_FOLDER_MODE');
           _navigationService.navigationMode = NavigationMode.FOLDERS_MODE;
@@ -116,25 +124,28 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
           _navigationService.navigationMode = NavigationMode.TAGS_MODE;
           break;
       }
- }
+      */
+ }*/
 
   @override
   Widget build(BuildContext context) {
 
-    if(_navigationService.isNotesInFolderMode()){
+    if(_newNavigationService.isNotesInFolderMode()){
       _pageTitle = this.widget.selectedFolder.name;
-    } else if(_navigationService.isNotesWithTagMode()) {
+    } else if(_newNavigationService.isNotesWithTagMode()) {
       _pageTitle = this.widget.selectedTag;
     } else {
-      _pageTitle = _navigationService.navigationMode;
+      _pageTitle = _newNavigationService.navigationModeHistory.last;  //TODO sucky
     }
+
+    print('FUGGA' + _notes.length.toString());
 
     return Scaffold(
       key: _drawerKey,
       appBar: _buildAppBar(),
       drawer: _isEditMode ? null : NavigationDrawer(),
       body: _showListView ? _buildListViewBody() : _buildGridViewBody(),
-      floatingActionButton:_isEditMode || _navigationService.isTrashMode() ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
+      floatingActionButton:_isEditMode || _newNavigationService.isTrashMode() ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
       bottomNavigationBar: _buildBottomNavigationBar(_isEditMode)
     );
   }
@@ -159,7 +170,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         listTilesAreExpanded: _tilesAreExpanded,
         showListView: _showListView,
         onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
-        onNaviagteBackCallback: () => _navigationService.navigateBack(context),
+        onNaviagteBackCallback: () => _newNavigationService.navigateBack(context), //_naviagtionService.navigateBack(context)
         onSearchClickCallback: () => search(),
         onSelectedActionCallback: (String action) => _selectedAction(action)
       );
@@ -259,9 +270,9 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     } else {
       //_navigationService.openNoteResponsive(_notes, selectedNotes.elementAt(0), context, this);
       if(selectedNotes.first is MarkdownNote) {
-        NewNavigationService().navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: selectedNotes.first, parentWidget: this);
+        NewNavigationService().navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: selectedNotes.first);
       } else if (selectedNotes.first is SnippetNote) {
-        NewNavigationService().navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: selectedNotes.first, parentWidget: this);
+        NewNavigationService().navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: selectedNotes.first);
       }
      
     }
@@ -286,7 +297,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
                 });
         },
       );
-    } else if(_navigationService.isTrashMode()) {
+    } else if(_newNavigationService.isTrashMode()) {
        return DeleteAllBottomNavigationBar(
          deleteAllCallback: () {
            _presenter.deleteForever(_notes);
@@ -306,13 +317,17 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
           }, 
           saveCallback: (Note note) {
             Navigator.of(context).pop();
-            if(_navigationService.isNotesInFolderMode()) {
+            if(_newNavigationService.isNotesInFolderMode()) {
               note.folder = this.widget.selectedFolder;
-            } else if(_navigationService.isNotesWithTagMode()){
+            } else if(_newNavigationService.isNotesWithTagMode()){
               note.tags.add(this.widget.selectedTag);
             }
             _presenter.onCreateNotePressed(note);
-            _navigationService.openNote(note, context, this);   //TODO: Presenter???
+            if(note is SnippetNote) {
+              _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);   //TODO: Presenter???
+            } else if (note is MarkdownNote) {
+              _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);   
+            }
           },
         );
     });
@@ -322,7 +337,11 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     //TODO: Presenter?
     NoteSearch noteSearch = NoteSearch(
       _notes, (note) {
-      _navigationService.openNote(note, context, this);
+      if(note is SnippetNote) {
+            _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);   //TODO: Presenter???
+      } else if (note is MarkdownNote) {
+        _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);   
+      }
     });
 
     showSearch(

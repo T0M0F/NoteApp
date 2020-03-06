@@ -19,10 +19,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class MarkdownEditor extends StatefulWidget {
 
-  final Refreshable _parentWidget;
+  //final Refreshable _parentWidget;
   final MarkdownNote _note;
 
-  MarkdownEditor(this._note, this._parentWidget);
+  MarkdownEditor(this._note);
 
   @override
   State<StatefulWidget> createState() => MarkdownEditorState();
@@ -32,7 +32,7 @@ class MarkdownEditor extends StatefulWidget {
 class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObserver{
 
   NewNavigationService _newNavigationService;
-  NavigationService _navigatiorService;
+  //NavigationService _navigatiorService;
   NoteService _noteService;
   FolderService _folderService;
 
@@ -47,7 +47,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     super.initState();
 
     _newNavigationService = NewNavigationService();
-    _navigatiorService = NavigationService();
+    //_navigatiorService = NavigationService();
     _noteService = NoteService();
     _folderService = FolderService();
     _folders = List();
@@ -66,13 +66,13 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     super.dispose();
 
     NoteService().save(this.widget._note);
-    _navigatiorService.noteIsOpen = false; //ABweichende Logik
+   // _navigatiorService.noteIsOpen = false; //ABweichende Logik
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      NoteService().save(this.widget._note);
+      NoteService().save(this.widget._note);    //mit bool überprüfen ob schon gesaved?
     }
   }
 
@@ -150,12 +150,10 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
       NoteService noteService = NoteService();
       if(action == ActionConstants.DELETE_ACTION){
         noteService.moveToTrash(this.widget._note);
-        this.widget._parentWidget.refresh();
-        Navigator.of(context).pop();
+        _newNavigationService.navigateBack(context);
       } else if(action == ActionConstants.SAVE_ACTION){
         noteService.save(this.widget._note);
-        this.widget._parentWidget.refresh();
-        Navigator.of(context).pop();
+         _newNavigationService.navigateBack(context);
       } else if(action == ActionConstants.MARK_ACTION){
         setState(() {
           this.widget._note.isStarred = true;

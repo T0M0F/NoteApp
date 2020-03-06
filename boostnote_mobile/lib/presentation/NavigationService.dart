@@ -279,11 +279,11 @@ class NavigationService {
     }
   } 
 
-  void openNoteResponsive(List<Note> notes, Note note,  BuildContext context, Refreshable refreshable) { //TODO isTablet remove?
+  void openNoteResponsive(List<Note> notes, Note note,  BuildContext context) { //TODO isTablet remove?
     noteIsOpen = true;
     Widget editor = note is MarkdownNote
-        ? MarkdownEditor(note, refreshable)
-        : CodeSnippetEditor(note, refreshable);
+        ? MarkdownEditor(note)
+        : CodeSnippetEditor(note);
 
     Widget responisveWidget = ResponsiveWidget(widgets: <ResponsiveChild> [
      ResponsiveChild(
@@ -307,8 +307,8 @@ class NavigationService {
    Navigator.of(context).push(route);
   }
 
-  void openNote(Note note,  BuildContext context, Refreshable refreshable) {
-    openNoteResponsive(noteListCache, note, context, refreshable);
+  void openNote(Note note,  BuildContext context) {
+    openNoteResponsive(noteListCache, note, context);
   }
 
   void closeNote(BuildContext context){

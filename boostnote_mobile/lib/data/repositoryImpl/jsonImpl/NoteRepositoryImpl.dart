@@ -107,11 +107,11 @@ class NoteRepositoryImpl extends NoteRepository {
     List<Note> notes = List();
     _files.forEach((file) {
       String content = file.readAsStringSync();
-      Map<String, dynamic> map = jsonDecode(content);
+      Map<String, dynamic> map = jsonDecode(content); 
       if(map.containsKey('codeSnippets')) {
-        notes.add(SnippetNoteEntity.fromJson(jsonDecode(content)));
+        notes.add(SnippetNoteEntity.fromJson(map));
       } else {
-        notes.add(MarkdownNoteEntity.fromJson(jsonDecode(content)));
+        notes.add(MarkdownNoteEntity.fromJson(map));
       }
     });
     return Future.value(notes);

@@ -1,8 +1,11 @@
 
+import 'package:boostnote_mobile/business_logic/model/Boostnote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/CsonParser.dart';
+import 'package:boostnote_mobile/presentation/BoostnoteTheme.dart';
 import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/presentation/ThemeNotifier.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
@@ -10,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
 class BoostnoteApp extends StatefulWidget {
 
@@ -30,6 +34,7 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
     
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
+/*
     CsonParser csonParser = CsonParser();
     Map<String,dynamic> result = csonParser.parse(csonParser.cson);
     print('---------------------Result--------------------');
@@ -58,28 +63,29 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
     print(csonParser.convertMarkdownNoteToCson(NoteService().generateMarkdownNote()));
     print('--------------------------------------- SnippetNote to cson----------------------------');
     print(csonParser.convertSnippetNoteToCson(NoteService().generateSnippetNote()));
-
-
+*/
+    final ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context);
     return MaterialApp(
-      title: 'Boostnote',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Color(0xFF202120),
-        primaryColorLight: Color(0xFF2E3235),
-        accentColor: Color(0xFF1EC38B),
-        hintColor: Colors.white,
-      ),
-     localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: this.widget.supportedLanguages,
-      initialRoute: '/',
-      routes: {
-        '/test': (context) => Overview(),
-        '/': (context) => _buildBody(),
-      },
+        title: 'Boostnote',
+        debugShowCheckedModeBanner: false,
+        theme: themeNotifier.getTheme(),
+        /*ThemeData(
+          primaryColor: Color(0xFF202120),
+          primaryColorLight: Color(0xFF2E3235),
+          accentColor: Color(0xFF1EC38B),
+          hintColor: Colors.white,
+        ),*/
+        localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+        supportedLocales: this.widget.supportedLanguages,
+        initialRoute: '/',
+        routes: {
+          '/test': (context) => Overview(),
+          '/': (context) => _buildBody(),
+        },
     );
   }
 

@@ -22,7 +22,7 @@ class NavigationDrawer extends StatefulWidget {
 
 class NavigationDrawerState extends State<NavigationDrawer> {
 
-  NavigationService navigationService = NavigationService();
+ // NavigationService navigationService = NavigationService();
   NewNavigationService _newNavigationService = NewNavigationService();
 
   @override

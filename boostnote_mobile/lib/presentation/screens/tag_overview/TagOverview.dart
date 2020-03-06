@@ -1,7 +1,10 @@
+import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
@@ -23,7 +26,8 @@ class TagOverview extends StatefulWidget {
  
 class _TagOverviewState extends State<TagOverview> implements Refreshable{
 
-  NavigationService _navigationService;
+ // NavigationService _navigationService;
+  NewNavigationService _newNavigationService;
   NoteService _noteService;
   TagService _tagService;
   List<String> _tags;
@@ -35,7 +39,8 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     super.initState();
 
     _tags = List();
-    _navigationService = NavigationService();
+    _newNavigationService = NewNavigationService();
+    //_navigationService = NavigationService();
     _noteService = NoteService();
     _tagService = TagService();
 
@@ -92,7 +97,13 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           _createNote(note);
-          _navigationService.openNote(note, context, this);
+          //_navigationService.openNote(note, context, this);
+          if(note is MarkdownNote) {
+            _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);
+          } else if(note is SnippetNote) {
+            _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);
+          }
+          
         },
       );
     });
@@ -130,7 +141,8 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   }
 
   void _onRowTap(String tag) {
-    _navigationService.navigateTo(context, NavigationMode.NOTES_WITH_TAG_MODE, tag: tag);
+    //_navigationService.navigateTo(context, NavigationMode.NOTES_WITH_TAG_MODE, tag: tag);
+    _newNavigationService.navigateTo(destinationMode: NavigationMode2.NOTES_WITH_TAG_MODE, tag: tag);
   }
 
   void _onRowLongPress(String tag) {

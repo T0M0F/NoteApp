@@ -47,12 +47,11 @@ class OverviewPresenter {
   void onCreateNotePressed(Note note){
     print('Create Note');
     _noteService.createNote(note);
-    refresh();
   }
 
   void trash(List<Note> selectedNotes) {
     _noteService.deleteAll(selectedNotes);    //TODO trash not delete
-    refresh();
+   // refresh();
   }
 
   void deleteForever(List<Note> selectedNotes) {
@@ -62,15 +61,15 @@ class OverviewPresenter {
     });
   }
 
-  void refresh() {
+  /*void refresh() {
     _noteService.findNotTrashed().then((notes) {
       _overviewView.update(notes);
     });
-  }
+  }*/
 
   void showAllNotes() {
     print('showAllNOtes');
-    refresh();
+   // refresh();
   }
 
   void showTrashedNotes() {

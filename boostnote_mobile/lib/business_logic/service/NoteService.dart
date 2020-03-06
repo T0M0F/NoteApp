@@ -115,6 +115,7 @@ class NoteService {
     note.isTrashed = true;
     note.isStarred = false;
     note.folder.name = 'Trash';
+    note.folder.id = 'Trash'.hashCode;
     _noteRepository.save(note);
   }
 

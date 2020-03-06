@@ -20,10 +20,10 @@ import 'package:flutter/material.dart';
 
 class CodeSnippetEditor extends StatefulWidget {
 
-  final Refreshable _parentWidget;
+ // final Refreshable _parentWidget;
   final SnippetNote _note;
 
-  CodeSnippetEditor(this._note, this._parentWidget);
+  CodeSnippetEditor(this._note);
 
   @override
   State<StatefulWidget> createState() => CodeSnippetEditorState();
@@ -33,7 +33,7 @@ class CodeSnippetEditor extends StatefulWidget {
 class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindingObserver {
 
   NewNavigationService _newNavigationService;
-  NavigationService _navigatiorService;
+  //NavigationService _navigatiorService;
   NoteService _noteService;
   FolderService _folderService;
 
@@ -48,7 +48,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     super.initState();
 
     _newNavigationService = NewNavigationService();
-    _navigatiorService = NavigationService();
+    //_navigatiorService = NavigationService();
     _noteService = NoteService();
     _folderService = FolderService();
     _folders = List();
@@ -69,7 +69,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     super.dispose();
 
     NoteService().save(this.widget._note);
-    _navigatiorService.noteIsOpen = false; //ABweichende Logik
+    //_navigatiorService.noteIsOpen = false; //ABweichende Logik
   }
 
   @override
@@ -248,12 +248,10 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
       NoteService noteService = NoteService();
       if(action == ActionConstants.DELETE_ACTION){
         noteService.moveToTrash(this.widget._note);
-        this.widget._parentWidget.refresh();
-        Navigator.of(context).pop();
+        _newNavigationService.navigateBack(context);
       } else if(action == ActionConstants.SAVE_ACTION){
         noteService.save(this.widget._note);
-        this.widget._parentWidget.refresh();
-        Navigator.of(context).pop();
+        _newNavigationService.navigateBack(context);
       } else if(action == ActionConstants.MARK_ACTION){
         this.widget._note.isStarred = true;
         noteService.save(this.widget._note);

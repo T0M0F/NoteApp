@@ -1,4 +1,5 @@
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,15 @@ class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _OverviewAppbarState extends State<OverviewAppbar> {
+
+  NewNavigationService _newNavigationService;
+
+
+  @override
+  void initState(){
+    super.initState();
+    _newNavigationService = NewNavigationService();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +81,15 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
   }
 
   IconButton _buildLeadingIcon() {
+    return (_newNavigationService.isNotesWithTagMode() || _newNavigationService.isNotesInFolderMode())
+      ? IconButton(
+        icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor), 
+        onPressed: this.widget.onNaviagteBackCallback,
+      ) : IconButton(
+        icon: Icon(Icons.menu, color: Theme.of(context).accentColor), 
+        onPressed: this.widget.onMenuClickCallback,
+    );
+    /*
     return (NavigationService().isNotesWithTagMode() || NavigationService().isNotesInFolderMode())
         ? IconButton(
           icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor), 
@@ -79,5 +98,6 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
           icon: Icon(Icons.menu, color: Theme.of(context).accentColor), 
           onPressed: this.widget.onMenuClickCallback,
         );
+      */
   }
 }

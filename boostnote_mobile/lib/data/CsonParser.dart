@@ -7,6 +7,8 @@ import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 
 class CsonParser {
 
+  // Problem wenn '''''' -> multiline beginnt und endet in der selben Zeile
+
   //Problem, wenn ''' in einem MultiLineString am Ende der Zeile ist 
   /*
   '''
@@ -81,15 +83,16 @@ tags: ["[Gu[cci"
     dynamic value;
     bool skipLine = false;
     int skipUntilIndex;
-
+  
     for(int i = 0; i < splittedByLine.length; i++) {
-
-      if(skipLine && i <= skipUntilIndex){
+      print(skipUntilIndex);
+      print(splittedByLine[i]);
+      if(skipLine && i <= skipUntilIndex){    //Problem manchmal null
         continue;
       } else if (skipLine && i > skipUntilIndex) {
         skipLine = false;
         skipUntilIndex = -1;
-      }
+      }print(('after'));
       //RegExp('[createdAt|updatedAt|type|folder|title|description|snippets|linesHighlighted|name|mode|content|tags|isStarred|isTrashed]( )*:'));  //Außer wenn : in ' ' (oder " " ? )
       //List<String> splittedByDoublePoint = splittedByLine[i].split(':');
       int index = splittedByLine[i].indexOf(":");
@@ -271,7 +274,7 @@ tags: ["[Gu[cci"
 
     return
     '''
-    createdAt: "''' + note.createdAt.toString() + '''"    //Chage Date format
+    createdAt: "''' + note.createdAt.toString() + '''"
     updatedAt: "''' + note.updatedAt.toString() + '''"
     type: "''' + (note is SnippetNote ? 'SNIPPET_NOTE' : 'MARKDOWN_NOTE') + '''"
     folder: "''' + note.folder.name + '''"
@@ -279,8 +282,6 @@ tags: ["[Gu[cci"
     title: "''' + note.title + '''"
     tags: [''' + tagString + '''\n]
     isStarred: ''' + note.isStarred.toString() + '''
-    isTrashed: ''' + note.isTrashed.toString() + ''' 
-  isTrashed: ''' + note.isTrashed.toString() + ''' 
     isTrashed: ''' + note.isTrashed.toString() + ''' 
     linesHighlighted: []
     ''';

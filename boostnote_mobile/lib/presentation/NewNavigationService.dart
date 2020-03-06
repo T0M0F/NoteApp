@@ -4,18 +4,23 @@ import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/folder_overview/FolderOverview.dart';
 import 'package:boostnote_mobile/presentation/screens/markdown_editor/MarkdownEditor.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/NotesInFolderOverview.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/NotesWithTagOverview.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/StarredOverview.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/TrashOverview.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/CodeSnippetEditor.dart';
-import 'package:boostnote_mobile/presentation/screens/snippet_editor/SnippetTestEditor.dart';
 import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class NewNavigationService {
 
   /*TODO
+  Problem: wenn zu trash oder starred navigiert wird, wird init nicht aufgerufen
     Open NOte from Dialog
     Folder und TagOverview
     Navigate Back wenn mehrfach gepresset
@@ -47,16 +52,17 @@ class NewNavigationService {
     this.responsiveWidget = responsiveWidgetState;
   }
 
-  void navigateTo({@required String destinationMode, Folder folder, String tag, Note note, Refreshable parentWidget}) {
+  void navigateTo({@required String destinationMode, Folder folder, String tag, Note note}) {
     //check if destinationMode is known
 
     switch(destinationMode) {
       case NavigationMode2.TRASH_MODE:
         _noteService.findTrashed().then((notes) {
+          print('Trash note lenght: ' + notes.length.toString());
            ResponsiveChild widget = ResponsiveChild(
               smallFlex: 1, 
               largeFlex: 2, 
-              child: Overview(notes: notes)
+              child: TrashOverview(notes: notes)
            );
            navigate(destinationWidget:  widget, destinationMode: destinationMode);
         });
@@ -92,7 +98,7 @@ class NewNavigationService {
            ResponsiveChild widget = ResponsiveChild(
               smallFlex: 1, 
               largeFlex: 2, 
-              child: Overview(notes: notes)
+              child: StarredOverview(notes: notes)
            );
            navigate(destinationWidget:  widget, destinationMode: destinationMode);
         });
@@ -103,7 +109,7 @@ class NewNavigationService {
            ResponsiveChild widget = ResponsiveChild(
               smallFlex: 1, 
               largeFlex: 2, 
-              child: Overview(notes: notes)
+              child: NotesInFolderOverview(notes: notes, selectedFolder: folder,)
            );
            navigate(destinationWidget:  widget, destinationMode: destinationMode);
         });
@@ -114,7 +120,7 @@ class NewNavigationService {
             ResponsiveChild widget = ResponsiveChild(
               smallFlex: 1, 
               largeFlex: 2, 
-              child: Overview(notes: notes)
+              child: NotesWithTagOverview(notes: notes, selectedTag: tag)
             );
             navigate(destinationWidget:  widget, destinationMode: destinationMode);
         });
@@ -124,7 +130,7 @@ class NewNavigationService {
         ResponsiveChild widget = ResponsiveChild(
               smallFlex: 1, 
               largeFlex: 2, 
-              child: MarkdownEditor(note, parentWidget)
+              child: MarkdownEditor(note)
            );
         navigate(destinationWidget:  widget, destinationMode: destinationMode);
         break;
@@ -133,7 +139,7 @@ class NewNavigationService {
         ResponsiveChild widget = ResponsiveChild(
               smallFlex: 1, 
               largeFlex: 2, 
-              child: CodeSnippetEditor(note, parentWidget)
+              child: CodeSnippetEditor(note)
            );
         navigate(destinationWidget:  widget, destinationMode: destinationMode);
         break;
@@ -174,6 +180,7 @@ class NewNavigationService {
       responsiveWidget.update(widgetHistory.last);
     } else {
       print('empty');
+      SystemNavigator.pop();
     }
   }
 

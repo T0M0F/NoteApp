@@ -1,5 +1,6 @@
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:flutter/material.dart';
 
@@ -67,10 +68,10 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
     return result;
   }
 
-  void update(List<ResponsiveChild> widgets) {
+  void update(List<ResponsiveChild> newWidgets) {
     print('update widget');
     setState(() {
-      this.widgets = widgets;
+      this.widgets = newWidgets;
     });
   }
 }

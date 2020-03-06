@@ -1,8 +1,11 @@
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
+import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
@@ -27,7 +30,8 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
 
   NoteService _noteService;
   FolderService _folderService;
-  NavigationService _navigationService;
+  NewNavigationService _newNavigationService;
+  //NavigationService _navigationService;
   List<Folder> _folders;
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -38,7 +42,8 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
 
     _folders = List();
     _noteService = NoteService();
-    _navigationService = NavigationService();
+    _newNavigationService = NewNavigationService();
+   // _navigationService = NavigationService();
     _folderService = FolderService();
 
     _folderService.findAllUntrashed().then((folders) {
@@ -94,7 +99,12 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           _createNote(note);
-          _navigationService.openNote(note, context, this);
+          //_navigationService.openNote(note, context, this);
+          if(note is MarkdownNote) {
+            _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);
+          } else if(note is SnippetNote) {
+            _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);
+          }
         },
       );
   });
@@ -129,7 +139,8 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
   });
 
   void _onFolderTap(Folder folder) {
-    _navigationService.navigateTo(context, NavigationMode.NOTES_IN_FOLDER_MODE, folder: folder);
+    //_navigationService.navigateTo(context, NavigationMode.NOTES_IN_FOLDER_MODE, folder: folder);
+    _newNavigationService.navigateTo(destinationMode: NavigationMode2.NOTES_IN_FOLDER_MODE, folder: folder);
   }
 
   void _onFolderLongPress(Folder folder) {

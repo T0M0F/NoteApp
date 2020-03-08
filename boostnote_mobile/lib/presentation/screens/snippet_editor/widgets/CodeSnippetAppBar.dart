@@ -26,7 +26,7 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Color(0xFFF6F5F5)), 
+        icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
         onPressed: widget.onNavigateBackCallback
       ),
       actions: <Widget>[
@@ -39,8 +39,8 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
             DropdownButton<CodeSnippet> (  
               value: widget.selectedCodeSnippet, 
               underline: Container(), 
-              iconEnabledColor: Colors.white,
-              style: TextStyle(fontSize: 16, color:  Colors.white, fontWeight: FontWeight.bold),
+              iconEnabledColor: Theme.of(context).buttonColor,
+              style: TextStyle(fontSize: 16, color:  Theme.of(context).buttonColor, fontWeight: FontWeight.bold),
               selectedItemBuilder: (BuildContext context) {
                 String snippetName = widget.selectedCodeSnippet.name.length > 10 ? widget.selectedCodeSnippet.name.substring(0,10) : widget.selectedCodeSnippet.name;
                 Widget item = DropdownMenuItem<CodeSnippet>(
@@ -58,7 +58,7 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
                   value: codeSnippet,
                   child: Row(
                     children: <Widget>[
-                      Text(codeSnippet.name, style: TextStyle(fontSize: 16, color:  Colors.black, fontWeight: FontWeight.bold)),
+                      Text(codeSnippet.name, style: TextStyle(fontSize: 16, color:  Theme.of(context).primaryColorDark, fontWeight: FontWeight.bold)),
                       IconButton(
                         icon: Icon(Icons.delete), 
                         onPressed: () {

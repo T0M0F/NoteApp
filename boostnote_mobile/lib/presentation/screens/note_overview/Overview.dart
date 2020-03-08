@@ -323,6 +323,9 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
               note.tags.add(this.widget.selectedTag);
             }
             _presenter.onCreateNotePressed(note);
+           setState(() {
+              _notes.add(note);
+           });
             if(note is SnippetNote) {
               _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);   //TODO: Presenter???
             } else if (note is MarkdownNote) {

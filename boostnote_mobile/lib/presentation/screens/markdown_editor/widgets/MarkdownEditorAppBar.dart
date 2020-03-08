@@ -27,7 +27,7 @@ class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Color(0xFFF6F5F5)), 
+        icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
         onPressed: widget.onNavigateBackCallback,
       ),
       actions: <Widget>[

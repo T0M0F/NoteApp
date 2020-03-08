@@ -10,6 +10,7 @@ import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dar
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/StarredOverview.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/TrashOverview.dart';
+import 'package:boostnote_mobile/presentation/screens/settings/Settings.dart';
 import 'package:boostnote_mobile/presentation/screens/snippet_editor/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
@@ -143,21 +144,33 @@ class NewNavigationService {
            );
         navigate(destinationWidget:  widget, destinationMode: destinationMode);
         break;
+      case NavigationMode2.SETTINGS_MODE:
+        ResponsiveChild widget = ResponsiveChild(
+              smallFlex: 1, 
+              largeFlex: 1, 
+              child: Settings()
+           );
+        navigate(destinationWidget:  widget, destinationMode: destinationMode);
+        break;
     }
   } 
 
   void navigate({@required ResponsiveChild destinationWidget,@required String destinationMode}) {
     //check if destinationMode is known
     List<ResponsiveChild> widgets = List();
-    widgets.addAll(responsiveWidget.widgets);
-
-    if(destinationMode == NavigationMode2.SNIPPET_NOTE || destinationMode == NavigationMode2.MARKDOWN_NOTE) {
-      widgets.first = ResponsiveChild(smallFlex: 0, largeFlex:  widgets.first.largeFlex, child:  widgets.first.child);
-      widgets[1] = destinationWidget;
-      noteIsOpen = true;
-    } else {
-      widgets.first = destinationWidget;
+    if(destinationMode == NavigationMode2.SETTINGS_MODE) {
+      widgets.add(destinationWidget);
       navigationModeHistory.add(destinationMode);
+    } else {
+      widgets.addAll(responsiveWidget.widgets);
+      if(destinationMode == NavigationMode2.SNIPPET_NOTE || destinationMode == NavigationMode2.MARKDOWN_NOTE) {
+        widgets.first = ResponsiveChild(smallFlex: 0, largeFlex:  widgets.first.largeFlex, child:  widgets.first.child);
+        widgets[1] = destinationWidget;
+        noteIsOpen = true;
+      } else {
+        widgets.first = destinationWidget;
+        navigationModeHistory.add(destinationMode);
+      }
     }
     
     widgetHistory.add(widgets);
@@ -212,5 +225,6 @@ abstract class NavigationMode2 {
   static const String NOTES_WITH_TAG_MODE = 'Notes with Tag';
   static const String SNIPPET_NOTE = 'Snippet Note';
   static const String MARKDOWN_NOTE = 'Markdown Note';
+  static const String SETTINGS_MODE = 'Settings';
 
 }

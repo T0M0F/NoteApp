@@ -121,6 +121,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text('Settings'),
         onTap: () {
           Navigator.pop(context);
+          NewNavigationService().navigateTo(destinationMode: NavigationMode2.SETTINGS_MODE);
         },
       ),
       ListTile(

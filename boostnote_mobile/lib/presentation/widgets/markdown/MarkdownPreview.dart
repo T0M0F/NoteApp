@@ -32,6 +32,12 @@ class MarkdownPreviewState extends State<MarkdownPreview>{
           this.widget.launchUrlCallback(url);
         },
         extensionSet: ExtensionSet.gitHubFlavored,
+        checkboxBuilder: (bool){
+          return Checkbox(
+            value: bool, 
+            onChanged: null);
+        },
+        
       )
     )
   );

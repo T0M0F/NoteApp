@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class _CreateTagDialogState extends State<CreateTagDialog> {
     return AlertDialog(
       title: Container( 
         alignment: Alignment.center,
-        child: Text('Create a Tag', style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate("create_tags"), style: TextStyle(color: Colors.black))
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: StatefulBuilder(

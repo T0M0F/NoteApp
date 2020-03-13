@@ -6,6 +6,7 @@ import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
@@ -53,7 +54,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   bool _tilesAreExpanded = false;
   bool _showListView = true;
 
-  String _titleEditMode = 'Select Notes';
+  String _titleEditMode;
 
   static const String EDIT_ACTION = 'Edit';
   static const String EXPAND_ACTION = 'Expand';
@@ -67,6 +68,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   void initState(){
     super.initState();
     print('init Overview');
+
     _presenter = OverviewPresenter(this);
     //_navigationService = NavigationService();
     _newNavigationService = NewNavigationService();
@@ -130,6 +132,8 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   @override
   Widget build(BuildContext context) {
 
+     _titleEditMode  = AppLocalizations.of(context).translate('select_notes');
+
     if(_newNavigationService.isNotesInFolderMode()){
       _pageTitle = this.widget.selectedFolder.name;
     } else if(_newNavigationService.isNotesWithTagMode()) {
@@ -155,9 +159,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       return OverviewEditModeAppbar(
         titleEditMode: _titleEditMode,
         isEditMode: _isEditMode,
-        onMenuClickCallback: () {
-          Scaffold.of(context).openDrawer();
-        },
+        onMenuClickCallback: () { },
         onCancelClickCallback: () {
           setState(() {
             _isEditMode = false;
@@ -166,7 +168,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     } else {
       return OverviewAppbar(
         pageTitle: _pageTitle,
-        actions: {'EDIT_ACTION':EDIT_ACTION, 'EXPAND_ACTION':EXPAND_ACTION, 'COLLPASE_ACTION':COLLPASE_ACTION, 'SHOW_LISTVIEW_ACTION': SHOW_LISTVIEW_ACTION, 'SHOW_GRIDVIEW_ACTION' : SHOW_GRIDVIEW_ACTION},
+        actions: {'EDIT_ACTION': EDIT_ACTION, 'EXPAND_ACTION': EXPAND_ACTION, 'COLLPASE_ACTION': COLLPASE_ACTION, 'SHOW_LISTVIEW_ACTION': SHOW_LISTVIEW_ACTION, 'SHOW_GRIDVIEW_ACTION' : SHOW_GRIDVIEW_ACTION},
         listTilesAreExpanded: _tilesAreExpanded,
         showListView: _showListView,
         onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
@@ -257,7 +259,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     
       setState(() {
           if(_selectedNotes.length == 0){
-          _titleEditMode = 'Select Notes';
+          _titleEditMode = AppLocalizations.of(context).translate('select_notes');
         } else if (_selectedNotes.length == notes.length){
           _titleEditMode = 'All Notes Selected';
         } else if (_selectedNotes.length == 1) {

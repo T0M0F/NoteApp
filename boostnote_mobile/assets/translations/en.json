@@ -5,6 +5,7 @@
     "starredNotes":"Starred",
     "trash":"Trash",
     "settings":"Settings",
+    "theme":"Theme",
     "about":"About",
     "edit":"Edit",
     "expand":"Expanf",
@@ -28,11 +29,13 @@
     "close":"Close",
     "delete":"Delete",
     "mark_note":"Mark Notee",
+    "select_notes":"Select Notes",
     "selected_notes":"Selected Notes",
     "create_folder":"Create a Folder",
     "create_tags":"Create a Tag",
     "rename_folder":"Rename Folder",
     "remove_folder":"Delete Folder",
     "rename_tag":"Rename Tag",
-    "remove_tag":"Delete Tag"
+    "remove_tag":"Delete Tag",
+    "cant_change_foldername":"Folder cant't be changed"
 }

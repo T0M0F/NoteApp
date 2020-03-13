@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 
 class CreateNoteDialog extends StatefulWidget {
 
+  //TODO CONTINUE HERE
+
   static const int _MARKDOWNNOTE = 1;
   static const int _SNIPPETNOTE = 2;
 

@@ -4,16 +4,15 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-class Translation {
+class Translation {  //Hat nix in data zu suchen
 
+  //https://www.didierboelens.com/2018/04/internationalization---make-an-flutter-application-multi-lingual/
   //https://www.developerlibs.com/2019/03/flutter-localization-or-multi-language-example.html
   
   static Map<dynamic, dynamic> _values;
   Locale locale;
 
-  Translation(Locale locale) {
-    this.locale = locale;
-  }
+  Translation(this.locale);
 
   static Translation of(BuildContext context) {
     return Localizations.of<Translation>(context, Translation);

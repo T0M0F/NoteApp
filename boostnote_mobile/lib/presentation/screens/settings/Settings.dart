@@ -3,6 +3,7 @@ import 'package:boostnote_mobile/data/entity/BoostnoteEntity.dart';
 import 'package:boostnote_mobile/presentation/BoostnoteTheme.dart';
 import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/ThemeNotifier.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +66,7 @@ class SettingsState extends State<Settings> {
               Padding(
                 padding: EdgeInsets.only(left: 20, right: 30),
                 child: Text(
-                  'Theme', 
+                  AppLocalizations.of(context).translate('theme'), 
                   style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)
                 ),
               ),
@@ -86,21 +87,6 @@ class SettingsState extends State<Settings> {
                     ),
           ],
         ),
-        Row(
-          children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(left: 20, right: 30),
-                child: Text(
-                  'Language', 
-                  style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)
-                ),
-              ),
-              Text(
-                'Englisch', 
-                style: TextStyle(fontSize: 18, color: Colors.black54, fontWeight: FontWeight.bold)
-              ),
-          ],
-        )
       ],
     );
   }

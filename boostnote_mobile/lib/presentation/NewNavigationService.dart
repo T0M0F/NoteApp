@@ -146,10 +146,10 @@ class NewNavigationService {
         break;
       case NavigationMode2.SETTINGS_MODE:
         ResponsiveChild widget = ResponsiveChild(
-              smallFlex: 1, 
-              largeFlex: 1, 
-              child: Settings()
-           );
+          smallFlex: 1, 
+          largeFlex: 1, 
+          child: Settings()
+        );
         navigate(destinationWidget:  widget, destinationMode: destinationMode);
         break;
     }
@@ -174,12 +174,11 @@ class NewNavigationService {
     }
     
     widgetHistory.add(widgets);
-    NavigationService().navigationMode = destinationMode; //delete
+    //NavigationService().navigationMode = destinationMode; //delete
     responsiveWidget.update(widgets);
   }
 
   void navigateBack(BuildContext context) {
-    print('back');
     widgetHistory.removeLast();
 
     if(noteIsOpen){
@@ -189,10 +188,9 @@ class NewNavigationService {
     }
 
     if(widgetHistory.isNotEmpty) {
-      NavigationService().navigationMode = navigationModeHistory.last;  //delete
+     // NavigationService().navigationMode = navigationModeHistory.last;  //delete
       responsiveWidget.update(widgetHistory.last);
     } else {
-      print('empty');
       SystemNavigator.pop();
     }
   }

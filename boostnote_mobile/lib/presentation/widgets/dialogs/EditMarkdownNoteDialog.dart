@@ -1,4 +1,5 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class EditMarkdownNoteDialog extends StatelessWidget {    //TODO: Stateful Widget?
@@ -17,7 +18,7 @@ class EditMarkdownNoteDialog extends StatelessWidget {    //TODO: Stateful Widge
     return AlertDialog(
       title: Container( 
         alignment: Alignment.center,
-        child: Text('Edit Note', style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate("edit"), style: TextStyle(color: Colors.black))
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: StatefulBuilder(

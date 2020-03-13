@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,12 +16,12 @@ class FolderOverviewBottomSheet extends StatelessWidget {
         children: <Widget>[
             ListTile(
               leading:  Icon(Icons.delete),
-              title:  Text('Remove Folder'),
+              title:  Text(AppLocalizations.of(context).translate('remove_folder')),
               onTap: removeFolderCallback
             ),
             ListTile(
               leading:  Icon(Icons.folder),
-              title:  Text('Rename Folder'),
+              title:  Text(AppLocalizations.of(context).translate('rename_folder')),
               onTap: renameFolderCallback
             ),
         ],

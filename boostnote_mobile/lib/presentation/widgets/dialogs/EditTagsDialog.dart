@@ -1,5 +1,6 @@
 
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +44,7 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       title: Container( 
         alignment: Alignment.center,
-        child: Text('Select Tags', style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate("select_tags"), style: TextStyle(color: Colors.black))
       ),
       content: ConstrainedBox(
         constraints: new BoxConstraints(
@@ -57,7 +58,7 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
                 SizedBox(
                   width: 160,
                   child:  TextField(
-                    decoration: InputDecoration(hintText: 'Add a new Tag', hintStyle: TextStyle(color: Colors.grey)),
+                    decoration: InputDecoration(hintText: AppLocalizations.of(context).translate("add_tag"), hintStyle: TextStyle(color: Colors.grey)),
                     textInputAction: TextInputAction.done,
                     controller: _textEditingController,
                     style: TextStyle(color: Colors.black),
@@ -108,18 +109,18 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
         ),
        ),
       actions: <Widget>[
-        MaterialButton(
+        MaterialButton(   //Auslagern
           minWidth:100,
-          child: Text('Cancel', style: TextStyle(color: Colors.black),),
+          child: Text(AppLocalizations.of(context).translate("cancel"), style: TextStyle(color: Colors.black),),
           onPressed: (){
             Navigator.of(context).pop();
           }
         ),
-        MaterialButton(
+        MaterialButton(  //Auslagern
           minWidth:100,
           elevation: 5.0,
           color: Theme.of(context).accentColor,
-          child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
+          child: Text(AppLocalizations.of(context).translate("save"), style: TextStyle(color: Color(0xFFF6F5F5))),
           onPressed: (){
             this.widget.saveCallback(_selectedTags);
           }

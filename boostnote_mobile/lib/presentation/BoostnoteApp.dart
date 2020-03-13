@@ -1,11 +1,7 @@
 
-import 'package:boostnote_mobile/business_logic/model/Boostnote.dart';
-import 'package:boostnote_mobile/business_logic/model/Note.dart';
-import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/data/CsonParser.dart';
-import 'package:boostnote_mobile/presentation/BoostnoteTheme.dart';
 import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/ThemeNotifier.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
@@ -16,11 +12,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 class BoostnoteApp extends StatefulWidget {
-
-  List<Locale> supportedLanguages =  [
-    const Locale("en", ""),
-    const Locale("ger", ""),
-  ];
 
   @override
   _BoostnoteAppState createState() => _BoostnoteAppState();
@@ -76,11 +67,20 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
           hintColor: Colors.white,
         ),*/
         localizationsDelegates: [
+            AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-        supportedLocales: this.widget.supportedLanguages,
+            GlobalWidgetsLocalizations.delegate
+        ],
+        supportedLocales: AppLocalizations.supportedLanguages,
+        localeResolutionCallback: (locale, supportedLocales) {
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale.languageCode && supportedLocale.countryCode == locale.countryCode) {
+              return supportedLocale;
+            }
+          }
+          print(locale.languageCode + ' not supported. Load default: ' + supportedLocales.first.languageCode);
+          return supportedLocales.first;
+        },
         initialRoute: '/',
         routes: {
           '/test': (context) => Overview(),
@@ -90,7 +90,7 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
   }
 
   Widget _buildBody() {
-    Widget widget = WillPopScope(
+    return WillPopScope(
       child: ResponsiveWidget(widgets: <ResponsiveChild> [
         ResponsiveChild(
           smallFlex: 1, 
@@ -107,8 +107,10 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         )
       ]
       ), 
-      onWillPop: () {NewNavigationService().navigateBack(context);});
-    return widget;
+      onWillPop: () {
+        NewNavigationService().navigateBack(context);
+      }
+    );
   }
 
 }

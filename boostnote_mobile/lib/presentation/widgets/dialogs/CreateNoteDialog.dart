@@ -1,5 +1,6 @@
 
 import 'package:boostnote_mobile/data/internationalization%20%20%20%20/Translation.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       title: Container( 
         alignment: Alignment.center,
-        child: Text(Translation.of(context).text("make_a_note"), style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate("make_a_note"), style: TextStyle(color: Colors.black))
       ),
       content: SingleChildScrollView(
         child: Column(
@@ -44,7 +45,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
               style: TextStyle(color: Colors.black),
             ),
             RadioListTile(
-              title: Text(Translation.of(context).text("markdown_note")),
+              title: Text(AppLocalizations.of(context).translate("markdown_note")),
               value: _createMarkdowNote,
               groupValue: _createMarkdowNote,
               onChanged: (bool value){
@@ -55,7 +56,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
               },
             ),
             RadioListTile(
-              title: Text(Translation.of(context).text("snippet_note")),
+              title: Text(AppLocalizations.of(context).translate("snippet_note")),
               value: !_createMarkdowNote,
               groupValue: _createMarkdowNote,
               onChanged: (bool value){

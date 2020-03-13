@@ -5,6 +5,7 @@
     "starredNotes":"Favoriten",
     "trash":"Papierkorb",
     "settings":"Einstellungen",
+    "theme":"Theme",
     "about":"Über",
     "edit":"Bearbeiten",
     "expand":"Ausklappen",
@@ -28,11 +29,13 @@
     "close":"Schließen",
     "delete":"Löschen",
     "mark_note":"Notiz markieren",
+    "select_notes":"Notizen auswählen",
     "selected_notes":"Ausgewählte Notizen",
     "create_folder":"Ordner erstellen",
     "create_tags":"Tag erstellen",
     "rename_folder":"Ordner umbennen",
     "remove_folder":"Ordner löschen",
     "rename_tag":"Tag umbennen",
-    "remove_tag":"Tag löschen"
+    "remove_tag":"Tag löschen",
+    "cant_change_foldername":"Umbennung nicht möglich"
 }

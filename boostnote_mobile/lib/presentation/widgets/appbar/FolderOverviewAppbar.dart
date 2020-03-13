@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class FolderOverviewAppbar extends StatelessWidget implements PreferredSizeWidge
   @override
   Widget build(BuildContext context) {
      return AppBar(
-      title: Text('Folders'),
+      title: Text(AppLocalizations.of(context).translate('folders'),),
       leading: IconButton(
         icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
         onPressed: onMenuClickCallback,

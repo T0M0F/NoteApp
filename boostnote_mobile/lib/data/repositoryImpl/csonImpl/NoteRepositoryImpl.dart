@@ -103,7 +103,7 @@ class NoteRepositoryImpl extends NoteRepository {
       file = File(path + '/' + note.id.toString());
       file.create();
     } 
-    print('json: ' + csonParser.convertToCson(note));
+    print('cson: ' + csonParser.convertToCson(note));
     file.writeAsString(csonParser.convertToCson(note));
 
     _folderRepository.save(note.folder);

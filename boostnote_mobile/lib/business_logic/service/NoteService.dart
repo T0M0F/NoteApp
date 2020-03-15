@@ -6,7 +6,7 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
-import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/NoteRepositoryImpl.dart';
+import 'package:boostnote_mobile/data/repositoryImpl/csonImpl/NoteRepositoryImpl.dart';
 
 class NoteService {
 

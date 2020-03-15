@@ -3,6 +3,7 @@ import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/ThemeNotifier.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
+import 'package:boostnote_mobile/presentation/widgets/appbar/CustomAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';

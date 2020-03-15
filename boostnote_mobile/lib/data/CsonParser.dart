@@ -18,6 +18,10 @@ class CsonParser {
   '''
   */
 
+  //Check for multiple escapes like \\ or \\\ in multiline strings
+  //testen ob [] oder {} probleme macht
+  
+
   String cson = '''
   updatedAt: "2020-01-10T08:53:46.162Z"
   description:       \''' rfgew
@@ -137,18 +141,25 @@ tags: ["[Gu[cci"
             }
           }
           if(splittedByLine[i2].trimRight().endsWith(']')){   //Außer wenn escaped
-            splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0,splittedByLine[i2].trimRight().length-2);
-            splittedByLine[i2] = splittedByLine[i2].trimLeft().substring(1);
-            splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].length-1);
+            splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0,splittedByLine[i2].trimRight().length-1);
+            //splittedByLine[i2] = splittedByLine[i2].trimLeft().substring(1);
+           // splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].length-1);
             tags.add(splittedByLine[i2]);
             skipUntilIndex = i2;
             break;
           } 
-           splittedByLine[i2] = splittedByLine[i2].trimLeft().substring(1);
+          // splittedByLine[i2] = splittedByLine[i2].trimLeft().substring(1);
+          //  splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].length-1);
+          print('tag: ' + splittedByLine[i2].trim() + splittedByLine[i2].trim().length.toString());
+          if(splittedByLine[i2].trim().length > 2){
+            splittedByLine[i2] = splittedByLine[i2].trimLeft().substring(1);
             splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].length-1);
-          tags.add(splittedByLine[i2]);
-         
+            if(splittedByLine[i2].trim().length > 0){
+               tags.add(splittedByLine[i2]);
+            }
+          } 
         }
+        tags.removeWhere((tag) => tag.trim().isEmpty);
         value = tags;
 
       } else if(key.contains('snippets')) {
@@ -196,15 +207,21 @@ tags: ["[Gu[cci"
         if(value is String) {
           String s = value;
           if(s.trimLeft().startsWith('\'\'\'')){   //Außer wenn escaped    //IDEE: check if left getrimmter String mit ''' startet. Wenn ja dann: multiline true -> ''' als Content interpretieren else ...
-            skipLine = true;
-            value = s.trimLeft().substring(3, s.trimLeft().length);
-            for(int i2 = i+1; i2 < splittedByLine.length; i2++){
-                if(splittedByLine[i2].trimRight().endsWith('\'\'\'')){    //Problem, wenn in Zeile am Ende ''' ist
-                    value = value + splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].trimRight().length-3);
-                    skipUntilIndex = i2;
-                    break;
-                }
-                value = value + '\n' + splittedByLine[i2];
+            if(s.trimRight().endsWith('\'\'\'') && s.trim().length >= 6 && !s.trimRight().endsWith('\\\'\'\'')){  //Check for multiple escapes like \\ or \\\
+              print('ydhfsk');
+              String a = s.trimLeft().substring(3, s.trimLeft().length);
+              value = a.trimRight().substring(0, a.trimRight().length-3);
+            } else {
+              skipLine = true;
+              value = s.trimLeft().substring(3, s.trimLeft().length);
+              for(int i2 = i+1; i2 < splittedByLine.length; i2++){
+                  if(splittedByLine[i2].trimRight().endsWith('\'\'\'') && !splittedByLine[i2].trimRight().endsWith('\\\'\'\'')){    //Problem, wenn in Zeile am Ende ''' ist
+                      value = value + '\n' + splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].trimRight().length-3);
+                      skipUntilIndex = i2;
+                      break;
+                  }
+                  value = value + '\n' + splittedByLine[i2];
+              }
             }
           } else {
             if(splittedByDoublePoint[1].trimLeft().startsWith('"')){
@@ -229,11 +246,13 @@ tags: ["[Gu[cci"
   Note convertToNote(Map<String, dynamic> map) {
     Note note;
 
+    //replace ecscape chars with nothing
+
     if(map['type'] == 'SNIPPET_NOTE') {
       note = SnippetNote(
         createdAt:  DateTime.parse(map['createdAt']),
         updatedAt:   DateTime.parse(map['updatedAt']),
-        id: 1,
+        id: DateTime.parse(map['createdAt']).hashCode,
         title: map['title'],
         description: map['description'],
         folder: Folder(name: map['folder'], id: map['folder'].hashCode),
@@ -250,7 +269,7 @@ tags: ["[Gu[cci"
       note = MarkdownNote(
         createdAt:  DateTime.parse(map['createdAt']),
         updatedAt:   DateTime.parse(map['updatedAt']),
-        id: 1,
+        id: DateTime.parse(map['createdAt']).hashCode,
         title: map['title'],
         content: map['content'],
         folder: Folder(name: map['folder'], id: map['folder'].hashCode),
@@ -269,8 +288,18 @@ tags: ["[Gu[cci"
 
   String convertMarkdownNoteToCson(MarkdownNote note){
 
-    String tagString = '';
-    note.tags.forEach((tag) => tagString = tagString + '\n"' + tag + '"');
+    note.content = note.content.replaceAll(new RegExp(r'\\'), '\\\\');
+    note.content = note.content.replaceAll('\'\'\'', '\\\'\'\'');
+
+
+    String tagString;
+    if(note.tags.isEmpty){
+      tagString = '[]\n';
+    } else {
+      tagString = '[';
+      note.tags.forEach((tag) => tagString = tagString + '\n"' + tag + '"');
+      tagString = tagString + '\n]\n';
+    }
 
     return
     '''
@@ -280,20 +309,33 @@ tags: ["[Gu[cci"
     folder: "''' + note.folder.name + '''"
     content: \'\'\'''' + note.content + '''\'\'\'
     title: "''' + note.title + '''"
-    tags: [''' + tagString + '''\n]
-    isStarred: ''' + note.isStarred.toString() + '''
-    isTrashed: ''' + note.isTrashed.toString() + ''' 
+    tags: ''' + tagString + '''
+    isStarred: ''' + note.isStarred.toString() + '''\n
+    isTrashed: ''' + note.isTrashed.toString() + '''\n
     linesHighlighted: []
     ''';
   }
 
   String convertSnippetNoteToCson(SnippetNote note){
+
+    note.description = note.description.replaceAll(new RegExp(r'\\'), '\\\\');
+    note.description = note.description.replaceAll('\'\'\'', '\\\'\'\'');
     
-    String tagString = '';
-    note.tags.forEach((tag) => tagString = tagString + '\n"' + tag + '"');
+    String tagString;
+    if(note.tags.isEmpty){
+      tagString = '[]';
+    } else {
+      tagString = '[';
+      note.tags.forEach((tag) => tagString = tagString + '\n"' + tag + '"');
+      tagString = tagString + '\n]\n';
+    }
 
     String snippets = '';
     note.codeSnippets.forEach((snippet) {
+
+       snippet.content = snippet.content.replaceAll(new RegExp(r'\\'), '\\\\');
+       snippet.content = snippet.content.replaceAll('\'\'\'', '\\\'\'\'');
+
       return
       '''
       linesHighlighted: []
@@ -314,7 +356,7 @@ tags: ["[Gu[cci"
       ''' + snippets + '''
     ]
     title: "''' + note.title + '''"
-    tags: [''' + tagString + '''\n]
+    tags: ''' + tagString + '''
     isStarred: ''' + note.isStarred.toString() + '''
     isTrashed: ''' + note.isTrashed.toString() + ''' 
     ''';

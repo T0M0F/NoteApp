@@ -46,8 +46,8 @@
     "rename_tag":"Tag umbennen",
     "remove_tag":"Tag löschen",
     "cant_change_foldername":"Umbennung nicht möglich",
-    "yes":"yes",
-    "no":"no",
+    "yes":"Ja",
+    "no":"Nein",
     "description":"Beschreibung",
     "seconds_ago":"Kürzlich",
     "min_ago":"Kürzlich"

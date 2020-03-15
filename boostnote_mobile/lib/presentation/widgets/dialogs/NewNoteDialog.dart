@@ -2,6 +2,7 @@ import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +32,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
     return AlertDialog(
       title: Container( 
         alignment: Alignment.center,
-        child: Text('Make a Note', style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate('make_a_note'), style: TextStyle(color: Colors.black))
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: StatefulBuilder(
@@ -44,7 +45,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
                   style: TextStyle(color: Colors.black),
                 ), 
                 RadioListTile(
-                  title: Text('Markdown Note'),
+                  title: Text(AppLocalizations.of(context).translate('markdown_note')),
                   value: 1,
                   groupValue: groupvalue,
                   onChanged: (int value) {
@@ -54,7 +55,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
                   },
                 ),
                 RadioListTile(
-                  title: Text('Snippet Note'),
+                  title: Text(AppLocalizations.of(context).translate('snippet_note')),
                   groupValue: groupvalue,
                   value: 2,
                   onChanged: (int value) {

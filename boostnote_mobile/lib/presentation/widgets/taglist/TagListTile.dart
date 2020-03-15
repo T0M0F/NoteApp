@@ -1,5 +1,6 @@
 
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class TagListTile extends StatefulWidget {
@@ -77,7 +78,7 @@ class _TagListTileState extends State<TagListTile> {
       child:  Padding(
         padding: EdgeInsets.only(left: 30),
         child: Text(
-          _numberOfNotesWithTag.toString() + ' Notes', 
+          _numberOfNotesWithTag.toString() + ' ' + AppLocalizations.of(context).translate('notes'),
           maxLines: 2,
           style: TextStyle(fontSize: 16.0)
         )

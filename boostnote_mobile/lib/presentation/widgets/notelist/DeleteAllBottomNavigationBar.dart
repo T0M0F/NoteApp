@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class DeleteAllBottomNavigationBar extends StatelessWidget {
                   child: Icon(Icons.delete, color: Colors.white)
                 ),
                 Text(
-                  'Delete All',
+                  AppLocalizations.of(context).translate('delete_all'),
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 )
               ],

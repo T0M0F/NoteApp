@@ -3,6 +3,7 @@ import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/presentation/converter/DateTimeConverter.dart';
 import 'package:boostnote_mobile/presentation/converter/TagListConverter.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -23,14 +24,14 @@ class NoteGridTile extends StatelessWidget {
     if(expanded) {
       widgets = <Widget>[
         _buildHeaderRow(),
-        _buildBody(),
-        _buildFooterRow1(),
+        _buildBody(context),
+        _buildFooterRow1(context),
         _buildFooterRow2()
       ];
     } else {
       widgets = <Widget>[
         _buildHeaderRow(),
-        _buildBody(),
+        _buildBody(context),
         _buildFooterRow2()
       ];
     }  
@@ -74,7 +75,7 @@ class NoteGridTile extends StatelessWidget {
     ); 
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     Widget widget;
 
     if(note is SnippetNote) {
@@ -90,13 +91,13 @@ class NoteGridTile extends StatelessWidget {
             maxLines: 3,
           );
       } else {
-        widget = Text('\nNo Content\n', style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic));
+        widget = Text('\n' + AppLocalizations.of(context).translate('no_data') + '\n', style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic));
       }
 
     } else {
       MarkdownNote markdownNote = note;
       if(markdownNote.content.trim().isEmpty) {
-        widget = Text('\nNo Content\n', style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic));
+        widget = Text('\n' + AppLocalizations.of(context).translate('no_data') + '\n', style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic));
       } else {
         widget = Text(
             markdownNote.content,
@@ -115,7 +116,7 @@ class NoteGridTile extends StatelessWidget {
 
   }
 
-  Widget _buildFooterRow1() {
+  Widget _buildFooterRow1(BuildContext context) {
     if(note.tags.isNotEmpty) {
       return Padding(
         padding: EdgeInsets.only(bottom: 5),
@@ -134,7 +135,7 @@ class NoteGridTile extends StatelessWidget {
         padding: EdgeInsets.only(bottom: 5),
         child: Align(
           alignment: Alignment.centerLeft,
-          child: Text('No Tags', style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey)),
+          child: Text(AppLocalizations.of(context).translate('no_tags'), style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey)),
         )
       );
     }

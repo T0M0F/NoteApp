@@ -2,6 +2,7 @@
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
@@ -53,8 +54,8 @@ class NavigationDrawerState extends State<NavigationDrawer> {
           child: DrawerHeader(
             child: Row(
               children: <Widget>[
-                Text("Boostnote ", style: TextStyle(fontSize: 20, color: Theme.of(context).accentColor)),
-                Text("Mobile", style: TextStyle(fontSize: 20, color: Color(0xFFF6F5F5))),
+                Text(AppLocalizations.of(context).translate('boostnote') + ' ', style: TextStyle(fontSize: 20, color: Theme.of(context).accentColor)),
+                Text(AppLocalizations.of(context).translate('mobile'), style: TextStyle(fontSize: 20, color: Color(0xFFF6F5F5))),
               ],
             ),
             decoration: BoxDecoration(
@@ -64,7 +65,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
       ),
      ListTile(
             leading: Icon(Icons.description, color: _newNavigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-            title: Text('All Notes', style: TextStyle(color: _newNavigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+            title: Text(AppLocalizations.of(context).translate('all_notes'), style: TextStyle(color: _newNavigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
             onTap: () {
               Navigator.pop(context);
               //navigationService.navigateTo(context, NavigationMode.ALL_NOTES_MODE, overviewView: this.widget.overviewView);
@@ -73,7 +74,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
       ),
       ListTile(
         leading: Icon(Icons.folder, color: _newNavigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text('Folders', style: TextStyle(color: _newNavigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        title: Text(AppLocalizations.of(context).translate('folders'), style: TextStyle(color: _newNavigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
           //navigationService.navigateTo(context, NavigationMode.FOLDERS_MODE);
@@ -82,7 +83,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
       ),
       ListTile(
         leading: Icon(Icons.label, color: _newNavigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text('Tags', style: TextStyle(color: _newNavigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color: _newNavigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
           //navigationService.navigateTo(context, NavigationMode.TAGS_MODE);
@@ -91,7 +92,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
       ),
       ListTile(
         leading: Icon(Icons.star, color: _newNavigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text('Starred', style: TextStyle(color: _newNavigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        title: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color: _newNavigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
           //navigationService.navigateTo(context, NavigationMode.STARRED_NOTES_MODE, overviewView: this.widget.overviewView);
@@ -100,7 +101,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
       ),
       ListTile(
         leading: Icon(Icons.delete, color: _newNavigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text('Trash', style: TextStyle(color: _newNavigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        title: Text(AppLocalizations.of(context).translate('trash'), style: TextStyle(color: _newNavigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
           //navigationService.navigateTo(context, NavigationMode.TRASH_MODE, overviewView: this.widget.overviewView);
@@ -118,7 +119,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
       ),
       ListTile(
         leading: Icon(Icons.settings, color: Color(0xFFF6F5F5)),
-        title: Text('Settings'),
+        title: Text(AppLocalizations.of(context).translate('settings')),
         onTap: () {
           Navigator.pop(context);
           NewNavigationService().navigateTo(destinationMode: NavigationMode2.SETTINGS_MODE);
@@ -126,7 +127,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
       ),
       ListTile(
         leading: Icon(Icons.info, color: Color(0xFFF6F5F5)),
-        title: Text('About'),
+        title: Text(AppLocalizations.of(context).translate('about')),
         onTap: () {
           Navigator.pop(context);
         },

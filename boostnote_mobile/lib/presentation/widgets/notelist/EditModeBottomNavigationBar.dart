@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -21,7 +22,7 @@ class EditModeBottomNavigationBar extends  StatelessWidget {
             child: Column(
               children: <Widget>[
                 Icon(Icons.check),
-                Text('Select All')
+                Text( AppLocalizations.of(context).translate('select_all'))
               ],
             ),
             onPressed: selecetAllNotesCallback
@@ -30,7 +31,7 @@ class EditModeBottomNavigationBar extends  StatelessWidget {
             child: Column(
               children: <Widget>[
                 Icon(Icons.delete),
-                Text('Delete')
+                Text(AppLocalizations.of(context).translate('delete'),)
               ],
             ),
             onPressed: deleteCallback

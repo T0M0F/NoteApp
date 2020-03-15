@@ -10,7 +10,7 @@ class TranslationsDelegate extends LocalizationsDelegate<Translation> {     //Ha
 
   @override
   bool isSupported(Locale locale) {
-    return BoostnoteApp().supportedLanguages.contains(locale.languageCode);
+    //return BoostnoteApp().supportedLanguages.contains(locale.languageCode);
   }
 
   @override

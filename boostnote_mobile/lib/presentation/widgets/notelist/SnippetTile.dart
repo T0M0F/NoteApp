@@ -3,6 +3,7 @@
 import 'package:boostnote_mobile/presentation/converter/DateTimeConverter.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/presentation/converter/TagListConverter.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +28,7 @@ class SnippetTile extends StatelessWidget{
     if (expandedAndNotEmpty) {
       widgets = <Widget>[
         buildHeaderRow(),
-        buildBodyRow(),
+        buildBodyRow(context),
         buildFooterRow(),
         Divider(
           height: 1.0,
@@ -37,7 +38,7 @@ class SnippetTile extends StatelessWidget{
     } else {
       widgets = <Widget>[
         buildHeaderRow(),
-        buildBodyRow(),
+        buildBodyRow(context),
         Divider(
           height: 1.0,
           thickness: 1,
@@ -76,24 +77,24 @@ class SnippetTile extends StatelessWidget{
     ),
   );
 
-  Widget buildBodyRow() => Padding(
+  Widget buildBodyRow(BuildContext context) => Padding(
     padding: expandedAndNotEmpty ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
     child: Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        getPreviewText(note), 
+        getPreviewText(note, context), 
         maxLines: 2,
-        style: getPreviewText(note) == 'No Content' ? TextStyle(fontSize: 16.0, fontStyle: FontStyle.italic) : TextStyle(fontSize: 16.0)
+        style: getPreviewText(note, context) == AppLocalizations.of(context).translate('no_data') ? TextStyle(fontSize: 16.0, fontStyle: FontStyle.italic) : TextStyle(fontSize: 16.0)
       ),
     )
   );
 
-  String getPreviewText(SnippetNote note) {
+  String getPreviewText(SnippetNote note, BuildContext context) {
     if(note.description.trim().isEmpty) {
        if(note.codeSnippets.isNotEmpty) {
          return note.codeSnippets.first.content;
        } 
-       return 'No Content';
+       return AppLocalizations.of(context).translate('no_data');
     } else {
       return note.description;
     }

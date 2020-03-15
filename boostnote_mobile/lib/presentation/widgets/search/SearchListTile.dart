@@ -1,6 +1,7 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -21,16 +22,16 @@ class SearchListTile extends StatelessWidget {
         style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)
       ),
       subtitle: Text(
-        _getSubtitle(note),
+        _getSubtitle(note, context),
         maxLines: 2,
-        style: _getSubtitle(note) == 'No Content' ? TextStyle(fontSize: 16.0, color: Colors.black, fontStyle: FontStyle.italic) 
+        style: _getSubtitle(note,context) == AppLocalizations.of(context).translate('no_data')  ? TextStyle(fontSize: 16.0, color: Colors.black, fontStyle: FontStyle.italic) 
         : TextStyle(fontSize: 16.0, color: Colors.black),
       ),
       onTap: () => onTapCallback(note),
     );
   }
   
-  String _getSubtitle(Note note) {
+  String _getSubtitle(Note note, BuildContext context) {
     if(note is MarkdownNote){
       if(note.content.trim().isNotEmpty){
         return note.content;
@@ -42,7 +43,7 @@ class SearchListTile extends StatelessWidget {
         return note.codeSnippets.first.content;
       }
     }
-    return 'No Content';
+    return AppLocalizations.of(context).translate('no_data') ;
   }
 
 }

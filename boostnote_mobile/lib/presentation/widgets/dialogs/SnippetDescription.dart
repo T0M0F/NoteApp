@@ -1,4 +1,5 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -31,7 +32,7 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
   Container _buildTitle() {
     return Container( 
       alignment: Alignment.center,
-      child: Text('Description', style: TextStyle(color: Colors.black))
+      child: Text(AppLocalizations.of(context).translate('description'), style: TextStyle(color: Colors.black))
     );
   }
 
@@ -48,7 +49,7 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(0),
               border: InputBorder.none,
-              hintText: 'Note'),
+              hintText: AppLocalizations.of(context).translate('note')),
               onChanged: (String text){
                 
             },

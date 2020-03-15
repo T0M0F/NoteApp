@@ -2,6 +2,7 @@
 import 'package:boostnote_mobile/presentation/converter/DateTimeConverter.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/presentation/converter/TagListConverter.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class MarkdownTile extends StatelessWidget{
     if (expandedAndNotEmpty) {
       widgets = <Widget>[
         buildHeaderRow(),
-        buildBodyRow(),
+        buildBodyRow(context),
         buildFooterRow(),
         Divider(
           height: 1.0,
@@ -35,7 +36,7 @@ class MarkdownTile extends StatelessWidget{
     } else {
       widgets = <Widget>[
         buildHeaderRow(),
-        buildBodyRow(),
+        buildBodyRow(context),
         Divider(
           height: 1.0,
           thickness: 1,
@@ -75,12 +76,12 @@ class MarkdownTile extends StatelessWidget{
     ),
   );
 
-  Widget buildBodyRow() => Padding(
+  Widget buildBodyRow(BuildContext context) => Padding(
     padding:  expandedAndNotEmpty ? EdgeInsets.symmetric(vertical: 5) : EdgeInsets.only(top: 5, bottom: 15),
     child: Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        note.content.trim().isEmpty ? 'No Content' : note.content, 
+        note.content.trim().isEmpty ? AppLocalizations.of(context).translate('no_data') : note.content, 
         maxLines: 2,
         style: note.content.trim().isEmpty ? TextStyle(fontSize: 16.0, fontStyle: FontStyle.italic) : TextStyle(fontSize: 16.0)
       ),

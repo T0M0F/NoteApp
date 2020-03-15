@@ -1,4 +1,5 @@
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,7 @@ class _CreateNoteDialogState extends State<RenameFolderDialog> {
     return AlertDialog(
       title: Container( 
         alignment: Alignment.center,
-        child: Text('Rename Folder: ' + this.widget.folder.name, style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate('rename_folder') + ' ' + this.widget.folder.name, style: TextStyle(color: Colors.black))
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: StatefulBuilder(

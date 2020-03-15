@@ -2,6 +2,7 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/widgets/search/SearchListTile.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +47,7 @@ class NoteSearch extends SearchDelegate {
 
     if(_notes.isEmpty){
       return Center(
-        child: Text('No data', style: TextStyle(fontSize: 18)),
+        child: Text(AppLocalizations.of(context).translate('no_data') , style: TextStyle(fontSize: 18)),
       );
     } else {
       results = _notes.where((note){

@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,7 @@ class _CreateTagDialogState extends State<RenameTagDialog> {
     return AlertDialog(
       title: Container( 
         alignment: Alignment.center,
-        child: Text('Rename Tag: ' + this.widget.tag, style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate('rename_tag') + ' ' + this.widget.tag, style: TextStyle(color: Colors.black))
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: StatefulBuilder(

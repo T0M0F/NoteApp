@@ -1,20 +1,9 @@
- 
-import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
-import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
-import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
-import 'package:boostnote_mobile/presentation/screens/tag_overview/TagOverview.dart';
-import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NavigationDrawer extends StatefulWidget {
-
-  final OverviewView overviewView;    //delete?
-
-  NavigationDrawer({Key key, this.overviewView}) : super(key: key); //TODO: Constructor
 
   @override
   State<StatefulWidget> createState() => NavigationDrawerState();
@@ -23,8 +12,7 @@ class NavigationDrawer extends StatefulWidget {
 
 class NavigationDrawerState extends State<NavigationDrawer> {
 
- // NavigationService navigationService = NavigationService();
-  NewNavigationService _newNavigationService = NewNavigationService();
+  NavigationService _navigationService = NavigationService();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +28,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         elevation: 20.0,
         child: ListView(
           padding: EdgeInsets.zero,
-          children: buildWidgetList(context, List()) //TODO: use repo
+          children: buildWidgetList(context, List())
         ),
       )
     );
@@ -64,49 +52,43 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
       ),
      ListTile(
-            leading: Icon(Icons.description, color: _newNavigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-            title: Text(AppLocalizations.of(context).translate('all_notes'), style: TextStyle(color: _newNavigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+            leading: Icon(Icons.description, color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+            title: Text(AppLocalizations.of(context).translate('all_notes'), style: TextStyle(color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
             onTap: () {
               Navigator.pop(context);
-              //navigationService.navigateTo(context, NavigationMode.ALL_NOTES_MODE, overviewView: this.widget.overviewView);
-              _newNavigationService.navigateTo(destinationMode: NavigationMode2.ALL_NOTES_MODE);
+              _navigationService.navigateTo(destinationMode: NavigationMode2.ALL_NOTES_MODE);
             },
       ),
       ListTile(
-        leading: Icon(Icons.folder, color: _newNavigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text(AppLocalizations.of(context).translate('folders'), style: TextStyle(color: _newNavigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.folder, color: _navigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text(AppLocalizations.of(context).translate('folders'), style: TextStyle(color: _navigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          //navigationService.navigateTo(context, NavigationMode.FOLDERS_MODE);
-          _newNavigationService.navigateTo(destinationMode: NavigationMode2.FOLDERS_MODE);
+          _navigationService.navigateTo(destinationMode: NavigationMode2.FOLDERS_MODE);
         },
       ),
       ListTile(
-        leading: Icon(Icons.label, color: _newNavigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color: _newNavigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.label, color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          //navigationService.navigateTo(context, NavigationMode.TAGS_MODE);
-          NewNavigationService().navigateTo(destinationMode: NavigationMode.TAGS_MODE);
+          _navigationService.navigateTo(destinationMode: NavigationMode2.TAGS_MODE);
         }
       ),
       ListTile(
-        leading: Icon(Icons.star, color: _newNavigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color: _newNavigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.star, color: _navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color: _navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          //navigationService.navigateTo(context, NavigationMode.STARRED_NOTES_MODE, overviewView: this.widget.overviewView);
-          _newNavigationService.navigateTo(destinationMode: NavigationMode2.STARRED_NOTES_MODE);
+          _navigationService.navigateTo(destinationMode: NavigationMode2.STARRED_NOTES_MODE);
         },
       ),
       ListTile(
-        leading: Icon(Icons.delete, color: _newNavigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text(AppLocalizations.of(context).translate('trash'), style: TextStyle(color: _newNavigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.delete, color: _navigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
+        title: Text(AppLocalizations.of(context).translate('trash'), style: TextStyle(color: _navigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
         onTap: () {
           Navigator.pop(context);
-          //navigationService.navigateTo(context, NavigationMode.TRASH_MODE, overviewView: this.widget.overviewView);
-          NewNavigationService().navigateTo(destinationMode: NavigationMode.TRASH_MODE);
-          
+          _navigationService.navigateTo(destinationMode: NavigationMode2.TRASH_MODE);
         },
       ),
       Padding(
@@ -122,7 +104,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text(AppLocalizations.of(context).translate('settings')),
         onTap: () {
           Navigator.pop(context);
-          NewNavigationService().navigateTo(destinationMode: NavigationMode2.SETTINGS_MODE);
+          _navigationService.navigateTo(destinationMode: NavigationMode2.SETTINGS_MODE);
         },
       ),
       ListTile(

@@ -14,20 +14,23 @@ class SearchListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-      title: Text(
-        note.title,
-        maxLines: 1,
-        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)
-      ),
-      subtitle: Text(
-        _getSubtitle(note, context),
-        maxLines: 2,
-        style: _getSubtitle(note,context) == AppLocalizations.of(context).translate('no_data')  ? TextStyle(fontSize: 16.0, color: Colors.black, fontStyle: FontStyle.italic) 
-        : TextStyle(fontSize: 16.0, color: Colors.black),
-      ),
-      onTap: () => onTapCallback(note),
+   return Padding(
+     padding: EdgeInsets.only(left: 10),
+     child: ListTile(
+        contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+        title: Text(
+          note.title,
+          maxLines: 1,
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)
+        ),
+        subtitle: Text(
+          _getSubtitle(note, context),
+          maxLines: 2,
+          style: _getSubtitle(note,context) == AppLocalizations.of(context).translate('no_data')  ? TextStyle(fontSize: 16.0, color: Colors.black, fontStyle: FontStyle.italic) 
+          : TextStyle(fontSize: 16.0, color: Colors.black),
+        ),
+        onTap: () => onTapCallback(note),
+      )
     );
   }
   

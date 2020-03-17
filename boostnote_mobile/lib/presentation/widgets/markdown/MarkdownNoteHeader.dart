@@ -49,9 +49,8 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
             child: TextField(
               controller: _textEditingController,
               style: TextStyle(
-                fontSize: 22, 
-                fontWeight: FontWeight.bold, 
-                color: Colors.black87
+                fontSize: 20, 
+                color: Color(0xFF2E3235),
               ),
               maxLength: 100,
               decoration: null
@@ -67,7 +66,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(right: 5), 
-                    child: Icon(Icons.folder_open)
+                    child: Icon(Icons.folder_open, color: Color(0xFF2E3235),)
                   ),
                   Container(
                     width: 130,
@@ -75,7 +74,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
                       value: this.widget.selectedFolder, 
                       underline: Container(), 
                       iconEnabledColor: Colors.transparent,
-                      style: TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, color: Color(0xFF2E3235),),
                       items: this.widget.folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
                         value: folder,
                         child: Text(folder.name)
@@ -93,8 +92,8 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
             ),
             Row(
             children: <Widget>[
-              IconButton(icon: Icon(Icons.label_outline), onPressed: this.widget.onTagClickedCallback),
-              IconButton(icon: Icon(Icons.info_outline), onPressed: this.widget.onInfoClickedCallback)
+              IconButton(icon: Icon(Icons.label_outline, color: Color(0xFF2E3235)), onPressed: this.widget.onTagClickedCallback),
+              IconButton(icon: Icon(Icons.info_outline, color: Color(0xFF2E3235)), onPressed: this.widget.onInfoClickedCallback)
               ],
             ),
           ],
@@ -103,7 +102,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
           widthFactor: 0.95,
           child: Container(
             height: 1,
-            color: Colors.black26,
+            color: Colors.black12,
           ),
         )
       ],

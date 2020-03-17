@@ -1,6 +1,4 @@
-import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
-import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:flutter/material.dart';
 
@@ -26,9 +24,9 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
   void initState() {
     super.initState();
     widgets = this.widget.widgets;
-    NewNavigationService().init(this);
-    NewNavigationService().widgetHistory.add(widgets);
-    NewNavigationService().navigationModeHistory.add(NavigationMode2.ALL_NOTES_MODE);
+    NavigationService().init(this);
+    NavigationService().widgetHistory.add(widgets);
+    NavigationService().navigationModeHistory.add(NavigationMode2.ALL_NOTES_MODE);
   }
 
   @override

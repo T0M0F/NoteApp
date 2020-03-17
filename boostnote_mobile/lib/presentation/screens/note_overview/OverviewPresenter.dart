@@ -2,10 +2,10 @@
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/presentation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 
-class OverviewPresenter {
+class OverviewPresenter { //TODO delete?
 
   OverviewView _overviewView;
   NoteService _noteService;
@@ -18,34 +18,30 @@ class OverviewPresenter {
   }
 
   void loadAllNotes(){
-    print('loadAllNotes');
     Future<List<Note>> notes = NoteService().findNotTrashed();
     notes.then((result) { 
-      _navigationService.noteListCache = result;
+     // _navigationService.noteListCache = result;
       _overviewView.update(result);
     });
   }
 
   void loadNotesInFolder(Folder folder) {
-    print('loadNotesInFolder');
     Future<List<Note>> notes = NoteService().findNotesIn(folder);
     notes.then((result) { 
-      _navigationService.noteListCache = result;
+      //_navigationService.noteListCache = result;
       _overviewView.update(result);
     });
   }
 
   void loadNotesWithTag(String tag) {
-    print('loadNotesWithTag');
     Future<List<Note>> notes = NoteService().findNotesByTag(tag);
     notes.then((result) { 
-      _navigationService.noteListCache = result;
+      //_navigationService.noteListCache = result;
       _overviewView.update(result);
     });
   }
 
   void onCreateNotePressed(Note note){
-    print('Create Note');
     _noteService.createNote(note);
   }
 
@@ -73,12 +69,10 @@ class OverviewPresenter {
   }
 
   void showTrashedNotes() {
-     print('showTrashedNOtes');
     _noteService.findTrashed().then((notes) => _overviewView.update(notes));
   }
 
   void showStarredNotes() {
-     print('showStarredNOtes');
     _noteService.findStarred().then((notes) => _overviewView.update(notes));
   }
 

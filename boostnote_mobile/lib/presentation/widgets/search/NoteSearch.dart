@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 
 class NoteSearch extends SearchDelegate {
 
-  final List<Note> _notes;
-  final ValueChanged<Note> _itemSelectedCallback;
+  final List<Note> notes;
+  final ValueChanged<Note> itemSelectedCallback;
 
-  NoteSearch(this._notes, this._itemSelectedCallback) : super(searchFieldLabel: 'Search');
+  NoteSearch({this.notes, this.itemSelectedCallback, searchFieldLabel}) : super(searchFieldLabel: searchFieldLabel);
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -45,12 +45,12 @@ class NoteSearch extends SearchDelegate {
   Widget _buildStreamBuilder(BuildContext context) {
     List<Note> results = List();
 
-    if(_notes.isEmpty){
+    if(notes.isEmpty){
       return Center(
         child: Text(AppLocalizations.of(context).translate('no_data') , style: TextStyle(fontSize: 18)),
       );
     } else {
-      results = _notes.where((note){
+      results = notes.where((note){
         if(note is MarkdownNote){
           return note.title.toLowerCase().contains(query.toLowerCase()) || 
           note.content.toLowerCase().contains(query.toLowerCase()) || 
@@ -75,7 +75,7 @@ class NoteSearch extends SearchDelegate {
       children: results.map<SearchListTile>((note) => 
         SearchListTile(note: note, onTapCallback: (Note note) {
           close(context, results);
-          _itemSelectedCallback(note);
+          itemSelectedCallback(note);
         })
       ).toList()  
     );

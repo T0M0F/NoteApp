@@ -3,12 +3,10 @@ import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
-import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
-import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
-import 'package:boostnote_mobile/presentation/screens/snippet_editor/widgets/CodeSnippetAppBar.dart';
-import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
+import 'package:boostnote_mobile/presentation/screens/editor/snippet_editor/widgets/CodeSnippetAppBar.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/AddSnippetDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
@@ -20,7 +18,6 @@ import 'package:flutter/material.dart';
 
 class CodeSnippetEditor extends StatefulWidget {
 
- // final Refreshable _parentWidget;
   final SnippetNote _note;
 
   CodeSnippetEditor(this._note);
@@ -32,8 +29,7 @@ class CodeSnippetEditor extends StatefulWidget {
 
 class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindingObserver {
 
-  NewNavigationService _newNavigationService;
-  //NavigationService _navigatiorService;
+  NavigationService _newNavigationService;
   NoteService _noteService;
   FolderService _folderService;
 
@@ -47,8 +43,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     WidgetsBinding.instance.addObserver(this);
     super.initState();
 
-    _newNavigationService = NewNavigationService();
-    //_navigatiorService = NavigationService();
+    _newNavigationService = NavigationService();
     _noteService = NoteService();
     _folderService = FolderService();
     _folders = List();
@@ -69,13 +64,12 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     super.dispose();
 
     NoteService().save(this.widget._note);
-    //_navigatiorService.noteIsOpen = false; //ABweichende Logik
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      NoteService().save(this.widget._note);
+      NoteService().save(this.widget._note);    //TODO double save?
     }
   }
 
@@ -94,7 +88,6 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
           onPressed: () {
-            //_navigatiorService.closeNote(context);
             _newNavigationService.navigateBack(context);
           },
         ),
@@ -114,7 +107,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
         note: this.widget._note, 
         selectedCodeSnippet: _selectedCodeSnippet,
         selectedActionCallback: (String action) => _selectedAction(action),
-        onNavigateBackCallback: () => _newNavigationService.navigateBack(context), //_navigatiorService.closeNote(context),
+        onNavigateBackCallback: () => _newNavigationService.navigateBack(context), 
         onSelectedSnippetChanged: (CodeSnippet codeSnippet) {
           setState(() {
             _selectedCodeSnippet = codeSnippet;
@@ -243,21 +236,19 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
      );
   }
 
-  //TODO: Ugly / Presenter??
   void _selectedAction(String action){
-      NoteService noteService = NoteService();
       if(action == ActionConstants.DELETE_ACTION){
-        noteService.moveToTrash(this.widget._note);
+        _noteService.moveToTrash(this.widget._note);
         _newNavigationService.navigateBack(context);
       } else if(action == ActionConstants.SAVE_ACTION){
-        noteService.save(this.widget._note);
+        _noteService.save(this.widget._note);
         _newNavigationService.navigateBack(context);
       } else if(action == ActionConstants.MARK_ACTION){
         this.widget._note.isStarred = true;
-        noteService.save(this.widget._note);
+        _noteService.save(this.widget._note);
       } else if(action == ActionConstants.UNMARK_ACTION){
         this.widget._note.isStarred = false;
-        noteService.save(this.widget._note);
+        _noteService.save(this.widget._note);
       } 
   }
 
@@ -272,7 +263,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
         tags: tags, 
         saveCallback: (selectedTags){
           selectedTags.forEach((t) => print(t));
-          NoteService service = NoteService();  //TODO: Presenter
+          NoteService service = NoteService();  
           service.save(this.widget._note);
           Navigator.of(context).pop();
         },

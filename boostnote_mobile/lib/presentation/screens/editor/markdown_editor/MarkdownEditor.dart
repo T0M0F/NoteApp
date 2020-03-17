@@ -3,11 +3,9 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
-import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
-import 'package:boostnote_mobile/presentation/screens/markdown_editor/widgets/MarkdownEditorAppBar.dart';
-import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
+import 'package:boostnote_mobile/presentation/screens/editor/markdown_editor/widgets/MarkdownEditorAppBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownBody.dart';
@@ -19,7 +17,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 class MarkdownEditor extends StatefulWidget {
 
-  //final Refreshable _parentWidget;
   final MarkdownNote _note;
 
   MarkdownEditor(this._note);
@@ -31,8 +28,7 @@ class MarkdownEditor extends StatefulWidget {
 
 class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObserver{
 
-  NewNavigationService _newNavigationService;
-  //NavigationService _navigatiorService;
+  NavigationService _newNavigationService;
   NoteService _noteService;
   FolderService _folderService;
 
@@ -46,8 +42,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     WidgetsBinding.instance.addObserver(this);
     super.initState();
 
-    _newNavigationService = NewNavigationService();
-    //_navigatiorService = NavigationService();
+    _newNavigationService = NavigationService();
     _noteService = NoteService();
     _folderService = FolderService();
     _folders = List();
@@ -66,7 +61,6 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     super.dispose();
 
     NoteService().save(this.widget._note);
-   // _navigatiorService.noteIsOpen = false; //ABweichende Logik
   }
 
   @override
@@ -88,7 +82,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     return MarkdownEditorAppBar(
       isPreviewMode: _previewMode,
       isNoteStarred: this.widget._note.isStarred,
-      onNavigateBackCallback: () => _newNavigationService.navigateBack(context),//_navigatiorService.closeNote(context),
+      onNavigateBackCallback: () => _newNavigationService.navigateBack(context),
       onViewModeSwitchedCallback: (bool value) {
          setState(() {
               _previewMode = value;
@@ -145,25 +139,23 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     );
   }
 
-  //TODO: Unelegant / Presenter??
   void _selectedAction(String action){
-      NoteService noteService = NoteService();
       if(action == ActionConstants.DELETE_ACTION){
-        noteService.moveToTrash(this.widget._note);
+        _noteService.moveToTrash(this.widget._note);
         _newNavigationService.navigateBack(context);
       } else if(action == ActionConstants.SAVE_ACTION){
-        noteService.save(this.widget._note);
+        _noteService.save(this.widget._note);
          _newNavigationService.navigateBack(context);
       } else if(action == ActionConstants.MARK_ACTION){
         setState(() {
           this.widget._note.isStarred = true;
         });
-        noteService.save(this.widget._note);
+        _noteService.save(this.widget._note);
       } else if(action == ActionConstants.UNMARK_ACTION){
         setState(() {
           this.widget._note.isStarred = false;
         });
-        noteService.save(this.widget._note);
+        _noteService.save(this.widget._note);
       } 
   }
 
@@ -185,7 +177,6 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
       return EditTagsDialog(
         tags: tags, 
         saveCallback: (selectedTags){
-          selectedTags.forEach((t) => print(t));
           NoteService service = NoteService();  //TODO: Presenter
           service.save(this.widget._note);
           Navigator.of(context).pop();

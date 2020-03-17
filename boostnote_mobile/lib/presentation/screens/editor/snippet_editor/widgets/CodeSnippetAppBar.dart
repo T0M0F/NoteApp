@@ -1,5 +1,5 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
-import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
+import 'package:boostnote_mobile/presentation/screens/editor/snippet_editor/widgets/OverflowButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -73,31 +73,9 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
             ),
           ],
         ),
-        PopupMenuButton<String>(
-          icon: Icon(Icons.more_vert),
-          onSelected: widget.selectedActionCallback,
-          itemBuilder: (BuildContext context) {
-            return <PopupMenuEntry<String>>[
-              PopupMenuItem(
-                value: ActionConstants.SAVE_ACTION,
-                child: ListTile(
-                  title: Text(ActionConstants.SAVE_ACTION)
-                )
-              ),
-              PopupMenuItem(
-                value: ActionConstants.DELETE_ACTION,
-                child: ListTile(
-                  title: Text(ActionConstants.DELETE_ACTION)
-                )
-              ),
-              PopupMenuItem(
-                value: widget.note.isStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION,
-                child: ListTile(
-                  title: Text(widget.note.isStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION)
-                )
-              )
-            ];
-          }
+        OverflowButton(
+          noteIsStarred: this.widget.note.isStarred, 
+          selectedActionCallback: this.widget.selectedActionCallback
         )
       ]
     );

@@ -4,10 +4,9 @@ import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
-import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/FolderOverviewAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/bottom_sheets/FolderOverviewBottomSheet.dart';
@@ -30,8 +29,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
 
   NoteService _noteService;
   FolderService _folderService;
-  NewNavigationService _newNavigationService;
-  //NavigationService _navigationService;
+  NavigationService _newNavigationService;
   List<Folder> _folders;
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -42,8 +40,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
 
     _folders = List();
     _noteService = NoteService();
-    _newNavigationService = NewNavigationService();
-   // _navigationService = NavigationService();
+    _newNavigationService = NavigationService();
     _folderService = FolderService();
 
     _folderService.findAllUntrashed().then((folders) {
@@ -56,7 +53,6 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
   @override
   void refresh() {
     _folderService.findAllUntrashed().then((folders) {
-       //TODO update navigationListCache??
       setState(() {
         if (_folders != null) {
           _folders.replaceRange(0, _folders.length, folders);
@@ -99,7 +95,6 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           _createNote(note);
-          //_navigationService.openNote(note, context, this);
           if(note is MarkdownNote) {
             _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);
           } else if(note is SnippetNote) {
@@ -138,11 +133,8 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
       );
   });
 
-  void _onFolderTap(Folder folder) {
-    //_navigationService.navigateTo(context, NavigationMode.NOTES_IN_FOLDER_MODE, folder: folder);
-    _newNavigationService.navigateTo(destinationMode: NavigationMode2.NOTES_IN_FOLDER_MODE, folder: folder);
-  }
-
+  void _onFolderTap(Folder folder) => _newNavigationService.navigateTo(destinationMode: NavigationMode2.NOTES_IN_FOLDER_MODE, folder: folder);
+  
   void _onFolderLongPress(Folder folder) {
     if (folder.id != 'Default'.hashCode && folder.id != 'Trash'.hashCode) {
       showModalBottomSheet(    
@@ -170,29 +162,21 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
     }
   }
 
-  void _createFolder(String folderName) {
-    _folderService
-        .createFolderIfNotExisting(Folder(name: folderName))
-        .whenComplete(() => refresh());
-  }
+  void _createFolder(String folderName) => _folderService
+                                                .createFolderIfNotExisting(Folder(name: folderName))
+                                                .whenComplete(() => refresh());
 
-  void _renameFolder(Folder oldFolder, String newName) {
-    _folderService
-        .renameFolder(oldFolder, newName)
-        .whenComplete(() => refresh());
-  }
+  void _renameFolder(Folder oldFolder, String newName) =>  _folderService
+                                                              .renameFolder(oldFolder, newName)
+                                                              .whenComplete(() => refresh());
+  void _removeFolder(Folder folder) =>  _folderService
+                                            .delete(folder)
+                                            .whenComplete(() => refresh());
+  
+  void _createNote(Note note) => _noteService
+                                      .createNote(note)
+                                      .whenComplete(() => refresh());
 
-  void _removeFolder(Folder folder) {
-    _folderService
-        .delete(folder)
-        .whenComplete(() => refresh());
-  }
-
-  void _createNote(Note note) {
-    _noteService
-        .createNote(note)
-        .whenComplete(() => refresh());
-  }
 }
 
 

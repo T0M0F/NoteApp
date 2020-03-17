@@ -3,10 +3,9 @@ import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
-import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
-import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/TagOverviewAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/bottom_sheets/TagOverviewBottomSheet.dart';
@@ -26,8 +25,7 @@ class TagOverview extends StatefulWidget {
  
 class _TagOverviewState extends State<TagOverview> implements Refreshable{
 
- // NavigationService _navigationService;
-  NewNavigationService _newNavigationService;
+  NavigationService _newNavigationService;
   NoteService _noteService;
   TagService _tagService;
   List<String> _tags;
@@ -39,8 +37,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     super.initState();
 
     _tags = List();
-    _newNavigationService = NewNavigationService();
-    //_navigationService = NavigationService();
+    _newNavigationService = NavigationService();
     _noteService = NoteService();
     _tagService = TagService();
 
@@ -54,7 +51,6 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   @override
   void refresh() {
     _tagService.findAll().then((tags) {
-      //TODO update navigationListCahe??
       setState((){ 
         if(_tags != null){
             _tags.replaceRange(0, _tags.length, tags);
@@ -97,7 +93,6 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           _createNote(note);
-          //_navigationService.openNote(note, context, this);
           if(note is MarkdownNote) {
             _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);
           } else if(note is SnippetNote) {
@@ -140,10 +135,9 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     });
   }
 
-  void _onRowTap(String tag) {
-    //_navigationService.navigateTo(context, NavigationMode.NOTES_WITH_TAG_MODE, tag: tag);
-    _newNavigationService.navigateTo(destinationMode: NavigationMode2.NOTES_WITH_TAG_MODE, tag: tag);
-  }
+  void _onRowTap(String tag) => _newNavigationService
+                                      .navigateTo(destinationMode: NavigationMode2.NOTES_WITH_TAG_MODE, tag: tag);
+
 
   void _onRowLongPress(String tag) {
     showModalBottomSheet(     
@@ -163,27 +157,19 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     );
   }
 
-  void _createTag(String tag) {
-    _tagService
-        .createTagIfNotExisting(tag)
-        .whenComplete(() => refresh());
-  }
-
-  void _renameTag(String oldTag, String newTag) {
-    _tagService
-        .renameTag(oldTag, newTag)
-        .whenComplete(() => refresh());
-  }
-
-  void _removeTag(String tag) {
-    _tagService
-        .delete(tag)
-        .whenComplete(() => refresh());
-  }
-
-  void _createNote(Note note) {
-    _noteService
-        .createNote(note)
-        .whenComplete(() => refresh());
-  }
+  void _createTag(String tag) => _tagService
+                                    .createTagIfNotExisting(tag)
+                                    .whenComplete(() => refresh());
+                              
+  void _renameTag(String oldTag, String newTag) => _tagService
+                                                      .renameTag(oldTag, newTag)
+                                                      .whenComplete(() => refresh());
+  
+  void _removeTag(String tag) => _tagService
+                                      .delete(tag)
+                                      .whenComplete(() => refresh());
+  
+  void _createNote(Note note) => _noteService
+                                      .createNote(note)
+                                      .whenComplete(() => refresh());
 }

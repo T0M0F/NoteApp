@@ -10,9 +10,15 @@ class AddFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(Icons.add, color: Color(0xFFF6F5F5)),
-      onPressed: onPressed,
+    return Container(
+      height: 60,
+      width: 60,
+      child: FittedBox(
+        child: FloatingActionButton(
+          child: Icon(Icons.add, color: Color(0xFFF6F5F5), size: 35),
+          onPressed: onPressed,
+        )
+      )
     );
   }
 

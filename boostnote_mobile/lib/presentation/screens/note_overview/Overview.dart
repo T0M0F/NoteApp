@@ -4,19 +4,19 @@ import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
-import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
-import 'package:boostnote_mobile/presentation/widgets/AddFloatingActionButton.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/widgets/OverviewBottomSheet.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewPresenter.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewAppbar.dart';
-import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewEditModeAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/notegrid/NoteGridTile.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/DeleteAllBottomNavigationBar.dart';
-import 'package:boostnote_mobile/presentation/widgets/notelist/EditModeBottomNavigationBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
 import 'package:boostnote_mobile/presentation/widgets/search/NoteSearch.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
@@ -41,51 +41,38 @@ class Overview extends StatefulWidget {   //TODO imutable
 class _OverviewState extends State<Overview> implements OverviewView, Refreshable{
 
   OverviewPresenter _presenter;
-  //NavigationService _navigationService;
-  NewNavigationService _newNavigationService;
+  NavigationService _newNavigationService;
+  NoteService _noteService;
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   List<Note> _notes;
   List<Note> _selectedNotes;
-  NoteList _noteListWidget;
 
-  bool _isEditMode = false;
   bool _tilesAreExpanded = false;
   bool _showListView = true;
-
-  String _titleEditMode;
-
-  static const String EDIT_ACTION = 'Edit';
-  static const String EXPAND_ACTION = 'Expand';
-  static const String COLLPASE_ACTION = 'Collapse';
-  static const String SHOW_GRIDVIEW_ACTION = 'Gridview';
-  static const String SHOW_LISTVIEW_ACTION = 'Listview';
 
   String _pageTitle;
   
   @override
   void initState(){
     super.initState();
-    print('init Overview');
 
     _presenter = OverviewPresenter(this);
-    //_navigationService = NavigationService();
-    _newNavigationService = NewNavigationService();
-
+    _newNavigationService = NavigationService();
+    _noteService = NoteService();
     _selectedNotes = List();
     _notes = this.widget.notes;
-   
 
     //if no note list is provided, for example on StartUp when calling Overview() from BoostnoteApp or 
     //when navigating back from open note
     if(_notes == null) {                                                  //TODO ugly
       _notes = List();
       switch(_newNavigationService.navigationModeHistory.last) {
-        case NavigationMode.NOTES_WITH_TAG_MODE:
+        case NavigationMode2.NOTES_WITH_TAG_MODE:
           _presenter.loadNotesWithTag(this.widget.selectedTag);
           break;
-        case NavigationMode.NOTES_IN_FOLDER_MODE:
+        case NavigationMode2.NOTES_IN_FOLDER_MODE:
           _presenter.loadNotesInFolder(this.widget.selectedFolder);
           break;
         default:
@@ -106,33 +93,11 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     });
   }
 
+ @override    //TODO delte refreshable??
+ void refresh() {} 
 
  @override
- void refresh() {} //=> _presenter.refresh();
-
-/*
- @override
- void dispose(){
-   super.dispose();
-
-/*
-   switch( _navigationService.navigationMode) {      //TODO sucky sucky
-        case NavigationMode.NOTES_IN_FOLDER_MODE:
-          print('NOTES_IN_FOLDER_MODE');
-          _navigationService.navigationMode = NavigationMode.FOLDERS_MODE;
-          break;
-        case NavigationMode.NOTES_WITH_TAG_MODE:
-          print('NOTES_WITH_TAG_MODE');
-          _navigationService.navigationMode = NavigationMode.TAGS_MODE;
-          break;
-      }
-      */
- }*/
-
-  @override
-  Widget build(BuildContext context) {
-
-     _titleEditMode  = AppLocalizations.of(context).translate('select_notes');
+ Widget build(BuildContext context) {
 
     if(_newNavigationService.isNotesInFolderMode()){
       _pageTitle = this.widget.selectedFolder.name;
@@ -142,66 +107,51 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       _pageTitle = _newNavigationService.navigationModeHistory.last;  //TODO sucky
     }
 
-    print('FUGGA' + _notes.length.toString());
-
     return Scaffold(
       key: _drawerKey,
       appBar: _buildAppBar(),
-      drawer: _isEditMode ? null : NavigationDrawer(),
+      drawer: NavigationDrawer(), 
       body: _showListView ? _buildListViewBody() : _buildGridViewBody(),
-      floatingActionButton:_isEditMode || _newNavigationService.isTrashMode() ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
-      bottomNavigationBar: _buildBottomNavigationBar(_isEditMode)
+      floatingActionButton: _newNavigationService.isTrashMode() ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
+      bottomNavigationBar: _buildBottomNavigationBar() 
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {   
-    if(_isEditMode) {                     //TODO extract Widget
-      return OverviewEditModeAppbar(
-        titleEditMode: _titleEditMode,
-        isEditMode: _isEditMode,
-        onMenuClickCallback: () { },
-        onCancelClickCallback: () {
-          setState(() {
-            _isEditMode = false;
-          });
-        });
-    } else {
-      return OverviewAppbar(
+  PreferredSizeWidget _buildAppBar() {  
+     return OverviewAppbar(
         pageTitle: _pageTitle,
-        actions: {'EDIT_ACTION': EDIT_ACTION, 'EXPAND_ACTION': EXPAND_ACTION, 'COLLPASE_ACTION': COLLPASE_ACTION, 'SHOW_LISTVIEW_ACTION': SHOW_LISTVIEW_ACTION, 'SHOW_GRIDVIEW_ACTION' : SHOW_GRIDVIEW_ACTION},
+        actions: {
+          'EXPAND_ACTION': ActionConstants.EXPAND_ACTION, 
+          'COLLPASE_ACTION': ActionConstants.COLLPASE_ACTION, 
+          'SHOW_LISTVIEW_ACTION': ActionConstants.SHOW_LISTVIEW_ACTION, 
+          'SHOW_GRIDVIEW_ACTION' : ActionConstants.SHOW_GRIDVIEW_ACTION},
         listTilesAreExpanded: _tilesAreExpanded,
         showListView: _showListView,
         onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
-        onNaviagteBackCallback: () => _newNavigationService.navigateBack(context), //_naviagtionService.navigateBack(context)
+        onNaviagteBackCallback: () => _newNavigationService.navigateBack(context), 
         onSearchClickCallback: () => search(),
         onSelectedActionCallback: (String action) => _selectedAction(action)
       );
-    }
   }
 
   void _selectedAction(String action){
     switch (action) {
-      case EDIT_ACTION:
-        setState(() {
-          _isEditMode = true;
-        });
-        break;
-      case COLLPASE_ACTION:
+      case ActionConstants.COLLPASE_ACTION:
         setState(() {
             _tilesAreExpanded = false;
           });
         break;
-      case EXPAND_ACTION:
+      case ActionConstants.EXPAND_ACTION:
         setState(() {
             _tilesAreExpanded = true;
           });
         break;
-      case SHOW_GRIDVIEW_ACTION:
+      case ActionConstants.SHOW_GRIDVIEW_ACTION:
         setState(() {
           _showListView = false;
         });
         break;
-      case SHOW_LISTVIEW_ACTION:
+      case ActionConstants.SHOW_LISTVIEW_ACTION:
         setState(() {
           _showListView = true;
         });
@@ -214,10 +164,12 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       child: NoteList(
               notes: _notes, 
               selectedNotes: _selectedNotes,
-              editMode: _isEditMode, 
               expandedMode: _tilesAreExpanded,
-              rowSelectedCallback: (selectedNotes){
-              _rowSelectedCallback(selectedNotes, _notes);
+              onTapCallback: (selectedNotes){
+               _onRowTap(selectedNotes, _notes);
+              },
+              onLongPressCallback: (selectedNotes){
+               _onRowLongPress(selectedNotes);
               }
       )
     );
@@ -234,7 +186,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         itemBuilder: (BuildContext context, int index) => Card(
             child: GestureDetector(
               onTap: () {
-                 _rowSelectedCallback([_notes[index]], _notes);
+                 _onRowTap([_notes[index]], _notes);
               },
               child: NoteGridTile(note: _notes[index], expanded: _tilesAreExpanded)
             )
@@ -252,61 +204,42 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     }
   }
 
-  void _rowSelectedCallback(List<Note> selectedNotes, List<Note> notes) {  
-    //TODO: Presenter???
-    if(_isEditMode) {
-      _selectedNotes = selectedNotes;
-    
-      setState(() {
-          if(_selectedNotes.length == 0){
-          _titleEditMode = AppLocalizations.of(context).translate('select_notes');
-        } else if (_selectedNotes.length == notes.length){
-          _titleEditMode = 'All Notes Selected';
-        } else if (_selectedNotes.length == 1) {
-          _titleEditMode = '1 Note Selected';
-        } else {
-          _titleEditMode = _selectedNotes.length.toString() + ' Notes Selected';
-        }
-      });
-
-    } else {
-      //_navigationService.openNoteResponsive(_notes, selectedNotes.elementAt(0), context, this);
-      if(selectedNotes.first is MarkdownNote) {
-        NewNavigationService().navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: selectedNotes.first);
-      } else if (selectedNotes.first is SnippetNote) {
-        NewNavigationService().navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: selectedNotes.first);
+  void _onRowLongPress(List<Note> selectedNotes) {
+     showModalBottomSheet(     
+      context: context,
+      builder: (BuildContext buildContext){
+        return OverviewBottomSheet(
+          removeTagCallback: () {
+            Navigator.of(context).pop();
+           _noteService.delete(selectedNotes.first);
+          } ,
+        );
       }
-     
-    }
+    );
   }
 
-  Widget _buildBottomNavigationBar(bool editMode) {  //TODO extract Widget
-    if(editMode) {
-      EditModeBottomNavigationBar(
-        deleteCallback: () {
-          //TODO: change
-          _presenter.trash(_selectedNotes);
-          setState(() {
-            _selectedNotes.clear();
-            _noteListWidget.clearSelectedElements();
-            _isEditMode = false;
-          });
-        },
-        selecetAllNotesCallback:() {
-          setState(() {
-                  _selectedNotes.clear();
-                  _selectedNotes.addAll(_notes);
-                });
-        },
-      );
-    } else if(_newNavigationService.isTrashMode()) {
-       return DeleteAllBottomNavigationBar(
-         deleteAllCallback: () {
-           _presenter.deleteForever(_notes);
-         }
-       );
-    }
+  void _onRowTap(List<Note> selectedNotes, List<Note> notes) {  
+     if(selectedNotes.first is MarkdownNote) {
+        NavigationService().navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: selectedNotes.first);
+      } else if (selectedNotes.first is SnippetNote) {
+        NavigationService().navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: selectedNotes.first);
+      }
+  }
 
+  Widget _buildBottomNavigationBar() {  
+
+    if(_newNavigationService.isTrashMode()) {
+     _noteService.findTrashed().then((notes) {
+        if(notes.isNotEmpty){
+          return DeleteAllBottomNavigationBar(
+            deleteAllCallback: () {
+              _presenter.deleteForever(_notes);
+            }
+          );
+        }
+        return null;
+     });
+    }
     return null;
   }
 
@@ -329,7 +262,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
               _notes.add(note);
            });
             if(note is SnippetNote) {
-              _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);   //TODO: Presenter???
+              _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);  
             } else if (note is MarkdownNote) {
               _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);   
             }
@@ -339,20 +272,23 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   }
 
   void search() {
-    //TODO: Presenter?
     NoteSearch noteSearch = NoteSearch(
-      _notes, (note) {
-      if(note is SnippetNote) {
-            _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);   //TODO: Presenter???
-      } else if (note is MarkdownNote) {
-        _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);   
-      }
-    });
+      notes:  _notes,
+      itemSelectedCallback:  (note) {
+        if(note is SnippetNote) {
+              _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note); 
+        } else if (note is MarkdownNote) {
+          _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);   
+        }
+      },
+      searchFieldLabel: AppLocalizations.of(context).translate('search')
+    );
 
     showSearch(
       context: context,
       delegate: noteSearch
     );
   }
+
 }
 

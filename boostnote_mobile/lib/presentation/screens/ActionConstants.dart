@@ -4,5 +4,10 @@ class ActionConstants {
   static const String SAVE_ACTION = 'Save';
   static const String MARK_ACTION = 'Mark Note';
   static const String UNMARK_ACTION = 'Unmark Note';
+  static const String EDIT_ACTION = 'Edit';
+  static const String EXPAND_ACTION = 'Expand';
+  static const String COLLPASE_ACTION = 'Collapse';
+  static const String SHOW_GRIDVIEW_ACTION = 'Gridview';
+  static const String SHOW_LISTVIEW_ACTION = 'Listview';
   
 }

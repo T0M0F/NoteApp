@@ -1,5 +1,4 @@
-import 'package:boostnote_mobile/presentation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -27,13 +26,13 @@ class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
 
 class _OverviewAppbarState extends State<OverviewAppbar> {
 
-  NewNavigationService _newNavigationService;
+  NavigationService _newNavigationService;
 
 
   @override
   void initState(){
     super.initState();
-    _newNavigationService = NewNavigationService();
+    _newNavigationService = NavigationService();
   }
 
   @override

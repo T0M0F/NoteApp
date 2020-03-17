@@ -9,12 +9,13 @@ import 'SnippetTile.dart';
 class NoteList extends StatefulWidget {
 
   final List<Note> notes;
-  final Function(List<Note>) rowSelectedCallback;
-  final bool editMode;
+  final Function(List<Note>) onTapCallback;
+  final Function(List<Note>) onLongPressCallback;
+ // final bool editMode;
   final bool expandedMode;
   final List<Note> selectedNotes;
 
-  NoteList({@required this.notes,@required  this.editMode, @required this.rowSelectedCallback, @required this.expandedMode, @required this.selectedNotes}); //TODO: constructor
+  NoteList({@required this.notes/*,@required  this.editMode*/, @required this.onTapCallback, @required this.onLongPressCallback, @required this.expandedMode, @required this.selectedNotes}); //TODO: constructor
 
   void clearSelectedElements() => selectedNotes.clear(); //TODO: unelegant??
   
@@ -32,12 +33,14 @@ class NoteList extends StatefulWidget {
     itemCount: this.widget.notes.length,
     itemBuilder: (context, index) {
       return GestureDetector(
-        onTap: () => this.widget.rowSelectedCallback([this.widget.notes[index]]),
-        child: _buildBody(index)
+        onTap: () => this.widget.onTapCallback([this.widget.notes[index]]),
+        onLongPress: () => this.widget.onLongPressCallback([this.widget.notes[index]]),
+        child: _buildTile(this.widget.notes[index])
       );
     },
   );
 
+/*
 Widget _buildBody(int index) {
   if (this.widget.editMode) {
     return Row (
@@ -64,7 +67,7 @@ Widget _buildBody(int index) {
   } else {
     return _buildTile(this.widget.notes[index]);
   }
-}
+}*/
 
 Widget _buildTile(Note note) => note is MarkdownNote ? MarkdownTile(note: note, expanded: this.widget.expandedMode) : SnippetTile(note: note, expanded: this.widget.expandedMode);
 }

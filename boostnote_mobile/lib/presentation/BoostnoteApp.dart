@@ -1,9 +1,7 @@
-
-import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
-import 'package:boostnote_mobile/presentation/ThemeNotifier.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
-import 'package:boostnote_mobile/presentation/widgets/appbar/CustomAppbar.dart';
+import 'package:boostnote_mobile/presentation/theme/ThemeNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,37 +24,8 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
     
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
-/*
-    CsonParser csonParser = CsonParser();
-    Map<String,dynamic> result = csonParser.parse(csonParser.cson);
-    print('---------------------Result--------------------');
-    result.forEach((key,value) {
-      if(value is List) {
-        print('key is: ' + key + ' value is List: ' );
-        value.forEach((val) {
-          if(val is List) {
-            print('----------');
-            val.forEach((item) => print(item));
-          } else if(val is Map) {
-            print('-------------------------------');
-            val.forEach((k,v) =>  print('------key : ' + k + ' value : ' + v.toString()));
-          } else {
-            print(val);
-          }
-        });
-      } else {
-        print('key is: ' + key + ' value is: ' + value);
-      }
-    });
-
-    Note note = csonParser.convertToNote(result);
-    
-    print('--------------------------------------- MarkdownNote to cson----------------------------');
-    print(csonParser.convertMarkdownNoteToCson(NoteService().generateMarkdownNote()));
-    print('--------------------------------------- SnippetNote to cson----------------------------');
-    print(csonParser.convertSnippetNoteToCson(NoteService().generateSnippetNote()));
-*/
     final ThemeNotifier themeNotifier = Provider.of<ThemeNotifier>(context);
+    
     return MaterialApp(
         title: 'Boostnote',
         debugShowCheckedModeBanner: false,
@@ -72,7 +41,7 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate
         ],
-        supportedLocales: AppLocalizations.supportedLanguages,
+        supportedLocales: AppLocalizations.supportedLocales,
         localeResolutionCallback: (locale, supportedLocales) {
           for (var supportedLocale in supportedLocales) {
             if (supportedLocale.languageCode == locale.languageCode && supportedLocale.countryCode == locale.countryCode) {
@@ -108,8 +77,8 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         )
       ]
       ), 
-      onWillPop: () {
-        NewNavigationService().navigateBack(context);
+      onWillPop: () { //TODO fix
+        NavigationService().navigateBack(context);
       }
     );
   }

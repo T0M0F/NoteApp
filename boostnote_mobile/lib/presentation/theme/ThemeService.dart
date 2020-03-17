@@ -1,5 +1,5 @@
 import 'package:boostnote_mobile/data/SharedPrefsManager.dart';
-import 'package:boostnote_mobile/presentation/BoostnoteTheme.dart';
+import 'package:boostnote_mobile/presentation/theme/BoostnoteTheme.dart';
 import 'package:flutter/material.dart';
 
 class ThemeService {

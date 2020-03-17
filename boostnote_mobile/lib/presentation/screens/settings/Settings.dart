@@ -1,9 +1,8 @@
-import 'package:boostnote_mobile/business_logic/service/ThemeService.dart';
-import 'package:boostnote_mobile/data/entity/BoostnoteEntity.dart';
-import 'package:boostnote_mobile/presentation/BoostnoteTheme.dart';
-import 'package:boostnote_mobile/presentation/NewNavigationService.dart';
-import 'package:boostnote_mobile/presentation/ThemeNotifier.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/theme/BoostnoteTheme.dart';
+import 'package:boostnote_mobile/presentation/theme/ThemeNotifier.dart';
+import 'package:boostnote_mobile/presentation/theme/ThemeService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +16,7 @@ class Settings extends StatefulWidget {
 
 class SettingsState extends State<Settings> {
 
-  NewNavigationService _newNavigationService;
+  NavigationService _newNavigationService;
   ThemeService _themeService;
 
   String _selectedThemeName;
@@ -27,7 +26,7 @@ class SettingsState extends State<Settings> {
   void initState(){
     super.initState();
 
-    _newNavigationService = NewNavigationService();
+    _newNavigationService = NavigationService();
     _themeService = ThemeService();
 
     _themeNames = BoostnoteTheme.themeNames;
@@ -48,7 +47,7 @@ class SettingsState extends State<Settings> {
 
   Widget _buildAppBar() {
     return AppBar(
-      title: Text('Settings'),
+      title: Text(AppLocalizations.of(context).translate('settings')),
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor), 
         onPressed: () {
@@ -70,21 +69,21 @@ class SettingsState extends State<Settings> {
                   style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)
                 ),
               ),
-              DropdownButton<String> (    //TODO FolderEntity
-                      value: _selectedThemeName, 
-                      underline: Container(), 
-                      style: TextStyle(fontSize: 18, color: Colors.black54, fontWeight: FontWeight.bold),
-                      items: _themeNames.map<DropdownMenuItem<String>>((themeName) => DropdownMenuItem<String>(
-                        value: themeName,
-                        child: Text(themeName)
-                      )).toList(),
-                      onChanged: (themeName) {
-                          setState(() {
-                            _selectedThemeName = themeName;
-                          });
-                         _changeTheme(themeName);
-                        }
-                    ),
+              DropdownButton<String> (    
+                value: _selectedThemeName, 
+                underline: Container(), 
+                style: TextStyle(fontSize: 18, color: Colors.black54, fontWeight: FontWeight.bold),
+                items: _themeNames.map<DropdownMenuItem<String>>((themeName) => DropdownMenuItem<String>(
+                  value: themeName,
+                  child: Text(themeName)
+                )).toList(),
+                onChanged: (themeName) {
+                    setState(() {
+                      _selectedThemeName = themeName;
+                    });
+                    _changeTheme(themeName);
+                  }
+              ),
           ],
         ),
       ],

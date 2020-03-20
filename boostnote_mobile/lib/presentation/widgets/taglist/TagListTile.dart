@@ -57,13 +57,14 @@ class _TagListTileState extends State<TagListTile> {
       children: <Widget>[
         Row(
           children: <Widget>[
-            Icon(Icons.folder, color: Colors.grey),
+            Icon(Icons.folder, color: Theme.of(context).indicatorColor),
             Padding(
               padding: EdgeInsets.only(left: 7),
               child: Text(
                 this.widget.tag, 
                 maxLines: 1,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.display1.color)
+              ),
             ),
           ]
         )
@@ -80,7 +81,7 @@ class _TagListTileState extends State<TagListTile> {
         child: Text(
           _numberOfNotesWithTag.toString() + ' ' + AppLocalizations.of(context).translate('notes'),
           maxLines: 2,
-          style: TextStyle(fontSize: 16.0)
+          style: TextStyle(fontSize: 16.0, color: Theme.of(context).textTheme.display1.color)
         )
       )
     )

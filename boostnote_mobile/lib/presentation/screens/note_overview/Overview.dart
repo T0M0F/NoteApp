@@ -10,13 +10,13 @@ import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart'
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/widgets/OverviewBottomSheet.dart';
+import 'package:boostnote_mobile/presentation/widgets/bottom_sheets/DeleteAllBottomNavigationBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewPresenter.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/notegrid/NoteGridTile.dart';
-import 'package:boostnote_mobile/presentation/widgets/notelist/DeleteAllBottomNavigationBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
 import 'package:boostnote_mobile/presentation/widgets/search/NoteSearch.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';

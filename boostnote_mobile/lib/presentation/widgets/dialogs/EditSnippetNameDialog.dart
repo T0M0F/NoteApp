@@ -15,11 +15,11 @@ class EditSnippetNameDialog extends StatelessWidget {
       textEditingController.text = noteTitle;
 
       return AlertDialog(
-        title: _buildTitle(),
+        title: _buildTitle(context),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         content: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return _buildContent();
+            return _buildContent(context);
           },
         ),
         actions: _buildActions(context),
@@ -27,22 +27,22 @@ class EditSnippetNameDialog extends StatelessWidget {
     }
 
 
-    Container _buildTitle() {
+    Container _buildTitle(BuildContext context) {
       return Container( 
         alignment: Alignment.center,
-        child: Text('Change', style: TextStyle(color: Colors.black))
+        child: Text('Change', style: TextStyle(color:  Theme.of(context).textTheme.display1.color))
       );
     }
 
 
-    Container _buildContent() {
+    Container _buildContent(BuildContext context) {
       return Container(
         height: 75,
         child: Column(
           children: <Widget>[
             TextField(
               controller: textEditingController,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color:  Theme.of(context).textTheme.display1.color),
             ), 
           ],
         ),
@@ -54,7 +54,7 @@ class EditSnippetNameDialog extends StatelessWidget {
       return <Widget>[
         MaterialButton(
           minWidth:100,
-          child: Text('Cancel', style: TextStyle(color: Colors.black),),
+          child: Text('Cancel', style: TextStyle(color:  Theme.of(context).textTheme.display1.color)),
           onPressed: (){
             Navigator.of(context).pop();
           }
@@ -63,7 +63,7 @@ class EditSnippetNameDialog extends StatelessWidget {
           minWidth:100,
           elevation: 5.0,
           color: Theme.of(context).accentColor,
-          child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
+          child: Text('Save', style: TextStyle(color:  Theme.of(context).accentTextTheme.display1.color)),
           onPressed: (){
             if(textEditingController.text.trim().length > 0){
               onNameChanged(textEditingController.text); 

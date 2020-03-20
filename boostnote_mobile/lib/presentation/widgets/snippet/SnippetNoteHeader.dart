@@ -70,7 +70,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(right: 5), 
-                    child: Icon(Icons.folder_open)
+                    child: Icon(Icons.folder_open, color: Theme.of(context).primaryColorLight),
                   ),
                   Container(
                     width: 130,
@@ -96,9 +96,9 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
             ),
             Row(
             children: <Widget>[
-              IconButton(icon: Icon(Icons.label_outline), onPressed: this.widget.onTagClickedCallback),
-              IconButton(icon: Icon(Icons.info_outline), onPressed: this.widget.onInfoClickedCallback),
-              IconButton(icon: Icon(Icons.description), onPressed: this.widget.onDescriptionClickCallback)
+              IconButton(icon: Icon(Icons.label_outline, color: Theme.of(context).primaryColorLight), onPressed: this.widget.onTagClickedCallback),
+              IconButton(icon: Icon(Icons.info_outline, color: Theme.of(context).primaryColorLight), onPressed: this.widget.onInfoClickedCallback),
+              IconButton(icon: Icon(Icons.description, color: Theme.of(context).primaryColorLight), onPressed: this.widget.onDescriptionClickCallback)
              ],
             ),
           ],
@@ -107,7 +107,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
           widthFactor: 0.95,
           child: Container(
             height: 1,
-            color: Colors.black26,
+            color: Theme.of(context).dividerColor
           ),
         )
       ],

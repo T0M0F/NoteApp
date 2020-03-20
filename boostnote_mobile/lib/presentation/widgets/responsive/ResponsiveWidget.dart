@@ -55,7 +55,7 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
           )
         );
         if(this.widget.showDivider){
-          result.add(Container(width: 0.5, color: Colors.grey));
+          result.add(Container(width: 0.5, color: Theme.of(context).dividerColor));
         }
       } 
 

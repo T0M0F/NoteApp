@@ -38,7 +38,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(this.widget.pageTitle),
+      title: Text(this.widget.pageTitle, style: Theme.of(context).accentTextTheme.title),
       leading: _buildLeadingIcon(),
       actions: _buildActions(),
     );
@@ -47,30 +47,30 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
   List<Widget> _buildActions() {
     return <Widget>[
       IconButton(
-        icon: Icon(Icons.search),
+        icon: Icon(Icons.search, color: Theme.of(context).buttonColor),
         onPressed: this.widget.onSearchClickCallback
       ),
       PopupMenuButton<String>(
-        icon: Icon(Icons.more_vert),
+        icon: Icon(Icons.more_vert, color: Theme.of(context).buttonColor),
         onSelected: this.widget.onSelectedActionCallback,
         itemBuilder: (BuildContext context) {
           return <PopupMenuEntry<String>>[
             PopupMenuItem(
               value: this.widget.actions['EDIT_ACTION'],
               child: ListTile(
-                title: Text(this.widget.actions['EDIT_ACTION'])
+                title: Text(this.widget.actions['EDIT_ACTION'], style: Theme.of(context).textTheme.display1),
               )
             ),
             PopupMenuItem(
               value: this.widget.listTilesAreExpanded ? this.widget.actions['COLLPASE_ACTION']: this.widget.actions['EXPAND_ACTION'],
               child: ListTile(
-                title: this.widget.listTilesAreExpanded ? Text(this.widget.actions['COLLPASE_ACTION']) : Text(this.widget.actions['EXPAND_ACTION'])
+                title: Text(this.widget.listTilesAreExpanded ? this.widget.actions['COLLPASE_ACTION'] : this.widget.actions['EXPAND_ACTION'] , style: Theme.of(context).textTheme.display1), 
               )
             ),
             PopupMenuItem(
               value: this.widget.showListView ? this.widget.actions['SHOW_GRIDVIEW_ACTION']: this.widget.actions['SHOW_LISTVIEW_ACTION'],
               child: ListTile(
-                title: this.widget.showListView ? Text(this.widget.actions['SHOW_GRIDVIEW_ACTION']) : Text(this.widget.actions['SHOW_LISTVIEW_ACTION'])
+                title: Text(this.widget.showListView ? this.widget.actions['SHOW_GRIDVIEW_ACTION'] : this.widget.actions['SHOW_LISTVIEW_ACTION'], style: Theme.of(context).textTheme.display1), 
               )
             ),
           ];

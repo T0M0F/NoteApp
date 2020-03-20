@@ -43,7 +43,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             child: Row(
               children: <Widget>[
                 Text(AppLocalizations.of(context).translate('boostnote') + ' ', style: TextStyle(fontSize: 20, color: Theme.of(context).accentColor)),
-                Text(AppLocalizations.of(context).translate('mobile'), style: TextStyle(fontSize: 20, color: Color(0xFFF6F5F5))),
+                Text(AppLocalizations.of(context).translate('mobile'), style: TextStyle(fontSize: 20, color: Theme.of(context).accentTextTheme.display1.color)),
               ],
             ),
             decoration: BoxDecoration(
@@ -52,40 +52,40 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
       ),
      ListTile(
-            leading: Icon(Icons.description, color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-            title: Text(AppLocalizations.of(context).translate('all_notes'), style: TextStyle(color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+            leading: Icon(Icons.description, color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+            title: Text(AppLocalizations.of(context).translate('all_notes'), style: TextStyle(color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
             onTap: () {
               Navigator.pop(context);
               _navigationService.navigateTo(destinationMode: NavigationMode2.ALL_NOTES_MODE);
             },
       ),
       ListTile(
-        leading: Icon(Icons.folder, color: _navigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text(AppLocalizations.of(context).translate('folders'), style: TextStyle(color: _navigationService.isFoldersMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.folder, color: _navigationService.isFoldersMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('folders'), style: TextStyle(color: _navigationService.isFoldersMode() ? Theme.of(context).accentColor :Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
           _navigationService.navigateTo(destinationMode: NavigationMode2.FOLDERS_MODE);
         },
       ),
       ListTile(
-        leading: Icon(Icons.label, color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.label, color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
           _navigationService.navigateTo(destinationMode: NavigationMode2.TAGS_MODE);
         }
       ),
       ListTile(
-        leading: Icon(Icons.star, color: _navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color: _navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.star, color: _navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color: _navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
           _navigationService.navigateTo(destinationMode: NavigationMode2.STARRED_NOTES_MODE);
         },
       ),
       ListTile(
-        leading: Icon(Icons.delete, color: _navigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5)),
-        title: Text(AppLocalizations.of(context).translate('trash'), style: TextStyle(color: _navigationService.isTrashMode() ? Theme.of(context).accentColor : Color(0xFFF6F5F5))),
+        leading: Icon(Icons.delete, color: _navigationService.isTrashMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('trash'), style: TextStyle(color: _navigationService.isTrashMode() ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
           _navigationService.navigateTo(destinationMode: NavigationMode2.TRASH_MODE);
@@ -100,16 +100,16 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
       ),
       ListTile(
-        leading: Icon(Icons.settings, color: Color(0xFFF6F5F5)),
-        title: Text(AppLocalizations.of(context).translate('settings')),
+        leading: Icon(Icons.settings, color: _navigationService.isSettingsMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('settings'), style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color),),
         onTap: () {
           Navigator.pop(context);
           _navigationService.navigateTo(destinationMode: NavigationMode2.SETTINGS_MODE);
         },
       ),
       ListTile(
-        leading: Icon(Icons.info, color: Color(0xFFF6F5F5)),
-        title: Text(AppLocalizations.of(context).translate('about')),
+        leading: Icon(Icons.info, color: Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('about'), style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color),),
         onTap: () {
           Navigator.pop(context);
         },
@@ -118,7 +118,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
 
     for(String folder in folders){
       widgets.insert(7, ListTile(
-        leading: Icon(Icons.folder, color: Color(0xFFF6F5F5)),
+        leading: Icon(Icons.folder, color: Theme.of(context).buttonColor),
         title: Text(folder),
         onTap: () {
           Navigator.pop(context);

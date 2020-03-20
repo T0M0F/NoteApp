@@ -22,7 +22,7 @@ class _CreateNoteDialogState extends State<CreateFolderDialog> {
     return AlertDialog(
       title: Container( 
         alignment: Alignment.center,
-        child: Text(AppLocalizations.of(context).translate('create_folder'), style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate('create_folder'), style: TextStyle(color:  Theme.of(context).textTheme.display1.color))
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: StatefulBuilder(
@@ -32,7 +32,7 @@ class _CreateNoteDialogState extends State<CreateFolderDialog> {
               children: <Widget>[
                 TextField(
                   controller: _textEditingController,
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color:  Theme.of(context).textTheme.display1.color)
                 ), 
               ],
             ),
@@ -42,7 +42,7 @@ class _CreateNoteDialogState extends State<CreateFolderDialog> {
       actions: <Widget>[
        MaterialButton(
           minWidth:100,
-          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: Colors.black),),
+          child: Text(AppLocalizations.of(context).translate('cancel'), style: TextStyle(color: Theme.of(context).textTheme.display1.color)),
           onPressed: (){
             this.widget.cancelCallback();
           }
@@ -51,7 +51,7 @@ class _CreateNoteDialogState extends State<CreateFolderDialog> {
           minWidth:100,
           elevation: 5.0,
           color: Theme.of(context).accentColor,
-          child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(color: Color(0xFFF6F5F5))),
+          child: Text(AppLocalizations.of(context).translate('save'), style: TextStyle(color:  Theme.of(context).accentTextTheme.display1.color)),
           onPressed: () {
             this.widget.saveCallback(_textEditingController.text);
           }

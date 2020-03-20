@@ -86,7 +86,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     if(_editMode) {
       return AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColorLight), 
           onPressed: () {
             _newNavigationService.navigateBack(context);
           },
@@ -190,7 +190,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
                 value: _selectedCodeSnippet, 
                 underline: Container(), 
                 iconEnabledColor: Colors.transparent,
-                style: TextStyle(fontSize: 16, color: Theme.of(context).primaryColorDark, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.display3.color, fontWeight: FontWeight.bold),
                 items: this.widget._note.codeSnippets.map<DropdownMenuItem<CodeSnippet>>((codeSnippet) => DropdownMenuItem<CodeSnippet>(
                   value: codeSnippet,
                   child: Text(codeSnippet.name)

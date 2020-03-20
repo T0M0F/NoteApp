@@ -12,7 +12,7 @@ class FolderOverviewErrorBottomSheet extends StatelessWidget {
           ListTile(
               title:  Text(
                 AppLocalizations.of(context).translate('cant_change_foldername'),
-                style: TextStyle(color: Colors.red)
+                style: TextStyle(color: Theme.of(context).errorColor)
               )
           )
         ],

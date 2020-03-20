@@ -15,13 +15,13 @@ class FolderOverviewBottomSheet extends StatelessWidget {
       child: Wrap(
         children: <Widget>[
             ListTile(
-              leading:  Icon(Icons.delete),
-              title:  Text(AppLocalizations.of(context).translate('remove_folder')),
+              leading:  Icon(Icons.delete, color: Theme.of(context).primaryColorLight),
+              title:  Text(AppLocalizations.of(context).translate('remove_folder'), style: Theme.of(context).textTheme.display1),
               onTap: removeFolderCallback
             ),
             ListTile(
-              leading:  Icon(Icons.folder),
-              title:  Text(AppLocalizations.of(context).translate('rename_folder')),
+              leading:  Icon(Icons.folder, color: Theme.of(context).primaryColorLight),
+              title:  Text(AppLocalizations.of(context).translate('rename_folder'), style: Theme.of(context).textTheme.display1),
               onTap: renameFolderCallback
             ),
         ],

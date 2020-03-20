@@ -44,7 +44,7 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       title: Container( 
         alignment: Alignment.center,
-        child: Text(AppLocalizations.of(context).translate("select_tags"), style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate("select_tags"), style: TextStyle(color:  Theme.of(context).textTheme.display1.color))
       ),
       content: ConstrainedBox(
         constraints: new BoxConstraints(
@@ -58,14 +58,14 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
                 SizedBox(
                   width: 160,
                   child:  TextField(
-                    decoration: InputDecoration(hintText: AppLocalizations.of(context).translate("add_tag"), hintStyle: TextStyle(color: Colors.grey)),
+                    decoration: InputDecoration(hintText: AppLocalizations.of(context).translate("add_tag"), hintStyle: TextStyle(color:  Theme.of(context).textTheme.display2.color)),
                     textInputAction: TextInputAction.done,
                     controller: _textEditingController,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Theme.of(context).textTheme.display1.color),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.check),
+                  icon: Icon(Icons.check, color: Theme.of(context).buttonColor),
                   onPressed: (){
                     setState(() {
                       _allTags.add(_textEditingController.text);
@@ -98,7 +98,8 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
                         ), 
                         Flexible(
                           flex: 3,
-                          child: Text(_allTags[index]),)
+                          child: Text(_allTags[index], style: TextStyle(color: Theme.of(context).textTheme.display1.color))
+                        )
                       ],
                     )
                   );
@@ -111,7 +112,7 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
       actions: <Widget>[
         MaterialButton(   //Auslagern
           minWidth:100,
-          child: Text(AppLocalizations.of(context).translate("cancel"), style: TextStyle(color: Colors.black),),
+          child: Text(AppLocalizations.of(context).translate("cancel"), style: TextStyle(color: Theme.of(context).textTheme.display1.color)),
           onPressed: (){
             Navigator.of(context).pop();
           }
@@ -120,7 +121,7 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
           minWidth:100,
           elevation: 5.0,
           color: Theme.of(context).accentColor,
-          child: Text(AppLocalizations.of(context).translate("save"), style: TextStyle(color: Color(0xFFF6F5F5))),
+          child: Text(AppLocalizations.of(context).translate("save"), style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color)),
           onPressed: (){
             this.widget.saveCallback(_selectedTags);
           }

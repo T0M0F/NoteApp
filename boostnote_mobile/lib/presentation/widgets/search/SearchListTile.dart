@@ -21,13 +21,13 @@ class SearchListTile extends StatelessWidget {
         title: Text(
           note.title,
           maxLines: 1,
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.display1.color)
         ),
         subtitle: Text(
           _getSubtitle(note, context),
           maxLines: 2,
-          style: _getSubtitle(note,context) == AppLocalizations.of(context).translate('no_data')  ? TextStyle(fontSize: 16.0, color: Colors.black, fontStyle: FontStyle.italic) 
-          : TextStyle(fontSize: 16.0, color: Colors.black),
+          style: _getSubtitle(note,context) == AppLocalizations.of(context).translate('no_data')  ? TextStyle(fontSize: 16.0, color:Theme.of(context).textTheme.display1.color, fontStyle: FontStyle.italic) 
+          : TextStyle(fontSize: 16.0, color: Theme.of(context).textTheme.display1.color),
         ),
         onTap: () => onTapCallback(note),
       )

@@ -17,7 +17,7 @@ class NoteSearch extends SearchDelegate {
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: Icon(Icons.clear),
+        icon: Icon(Icons.clear, color: Theme.of(context).primaryColorLight),
         onPressed: () {
           query = '';
         },
@@ -28,7 +28,7 @@ class NoteSearch extends SearchDelegate {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.arrow_back),
+      icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColorLight),
       onPressed: () {
         close(context, null);
       },
@@ -47,7 +47,7 @@ class NoteSearch extends SearchDelegate {
 
     if(notes.isEmpty){
       return Center(
-        child: Text(AppLocalizations.of(context).translate('no_data') , style: TextStyle(fontSize: 18)),
+        child: Text(AppLocalizations.of(context).translate('no_data') , style: TextStyle(fontSize: 18, color: Theme.of(context).textTheme.display1.color)),
       );
     } else {
       results = notes.where((note){
@@ -81,16 +81,5 @@ class NoteSearch extends SearchDelegate {
     );
   }
 
-  @override
-  ThemeData appBarTheme(BuildContext context) {
-    assert(context != null);
-    final ThemeData theme = Theme.of(context);
-    assert(theme != null);
-    return theme.copyWith(
-       textTheme: TextTheme(
-            title:   TextStyle(color: Colors.white),
-        ),
-    );
-  }
 
 }

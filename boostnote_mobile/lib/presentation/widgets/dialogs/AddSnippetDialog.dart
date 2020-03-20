@@ -11,33 +11,33 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: _buildTitle(),
+      title: _buildTitle(context),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-          return _buildContent();
+          return _buildContent(context);
         },
       ),
       actions: _buildActions(context),
     );
   }
 
-  Container _buildTitle() {
+  Container _buildTitle(BuildContext context) {
     return Container( 
       alignment: Alignment.center,
-      child: Text('Create a Code Snippet', style: TextStyle(color: Colors.black))
+      child: Text('Create a Code Snippet', style: TextStyle(color: Theme.of(context).textTheme.display1.color))
     );
   }
 
 
-  Container _buildContent() {
+  Container _buildContent(BuildContext context) {
      return Container(
       height: 75,
       child: Column(
         children: <Widget>[
           TextField(
             controller: controller,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Theme.of(context).textTheme.display1.color),
           ), 
         ],
       ),
@@ -49,7 +49,7 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
     return <Widget>[
       MaterialButton(
         minWidth:100,
-        child: Text('Cancel', style: TextStyle(color: Colors.black),),
+        child: Text('Cancel', style: TextStyle(color:  Theme.of(context).textTheme.display1.color),),
         onPressed: (){
           Navigator.of(context).pop();
         }
@@ -58,7 +58,7 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
         minWidth:100,
         elevation: 5.0,
         color: Theme.of(context).accentColor,
-        child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
+        child: Text('Save', style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color)),
         onPressed: (){
           if(controller.text.trim().length > 0){
             onSnippetAdded(controller.text); 

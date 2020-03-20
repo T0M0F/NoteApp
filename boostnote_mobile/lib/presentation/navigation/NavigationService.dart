@@ -193,6 +193,8 @@ class NavigationService {
 
   bool isNotesWithTagMode() => navigationModeHistory.last == NavigationMode2.NOTES_WITH_TAG_MODE;
 
+  bool isSettingsMode() => navigationModeHistory.last == NavigationMode2.SETTINGS_MODE;
+
   bool isNoteOpen() => noteIsOpen;
 }
 

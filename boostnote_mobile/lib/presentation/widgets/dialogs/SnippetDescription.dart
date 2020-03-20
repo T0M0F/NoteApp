@@ -32,7 +32,7 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
   Container _buildTitle() {
     return Container( 
       alignment: Alignment.center,
-      child: Text(AppLocalizations.of(context).translate('description'), style: TextStyle(color: Colors.black))
+      child: Text(AppLocalizations.of(context).translate('description'), style: TextStyle(color: Theme.of(context).textTheme.display1.color))
     );
   }
 
@@ -42,7 +42,7 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
         return Container(
           height: 250,
           child: TextField(
-            style: TextStyle(),
+            style: Theme.of(context).textTheme.display1,
             controller: widget.textEditingController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
@@ -63,7 +63,7 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
     return <Widget>[
       MaterialButton(
         minWidth:100,
-        child: Text('Cancel', style: TextStyle(color: Colors.black),),
+        child: Text('Cancel', style: TextStyle(color: Theme.of(context).textTheme.display1.color),),
         onPressed: (){
           Navigator.of(context).pop();
         }
@@ -72,7 +72,7 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
         minWidth:100,
         elevation: 5.0,
         color: Theme.of(context).accentColor,
-        child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
+        child: Text('Save', style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color)),
         onPressed: (){
           this.widget.onDescriptionChanged(widget.textEditingController.text);
           Navigator.of(context).pop();

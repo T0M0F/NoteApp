@@ -17,26 +17,26 @@ class _OverflowButtonState extends State<OverflowButton> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: Icon(Icons.more_vert, color: Color(0xFF2E3235)),
+      icon: Icon(Icons.more_vert, color:  Theme.of(context).iconTheme.color),
       onSelected: widget.selectedActionCallback,
       itemBuilder: (BuildContext context) {
         return <PopupMenuEntry<String>>[
           PopupMenuItem(
             value: ActionConstants.SAVE_ACTION,
             child: ListTile(
-              title: Text(ActionConstants.SAVE_ACTION)
+              title: Text(ActionConstants.SAVE_ACTION, style: Theme.of(context).textTheme.display1)
             )
           ),
           PopupMenuItem(
             value: ActionConstants.DELETE_ACTION,
             child: ListTile(
-              title: Text(ActionConstants.DELETE_ACTION)
+              title: Text(ActionConstants.DELETE_ACTION, style: Theme.of(context).textTheme.display1)
             )
           ),
           PopupMenuItem(
             value: widget.noteIsStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION,
             child: ListTile(
-              title: Text(widget.noteIsStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION)
+              title: Text(widget.noteIsStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION, style: Theme.of(context).textTheme.display1)
             )
           )
         ];

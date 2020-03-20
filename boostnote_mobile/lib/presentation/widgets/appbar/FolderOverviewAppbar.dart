@@ -12,14 +12,14 @@ class FolderOverviewAppbar extends StatelessWidget implements PreferredSizeWidge
   @override
   Widget build(BuildContext context) {
      return AppBar(
-      title: Text(AppLocalizations.of(context).translate('folders'),),
+      title: Text(AppLocalizations.of(context).translate('folders'), style: Theme.of(context).accentTextTheme.title),
       leading: IconButton(
         icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
         onPressed: onMenuClickCallback,
       ),
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.create_new_folder),
+          icon: Icon(Icons.create_new_folder, color: Theme.of(context).buttonColor),
           onPressed: onCreateFolderCallback,
         )
       ],

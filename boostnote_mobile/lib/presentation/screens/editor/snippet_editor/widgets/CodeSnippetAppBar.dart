@@ -23,10 +23,13 @@ class CodeSnippetAppBar extends StatefulWidget implements PreferredSizeWidget{
 
 class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return AppBar(
+      elevation: 0,
+      backgroundColor: Theme.of(context).backgroundColor,
+      brightness: Brightness.light,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
+        icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColorLight), 
         onPressed: widget.onNavigateBackCallback
       ),
       actions: <Widget>[
@@ -39,15 +42,15 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
             DropdownButton<CodeSnippet> (  
               value: widget.selectedCodeSnippet, 
               underline: Container(), 
-              iconEnabledColor: Theme.of(context).buttonColor,
-              style: TextStyle(fontSize: 16, color:  Theme.of(context).buttonColor, fontWeight: FontWeight.bold),
+              iconEnabledColor:  Theme.of(context).primaryColorLight,
+              style: TextStyle(fontSize: 16, color:   Theme.of(context).textTheme.display3.color, fontWeight: FontWeight.bold),
               selectedItemBuilder: (BuildContext context) {
                 String snippetName = widget.selectedCodeSnippet.name.length > 10 ? widget.selectedCodeSnippet.name.substring(0,10) : widget.selectedCodeSnippet.name;
                 Widget item = DropdownMenuItem<CodeSnippet>(
                   value: widget.selectedCodeSnippet,
                   child: Row(
                     children: <Widget>[
-                      Text(snippetName + '    '),
+                      Text(snippetName + '    ', style: Theme.of(context).textTheme.display1),
                     ],
                   )
                 );
@@ -58,7 +61,7 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
                   value: codeSnippet,
                   child: Row(
                     children: <Widget>[
-                      Text(codeSnippet.name, style: TextStyle(fontSize: 16, color:  Theme.of(context).primaryColorDark, fontWeight: FontWeight.bold)),
+                      Text(codeSnippet.name, style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.display3.color, fontWeight: FontWeight.bold)),
                       IconButton(
                         icon: Icon(Icons.delete), 
                         onPressed: () {

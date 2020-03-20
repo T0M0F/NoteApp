@@ -18,7 +18,7 @@ class MarkdownEditorAppBar extends StatefulWidget implements PreferredSizeWidget
   _MarkdownEditorAppBarState createState() => _MarkdownEditorAppBarState();
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight-15);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
 class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
@@ -27,16 +27,16 @@ class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.white24,
-    
+      backgroundColor: Theme.of(context).backgroundColor,
+      brightness: Theme.of(context).accentColorBrightness,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Color(0xFF2E3235),), 
+        icon: Icon(Icons.arrow_back, color:  Theme.of(context).iconTheme.color), 
         onPressed: widget.onNavigateBackCallback,
       ),
       actions: <Widget>[
         Switch(
-          inactiveThumbColor: Color(0xFF1EC38B),
-          inactiveTrackColor: Colors.black54,
+          inactiveThumbColor: Theme.of(context).accentColor,
+          inactiveTrackColor: Theme.of(context).iconTheme.color,
           value: widget.isPreviewMode, 
           onChanged: widget.onViewModeSwitchedCallback
         ),

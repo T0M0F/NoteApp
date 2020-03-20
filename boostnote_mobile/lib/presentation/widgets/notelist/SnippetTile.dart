@@ -27,22 +27,16 @@ class SnippetTile extends StatelessWidget{
     expandedAndNotEmpty = expanded && (note.isStarred || note.tags.isNotEmpty);
     if (expandedAndNotEmpty) {
       widgets = <Widget>[
-        buildHeaderRow(),
+        buildHeaderRow(context),
         buildBodyRow(context),
-        buildFooterRow(),
-        Divider(
-          height: 1.0,
-          thickness: 1,
-          )
+        buildFooterRow(context),
+        Divider(height: 0.5)
       ];
     } else {
       widgets = <Widget>[
-        buildHeaderRow(),
+        buildHeaderRow(context),
         buildBodyRow(context),
-        Divider(
-          height: 1.0,
-          thickness: 1,
-          )
+        Divider(height: 0.5)
       ];
     }
 
@@ -56,23 +50,23 @@ class SnippetTile extends StatelessWidget{
     );
   }
 
-  Widget buildHeaderRow() => Padding(
+  Widget buildHeaderRow(BuildContext context) => Padding(
     padding: EdgeInsets.only(top: 10),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Row(
           children: <Widget>[
-            Icon(Icons.code, color: Colors.grey),
+            Icon(Icons.code, color: Theme.of(context).indicatorColor),
             Padding(
               padding: EdgeInsets.only(left: 5),
               child:  Text(note.title, 
                 maxLines: 1,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.display1.color)),
             )
           ],
         ),
-        Text(_dateTimeConverter.convertToReadableForm(note.updatedAt), style: TextStyle(fontSize: 15.0, color: Colors.grey))
+        Text(_dateTimeConverter.convertToReadableForm(note.updatedAt), style: TextStyle(fontSize: 15.0, color: Theme.of(context).textTheme.display2.color),)
       ],
     ),
   );
@@ -84,7 +78,7 @@ class SnippetTile extends StatelessWidget{
       child: Text(
         getPreviewText(note, context), 
         maxLines: 2,
-        style: getPreviewText(note, context) == AppLocalizations.of(context).translate('no_data') ? TextStyle(fontSize: 16.0, fontStyle: FontStyle.italic) : TextStyle(fontSize: 16.0)
+        style: getPreviewText(note, context) == AppLocalizations.of(context).translate('no_data') ? TextStyle(fontSize: 16.0, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.display1.color) : TextStyle(fontSize: 16.0, color: Theme.of(context).textTheme.display1.color)
       ),
     )
   );
@@ -100,13 +94,13 @@ class SnippetTile extends StatelessWidget{
     }
   }
 
-  Widget buildFooterRow() {
+  Widget buildFooterRow(BuildContext context) {
    List<Widget> widgets;
     if(note.isStarred){
       widgets = [ Text(
                     tagListConverter.convert(note.tags), 
                     maxLines: 1,
-                    style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey),
+                    style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.display2.color),
                     overflow: TextOverflow.ellipsis,
                   ),
                   Icon(Icons.star, color: Colors.yellow) 
@@ -115,7 +109,7 @@ class SnippetTile extends StatelessWidget{
       widgets = [ Text(
                     tagListConverter.convert(note.tags), 
                     maxLines: 1,
-                    style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey),
+                    style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color:  Theme.of(context).textTheme.display2.color),
                     overflow: TextOverflow.ellipsis,
                   )
                 ];

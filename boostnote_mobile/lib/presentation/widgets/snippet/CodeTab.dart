@@ -37,7 +37,7 @@ class CodeTabState extends State<CodeTab> {
         child: TextField(
           autofocus: true,
           autocorrect: true,
-          style: TextStyle(),
+          style: Theme.of(context).textTheme.display1,
           controller: textEditingController,
           keyboardType: TextInputType.multiline,
           maxLines: null,
@@ -71,6 +71,7 @@ class CodeTabState extends State<CodeTab> {
           textStyle: TextStyle(
                       fontFamily: 'My awesome monospace font',
                       fontSize: 16,
+                      color: Theme.of(context).textTheme.display1.color
           )
         )
         )

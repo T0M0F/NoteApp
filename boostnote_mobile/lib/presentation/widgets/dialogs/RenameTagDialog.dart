@@ -23,7 +23,7 @@ class _CreateTagDialogState extends State<RenameTagDialog> {
     return AlertDialog(
       title: Container( 
         alignment: Alignment.center,
-        child: Text(AppLocalizations.of(context).translate('rename_tag') + ' ' + this.widget.tag, style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate('rename_tag') + ' ' + this.widget.tag, style: TextStyle(color: Theme.of(context).textTheme.display1.color))
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: StatefulBuilder(
@@ -34,7 +34,7 @@ class _CreateTagDialogState extends State<RenameTagDialog> {
               children: <Widget>[
                 TextField(
                   controller: _textEditingController,
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Theme.of(context).textTheme.display1.color),
                 ), 
               ],
             ),
@@ -44,7 +44,7 @@ class _CreateTagDialogState extends State<RenameTagDialog> {
       actions: <Widget>[
        MaterialButton(
           minWidth:100,
-          child: Text('Cancel', style: TextStyle(color: Colors.black),),
+          child: Text('Cancel', style: TextStyle(color:Theme.of(context).textTheme.display1.color),),
           onPressed: (){
             this.widget.cancelCallback();
           }
@@ -53,7 +53,7 @@ class _CreateTagDialogState extends State<RenameTagDialog> {
           minWidth:100,
           elevation: 5.0,
           color: Theme.of(context).accentColor,
-          child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
+          child: Text('Save', style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color)),
           onPressed: () {
             this.widget.saveCallback(_textEditingController.text);
           }

@@ -31,7 +31,7 @@ class _MarkdownBodyState extends State<MarkdownBody>{
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
       child: TextField(
         autocorrect: true,
-        style: TextStyle(),
+        style: Theme.of(context).textTheme.display1,
         controller: _textEditingController,
         keyboardType: TextInputType.multiline,
         maxLines: null,

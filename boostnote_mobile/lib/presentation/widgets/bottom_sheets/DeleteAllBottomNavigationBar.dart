@@ -23,11 +23,11 @@ class DeleteAllBottomNavigationBar extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(right: 5),
-                  child: Icon(Icons.delete, color: Colors.white)
+                  child: Icon(Icons.delete, color: Theme.of(context).buttonColor)
                 ),
                 Text(
                   AppLocalizations.of(context).translate('delete_all'),
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                  style: TextStyle(fontSize: 18, color: Theme.of(context).accentTextTheme.display1.color),
                 )
               ],
             ) 

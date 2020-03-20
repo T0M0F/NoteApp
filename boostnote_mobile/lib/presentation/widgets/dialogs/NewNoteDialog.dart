@@ -32,7 +32,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
     return AlertDialog(
       title: Container( 
         alignment: Alignment.center,
-        child: Text(AppLocalizations.of(context).translate('make_a_note'), style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate('make_a_note'), style: TextStyle(color:  Theme.of(context).textTheme.display1.color))
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: StatefulBuilder(
@@ -42,10 +42,10 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
               children: <Widget>[
                 TextField(
                   controller: controller,
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color:  Theme.of(context).textTheme.display1.color),
                 ), 
                 RadioListTile(
-                  title: Text(AppLocalizations.of(context).translate('markdown_note')),
+                  title: Text(AppLocalizations.of(context).translate('markdown_note'), style: TextStyle(color:  Theme.of(context).textTheme.display1.color)),
                   value: 1,
                   groupValue: groupvalue,
                   onChanged: (int value) {
@@ -55,7 +55,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
                   },
                 ),
                 RadioListTile(
-                  title: Text(AppLocalizations.of(context).translate('snippet_note')),
+                  title: Text(AppLocalizations.of(context).translate('snippet_note'), style: TextStyle(color:  Theme.of(context).textTheme.display1.color)),
                   groupValue: groupvalue,
                   value: 2,
                   onChanged: (int value) {
@@ -72,7 +72,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
       actions: <Widget>[
        MaterialButton(
           minWidth:100,
-          child: Text('Cancel', style: TextStyle(color: Colors.black),),
+          child: Text('Cancel', style: TextStyle(color:  Theme.of(context).textTheme.display1.color)),
           onPressed: (){
             this.widget.cancelCallback();
           }
@@ -81,7 +81,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
           minWidth:100,
           elevation: 5.0,
           color: Theme.of(context).accentColor,
-          child: Text('Save', style: TextStyle(color: Color(0xFFF6F5F5))),
+          child: Text('Save', style: TextStyle(color:  Theme.of(context).accentTextTheme.display1.color)),
           onPressed: _save
         )
       ],

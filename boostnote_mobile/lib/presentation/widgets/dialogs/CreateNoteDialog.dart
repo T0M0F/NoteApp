@@ -35,14 +35,14 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       title: Container( 
         alignment: Alignment.center,
-        child: Text(AppLocalizations.of(context).translate("make_a_note"), style: TextStyle(color: Colors.black))
+        child: Text(AppLocalizations.of(context).translate("make_a_note"), style: TextStyle(color:  Theme.of(context).textTheme.display1.color))
       ),
       content: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             TextField(
               controller: controller,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color:  Theme.of(context).textTheme.display1.color),
             ),
             RadioListTile(
               title: Text(AppLocalizations.of(context).translate("markdown_note")),
@@ -72,7 +72,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
       actions: <Widget>[
         MaterialButton(
           minWidth:100,
-          child: Text(Translation.of(context).text("cancel"), style: TextStyle(color: Colors.black),),
+          child: Text(Translation.of(context).text("cancel"), style: TextStyle(color:  Theme.of(context).textTheme.display1.color)),
           onPressed: (){
             Navigator.of(context).pop();
           }
@@ -81,7 +81,7 @@ class CreateNoteDialogState extends State<CreateNoteDialog>{
           minWidth:100,
           elevation: 5.0,
           color: Theme.of(context).accentColor,
-          child: Text(Translation.of(context).text("save"), style: TextStyle(color: Color(0xFFF6F5F5))),
+          child: Text(Translation.of(context).text("save"), style: TextStyle(color:  Theme.of(context).accentTextTheme.display1.color)),
           onPressed: (){
             
           }

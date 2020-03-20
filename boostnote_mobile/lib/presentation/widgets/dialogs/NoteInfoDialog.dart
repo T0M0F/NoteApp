@@ -31,11 +31,11 @@ class NoteInfoDialog extends StatelessWidget {
           children: <Widget>[
             Container( 
               alignment: Alignment.center,
-              child: Text(note.title, style: TextStyle(color: Colors.black))
+              child: Text(note.title, style: TextStyle(color:  Theme.of(context).textTheme.display1.color))
             ),
             Padding(
               padding: EdgeInsets.only(left: 5, top: 3),
-              child:  Icon(Icons.info_outline)
+              child:  Icon(Icons.info_outline, color: Theme.of(context).primaryColorLight),
             )
           ],
         )
@@ -52,68 +52,68 @@ class NoteInfoDialog extends StatelessWidget {
         children: <Widget>[
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(AppLocalizations.of(context).translate('updatedAt'), style: TextStyle(color: Colors.grey)),
+            child: Text(AppLocalizations.of(context).translate('updatedAt'), style: TextStyle(color:  Theme.of(context).textTheme.display2.color)),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 5),
             child:  Align(
               alignment: Alignment.centerLeft,
-              child:  Text(note.updatedAt.toString()),
+              child:  Text(note.updatedAt.toString(), style: Theme.of(context).textTheme.display1),
             ),
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child:  Text(AppLocalizations.of(context).translate('createdAt'), style: TextStyle(color: Colors.grey)),
+            child:  Text(AppLocalizations.of(context).translate('createdAt'), style: TextStyle(color: Theme.of(context).textTheme.display2.color)),
           ),
            Padding(
             padding: EdgeInsets.only(bottom: 5),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(note.createdAt.toString()),
+              child: Text(note.createdAt.toString(), style: Theme.of(context).textTheme.display1),
             ),
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: Text('Id', style: TextStyle(color: Colors.grey)),
+            child: Text('Id', style: TextStyle(color:  Theme.of(context).textTheme.display2.color)),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 5),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(note.id.toString()),
+              child: Text(note.id.toString(), style: Theme.of(context).textTheme.display1),
             ),
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(AppLocalizations.of(context).translate('folder'), style: TextStyle(color: Colors.grey)),
+            child: Text(AppLocalizations.of(context).translate('folder'), style: TextStyle(color:  Theme.of(context).textTheme.display2.color)),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 5),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(note.folder.name),
+              child: Text(note.folder.name, style: Theme.of(context).textTheme.display1),
             ),
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color: Colors.grey)),
+            child: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color:  Theme.of(context).textTheme.display2.color)),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 5),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(note.isStarred ? AppLocalizations.of(context).translate('yes') : AppLocalizations.of(context).translate('no')),
+              child: Text(note.isStarred ? AppLocalizations.of(context).translate('yes') : AppLocalizations.of(context).translate('no'), style: Theme.of(context).textTheme.display1,),
             ),
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(AppLocalizations.of(context).translate('trashed'), style: TextStyle(color: Colors.grey)),
+            child: Text(AppLocalizations.of(context).translate('trashed'), style: TextStyle(color:  Theme.of(context).textTheme.display2.color)),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 5),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(note.isTrashed ? AppLocalizations.of(context).translate('yes') : AppLocalizations.of(context).translate('no')),
+              child: Text(note.isTrashed ? AppLocalizations.of(context).translate('yes') : AppLocalizations.of(context).translate('no'), style: Theme.of(context).textTheme.display1,),
             ),
           ),
         ],
@@ -127,7 +127,7 @@ class NoteInfoDialog extends StatelessWidget {
     return <Widget>[
       MaterialButton(
         minWidth:100,
-        child: Text(AppLocalizations.of(context).translate('close'), style: TextStyle(color: Colors.black),),
+        child: Text(AppLocalizations.of(context).translate('close'), style: TextStyle(color: Theme.of(context).textTheme.display1.color)),
         onPressed: (){
           Navigator.of(context).pop();
         }

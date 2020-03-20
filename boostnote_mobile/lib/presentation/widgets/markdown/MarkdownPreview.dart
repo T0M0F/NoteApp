@@ -27,7 +27,7 @@ class MarkdownPreviewState extends State<MarkdownPreview>{
       child: MarkdownBody(
         data: this.widget._text,
         /*syntaxHighlighter: DartSyntaxHighlighter(SyntaxHighlighterStyle.darkThemeStyle()),*/
-        styleSheet: MarkdownStyleSheet(p: TextStyle(color: Colors.black, fontSize: 16)),
+        styleSheet: MarkdownStyleSheet(p: TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 16)),
         onTapLink: (String url){
           this.widget.launchUrlCallback(url);
         },

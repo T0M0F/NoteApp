@@ -23,16 +23,16 @@ class NoteGridTile extends StatelessWidget {
 
     if(expanded) {
       widgets = <Widget>[
-        _buildHeaderRow(),
+        _buildHeaderRow(context),
         _buildBody(context),
         _buildFooterRow1(context),
-        _buildFooterRow2()
+        _buildFooterRow2(context)
       ];
     } else {
       widgets = <Widget>[
-        _buildHeaderRow(),
+        _buildHeaderRow(context),
         _buildBody(context),
-        _buildFooterRow2()
+        _buildFooterRow2(context)
       ];
     }  
 
@@ -44,18 +44,18 @@ class NoteGridTile extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderRow() {
+  Widget _buildHeaderRow(BuildContext context) {
 
     List<Widget> widgets = [
       Row(
         children: <Widget>[
-          Icon(note is MarkdownNote ? Icons.description : Icons.code, color: Colors.grey),
+          Icon(note is MarkdownNote ? Icons.description : Icons.code, color: Theme.of(context).primaryColorLight),
           Padding(
             padding: EdgeInsets.only(left: 5),
             child: Text(
               note.title, 
               maxLines: 1,
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.display1.color),
             )
           )
         ],
@@ -84,20 +84,28 @@ class NoteGridTile extends StatelessWidget {
          widget = Text(
             snippetNote.description,
             maxLines: 3,
+            style: Theme.of(context).textTheme.display1,
           );
       } else if(snippetNote.codeSnippets.isNotEmpty) {
         widget = Text(
             snippetNote.codeSnippets.first.content,
             maxLines: 3,
+              style: Theme.of(context).textTheme.display1,
           );
       } else {
-        widget = Text('\n' + AppLocalizations.of(context).translate('no_data') + '\n', style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic));
+        widget = Text(
+          '\n' + AppLocalizations.of(context).translate('no_data') + '\n', 
+          style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.display1.color)
+        );
       }
 
     } else {
       MarkdownNote markdownNote = note;
       if(markdownNote.content.trim().isEmpty) {
-        widget = Text('\n' + AppLocalizations.of(context).translate('no_data') + '\n', style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic));
+        widget = Text(
+          '\n' + AppLocalizations.of(context).translate('no_data') + '\n', 
+          style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.display1.color)
+        );
       } else {
         widget = Text(
             markdownNote.content,
@@ -135,19 +143,23 @@ class NoteGridTile extends StatelessWidget {
         padding: EdgeInsets.only(bottom: 5),
         child: Align(
           alignment: Alignment.centerLeft,
-          child: Text(AppLocalizations.of(context).translate('no_tags'), style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey)),
+          child: Text(
+            AppLocalizations.of(context).translate('no_tags'), 
+            style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.display2.color)
+          ),
         )
       );
     }
   }
 
-  Widget _buildFooterRow2() {
-  
+  Widget _buildFooterRow2(BuildContext context) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: EdgeInsets.only(bottom: 10),
-        child: Text(_dateTimeConverter.convertToReadableForm(note.updatedAt), style: TextStyle(fontSize: 15.0, color: Colors.grey))
+        child: Text(
+          _dateTimeConverter.convertToReadableForm(note.updatedAt), 
+          style: TextStyle(fontSize: 15.0, color: Theme.of(context).textTheme.display2.color))
       )
     );
   }

@@ -15,7 +15,7 @@ class AddFloatingActionButton extends StatelessWidget {
       width: 60,
       child: FittedBox(
         child: FloatingActionButton(
-          child: Icon(Icons.add, color: Color(0xFFF6F5F5), size: 35),
+          child: Icon(Icons.add, color: Theme.of(context).primaryIconTheme.color, size: 35),
           onPressed: onPressed,
         )
       )

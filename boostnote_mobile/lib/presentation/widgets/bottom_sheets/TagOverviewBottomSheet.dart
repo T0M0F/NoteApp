@@ -15,13 +15,13 @@ class TagOverviewBottomSheet extends StatelessWidget {
       child: Wrap(
         children: <Widget>[
             new ListTile(
-              leading: Icon(Icons.delete),
-              title: Text(AppLocalizations.of(context).translate('remove_tag')),
+              leading: Icon(Icons.delete, color: Theme.of(context).primaryColorLight),
+              title: Text(AppLocalizations.of(context).translate('remove_tag'), style: Theme.of(context).textTheme.display1),
               onTap: removeTagCallback     
             ),
             new ListTile(
-              leading: new Icon(Icons.folder),
-              title: new Text(AppLocalizations.of(context).translate('rename_tag')),
+              leading: new Icon(Icons.label, color: Theme.of(context).primaryColorLight),
+              title: new Text(AppLocalizations.of(context).translate('rename_tag'), style: Theme.of(context).textTheme.display1),
               onTap: renameTagCallback    
             ),
         ],

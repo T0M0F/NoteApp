@@ -57,13 +57,13 @@ class _FolderListTileState extends State<FolderListTile> {
       children: <Widget>[
         Row(
           children: <Widget>[
-            Icon(Icons.folder, color: Colors.grey),
+            Icon(Icons.folder, color: Theme.of(context).indicatorColor),
             Padding(
               padding: EdgeInsets.only(left: 7),
               child: Text(
                 this.widget.folder.name, 
                 maxLines: 1,
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.display1.color)),
             ),
           ]
         )
@@ -80,7 +80,7 @@ class _FolderListTileState extends State<FolderListTile> {
         child: Text(
           _numberOfNotesInFolder.toString() + ' Notes', 
           maxLines: 2,
-          style: TextStyle(fontSize: 16.0)
+          style: TextStyle(fontSize: 16.0, color: Theme.of(context).textTheme.display1.color)
         )
       )
     )

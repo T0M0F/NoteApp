@@ -30,12 +30,6 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         title: 'Boostnote',
         debugShowCheckedModeBanner: false,
         theme: themeNotifier.getTheme(),
-        /*ThemeData(
-          primaryColor: Color(0xFF202120),
-          primaryColorLight: Color(0xFF2E3235),
-          accentColor: Color(0xFF1EC38B),
-          hintColor: Colors.white,
-        ),*/
         localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,

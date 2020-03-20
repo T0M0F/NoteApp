@@ -47,7 +47,7 @@ class SettingsState extends State<Settings> {
 
   Widget _buildAppBar() {
     return AppBar(
-      title: Text(AppLocalizations.of(context).translate('settings')),
+      title: Text(AppLocalizations.of(context).translate('settings'), style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color),),
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor), 
         onPressed: () {
@@ -66,13 +66,13 @@ class SettingsState extends State<Settings> {
                 padding: EdgeInsets.only(left: 20, right: 30),
                 child: Text(
                   AppLocalizations.of(context).translate('theme'), 
-                  style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)
+                  style: TextStyle(fontSize: 18, color: Theme.of(context).textTheme.display1.color, fontWeight: FontWeight.bold)
                 ),
               ),
               DropdownButton<String> (    
                 value: _selectedThemeName, 
                 underline: Container(), 
-                style: TextStyle(fontSize: 18, color: Colors.black54, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, color: Theme.of(context).textTheme.display1.color, fontWeight: FontWeight.bold),
                 items: _themeNames.map<DropdownMenuItem<String>>((themeName) => DropdownMenuItem<String>(
                   value: themeName,
                   child: Text(themeName)

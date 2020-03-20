@@ -15,7 +15,7 @@ class OverviewBottomSheet extends StatelessWidget {
         children: <Widget>[
             new ListTile(
               leading: Icon(Icons.delete),
-              title: Text(AppLocalizations.of(context).translate('trash')),
+              title: Text(AppLocalizations.of(context).translate('trash'), style: Theme.of(context).textTheme.display1,),
               onTap: removeTagCallback     
             ),
         ],

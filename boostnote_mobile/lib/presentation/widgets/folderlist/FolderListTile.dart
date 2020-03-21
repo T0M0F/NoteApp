@@ -41,10 +41,7 @@ class _FolderListTileState extends State<FolderListTile> {
         children: <Widget>[
         buildHeaderRow(),
         buildBodyRow(),
-        Divider(
-          height: 1.0,
-          thickness: 1,
-        )
+        Divider(height: 0.5)
        ]
       ),
   );
@@ -57,7 +54,7 @@ class _FolderListTileState extends State<FolderListTile> {
       children: <Widget>[
         Row(
           children: <Widget>[
-            Icon(Icons.folder, color: Theme.of(context).indicatorColor),
+            Icon(Icons.folder_open, color: Theme.of(context).indicatorColor),
             Padding(
               padding: EdgeInsets.only(left: 7),
               child: Text(

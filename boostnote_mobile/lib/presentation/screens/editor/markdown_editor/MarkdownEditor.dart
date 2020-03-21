@@ -95,17 +95,20 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
   Widget _buildMarkdownPreview(){
     return ListView(
       children: <Widget>[
-        MarkdownNoteHeader(
-          note: this.widget._note,
-          selectedFolder: _dropdownValueFolder,
-          folders: _folders,
-          onTitleChangedCallback: (String title) => this.widget._note.title = title,
-          onFolderChangedCallback: (FolderEntity folder) {
-            this.widget._note.folder = folder;
-            _noteService.save(this.widget._note);
-          },
-          onTagClickedCallback: () => _showTagDialog(context, this.widget._note.tags),
-          onInfoClickedCallback: () => _showNoteInfoDialog(this.widget._note),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          child: MarkdownNoteHeader(
+            note: this.widget._note,
+            selectedFolder: _dropdownValueFolder,
+            folders: _folders,
+            onTitleChangedCallback: (String title) => this.widget._note.title = title,
+            onFolderChangedCallback: (FolderEntity folder) {
+              this.widget._note.folder = folder;
+              _noteService.save(this.widget._note);
+            },
+            onTagClickedCallback: () => _showTagDialog(context, this.widget._note.tags),
+            onInfoClickedCallback: () => _showNoteInfoDialog(this.widget._note),
+          ),
         ),
         Align(
           alignment: Alignment.topLeft,
@@ -119,17 +122,20 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
   Widget _buildMarkdownEditor(){ //use minLines for Textfield to make it work
     return ListView(
       children: <Widget>[
-        MarkdownNoteHeader(
-          note: this.widget._note,
-          selectedFolder: _dropdownValueFolder,
-          folders: _folders,
-          onTitleChangedCallback: (String title) => this.widget._note.title = title,
-          onFolderChangedCallback: (FolderEntity folder) {
-            this.widget._note.folder = folder;
-            _noteService.save(this.widget._note);
-          },
-          onTagClickedCallback: () => _showTagDialog(context, this.widget._note.tags),
-          onInfoClickedCallback: () => _showNoteInfoDialog(this.widget._note),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          child: MarkdownNoteHeader(
+            note: this.widget._note,
+            selectedFolder: _dropdownValueFolder,
+            folders: _folders,
+            onTitleChangedCallback: (String title) => this.widget._note.title = title,
+            onFolderChangedCallback: (FolderEntity folder) {
+              this.widget._note.folder = folder;
+              _noteService.save(this.widget._note);
+            },
+            onTagClickedCallback: () => _showTagDialog(context, this.widget._note.tags),
+            onInfoClickedCallback: () => _showNoteInfoDialog(this.widget._note),
+          ),
         ),
         Align(
           alignment: Alignment.topLeft,

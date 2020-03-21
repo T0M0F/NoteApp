@@ -120,31 +120,34 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
   Widget _buildBody(){ 
     return ListView(
       children: <Widget>[
-        SnippetNoteHeader(
-          note: this.widget._note,
-          selectedFolder: _dropdownValueFolder,
-          selectedCodeSnippet: _selectedCodeSnippet,
-          folders: _folders,
-          onTitleChangedCallback: (String title) => this.widget._note.title = title,
-          onFolderChangedCallback: (FolderEntity folder) {
-            this.widget._note.folder = folder;
-            _noteService.save(this.widget._note);
-          },
-          onCodeSnippetChangedCallback: (CodeSnippet codeSnippet) {
-            setState(() {
-              _selectedCodeSnippet = codeSnippet;
-            });
-          },
-          onTagClickedCallback: () => _showTagDialog(context, this.widget._note.tags),
-          onInfoClickedCallback: () => _showNoteInfoDialog(this.widget._note),
-          onDescriptionClickCallback: () => _showDescriptionDialog(
-            context, 
-            this.widget._note,  
-            (text){
-              this.widget._note.description = text;
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          child:  SnippetNoteHeader(
+            note: this.widget._note,
+            selectedFolder: _dropdownValueFolder,
+            selectedCodeSnippet: _selectedCodeSnippet,
+            folders: _folders,
+            onTitleChangedCallback: (String title) => this.widget._note.title = title,
+            onFolderChangedCallback: (FolderEntity folder) {
+              this.widget._note.folder = folder;
               _noteService.save(this.widget._note);
-            }
-          )
+            },
+            onCodeSnippetChangedCallback: (CodeSnippet codeSnippet) {
+              setState(() {
+                _selectedCodeSnippet = codeSnippet;
+              });
+            },
+            onTagClickedCallback: () => _showTagDialog(context, this.widget._note.tags),
+            onInfoClickedCallback: () => _showNoteInfoDialog(this.widget._note),
+            onDescriptionClickCallback: () => _showDescriptionDialog(
+              context, 
+              this.widget._note,  
+              (text){
+                this.widget._note.description = text;
+                _noteService.save(this.widget._note);
+              }
+            )
+          ),
         ),
         Align(
           alignment: Alignment.topLeft,

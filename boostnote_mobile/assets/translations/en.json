@@ -13,6 +13,8 @@
     "theme":"Theme",
     "about":"About",
     "edit":"Edit",
+    "enter_title":"Title",
+    "enter_name":"Name",
     "expand":"Expanf",
     "collapse":"Collapse",
     "gridview":"Grid",
@@ -50,5 +52,5 @@
     "no":"No",
     "description":"Description",
     "seconds_ago":"Seconds ago",
-    "min_ago":"Minutes ago",
+    "min_ago":"Minutes ago"
 }

@@ -33,7 +33,7 @@ class CodeTabState extends State<CodeTab> {
 
     return this.widget._editMode ? 
       Container(
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
         child: TextField(
           autofocus: true,
           autocorrect: true,

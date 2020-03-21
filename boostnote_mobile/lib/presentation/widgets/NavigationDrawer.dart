@@ -2,6 +2,8 @@ import 'package:boostnote_mobile/presentation/localization/app_localizations.dar
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class NavigationDrawer extends StatefulWidget {
 
@@ -46,13 +48,10 @@ class NavigationDrawerState extends State<NavigationDrawer> {
                 Text(AppLocalizations.of(context).translate('mobile'), style: TextStyle(fontSize: 20, color: Theme.of(context).accentTextTheme.display1.color)),
               ],
             ),
-            decoration: BoxDecoration(
-                color: Theme.of(context).primaryColorLight
-            )
         ),
       ),
      ListTile(
-            leading: Icon(Icons.description, color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+            leading: Icon(MdiIcons.fileMultiple, size: 21, color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
             title: Text(AppLocalizations.of(context).translate('all_notes'), style: TextStyle(color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
             onTap: () {
               Navigator.pop(context);
@@ -68,7 +67,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         },
       ),
       ListTile(
-        leading: Icon(Icons.label, color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        leading: Icon(MdiIcons.tagMultiple, color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
         title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
@@ -94,8 +93,8 @@ class NavigationDrawerState extends State<NavigationDrawer> {
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Divider(
-          height: 2.0,
-          thickness: 2,
+          height: 1,
+          thickness: 1,
           color: Theme.of(context).accentColor,
         ),
       ),

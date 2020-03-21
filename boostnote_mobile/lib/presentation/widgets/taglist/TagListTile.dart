@@ -2,6 +2,8 @@
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class TagListTile extends StatefulWidget {
   
@@ -41,10 +43,7 @@ class _TagListTileState extends State<TagListTile> {
         children: <Widget>[
         buildHeaderRow(),
         buildBodyRow(),
-        Divider(
-          height: 1.0,
-          thickness: 1,
-        )
+        Divider(height: 0.5)
        ]
       ),
   );
@@ -57,9 +56,9 @@ class _TagListTileState extends State<TagListTile> {
       children: <Widget>[
         Row(
           children: <Widget>[
-            Icon(Icons.folder, color: Theme.of(context).indicatorColor),
+            Icon(MdiIcons.tag, color: Theme.of(context).indicatorColor),
             Padding(
-              padding: EdgeInsets.only(left: 7),
+              padding: EdgeInsets.only(left: 8),
               child: Text(
                 this.widget.tag, 
                 maxLines: 1,

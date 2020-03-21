@@ -2,6 +2,7 @@ import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class MarkdownNoteHeader extends StatefulWidget {
 
@@ -39,7 +40,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
       this.widget.onTitleChangedCallback(_textEditingController.text);
     });
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 13),
+      padding: EdgeInsets.symmetric(vertical: 16),
       child: Column(
       children: <Widget>[
         Align(
@@ -92,7 +93,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
             ),
             Row(
             children: <Widget>[
-              IconButton(icon: Icon(Icons.label_outline, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onTagClickedCallback),
+              IconButton(icon: Icon(MdiIcons.tagOutline, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onTagClickedCallback),
               IconButton(icon: Icon(Icons.info_outline, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onInfoClickedCallback)
               ],
             ),

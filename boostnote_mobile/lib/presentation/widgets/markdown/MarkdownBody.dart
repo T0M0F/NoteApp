@@ -28,7 +28,7 @@ class _MarkdownBodyState extends State<MarkdownBody>{
   Widget build(BuildContext context) {
     _textEditingController.text = this.widget._text;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
       child: TextField(
         autocorrect: true,
         style: Theme.of(context).textTheme.display1,

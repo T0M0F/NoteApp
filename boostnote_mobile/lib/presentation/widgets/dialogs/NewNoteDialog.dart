@@ -41,6 +41,10 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
             child: Column(
               children: <Widget>[
                 TextField(
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context).translate('enter_title'),
+                    hintStyle: Theme.of(context).textTheme.display2
+                  ),
                   controller: controller,
                   style: TextStyle(color:  Theme.of(context).textTheme.display1.color),
                 ), 

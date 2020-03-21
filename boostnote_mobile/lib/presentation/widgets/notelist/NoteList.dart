@@ -33,6 +33,7 @@ class NoteList extends StatefulWidget {
     itemCount: this.widget.notes.length,
     itemBuilder: (context, index) {
       return GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: () => this.widget.onTapCallback([this.widget.notes[index]]),
         onLongPress: () => this.widget.onLongPressCallback([this.widget.notes[index]]),
         child: _buildTile(this.widget.notes[index])

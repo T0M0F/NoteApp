@@ -2,6 +2,7 @@ import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class SnippetNoteHeader extends StatefulWidget {
 
@@ -42,7 +43,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
       this.widget.onTitleChangedCallback(_textEditingController.text);
     });
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 13),
+      padding: EdgeInsets.symmetric(vertical: 16),
       child: Column(
       children: <Widget>[
         Align(
@@ -96,7 +97,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
             ),
             Row(
             children: <Widget>[
-              IconButton(icon: Icon(Icons.label_outline, color: Theme.of(context).primaryColorLight), onPressed: this.widget.onTagClickedCallback),
+              IconButton(icon: Icon(MdiIcons.tagOutline, color: Theme.of(context).primaryColorLight), onPressed: this.widget.onTagClickedCallback),
               IconButton(icon: Icon(Icons.info_outline, color: Theme.of(context).primaryColorLight), onPressed: this.widget.onInfoClickedCallback),
               IconButton(icon: Icon(Icons.description, color: Theme.of(context).primaryColorLight), onPressed: this.widget.onDescriptionClickCallback)
              ],

@@ -18,7 +18,7 @@ class CustomSyntaxHighlighter extends SyntaxHighlighter{
     Result result = highlight.parse(source, autoDetection: true);
 
     const _defaultFontFamily = 'monospace';
-      const _rootKey = 'root';
+    const _rootKey = 'root';
    const _defaultFontColor = Color(0xff000000);
    const _defaultBackgroundColor = Color(0xffffffff);
    var textStyle = TextStyle(

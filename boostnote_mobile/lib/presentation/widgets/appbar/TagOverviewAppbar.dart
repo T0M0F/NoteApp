@@ -1,6 +1,8 @@
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class TagOverviewAppbar extends StatelessWidget implements PreferredSizeWidget{
 
@@ -19,7 +21,7 @@ class TagOverviewAppbar extends StatelessWidget implements PreferredSizeWidget{
       ),
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.label_outline, color: Theme.of(context).buttonColor), 
+          icon: Icon(MdiIcons.tagPlusOutline, color: Theme.of(context).buttonColor), 
           onPressed: onCreateTagCallback,
         )
       ],

@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class AddFloatingActionButton extends StatelessWidget {
 
@@ -15,7 +16,7 @@ class AddFloatingActionButton extends StatelessWidget {
       width: 60,
       child: FittedBox(
         child: FloatingActionButton(
-          child: Icon(Icons.add, color: Theme.of(context).primaryIconTheme.color, size: 35),
+          child: Icon(MdiIcons.pencil, color: Theme.of(context).primaryIconTheme.color, size: 30),
           onPressed: onPressed,
         )
       )

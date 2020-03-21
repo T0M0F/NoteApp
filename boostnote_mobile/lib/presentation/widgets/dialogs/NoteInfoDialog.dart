@@ -35,7 +35,7 @@ class NoteInfoDialog extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(left: 5, top: 3),
-              child:  Icon(Icons.info_outline, color: Theme.of(context).primaryColorLight),
+              child:  Icon(Icons.info_outline, color: Theme.of(context).iconTheme.color),
             )
           ],
         )

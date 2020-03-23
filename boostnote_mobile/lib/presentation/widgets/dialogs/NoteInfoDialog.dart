@@ -47,7 +47,7 @@ class NoteInfoDialog extends StatelessWidget {
   Widget _buildContent(BuildContext context) {
      return SingleChildScrollView(
        child: Container(
-       height: 260,
+       height: 280,
        child: Column(
         children: <Widget>[
           Align(
@@ -109,12 +109,9 @@ class NoteInfoDialog extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(AppLocalizations.of(context).translate('trashed'), style: TextStyle(color:  Theme.of(context).textTheme.display2.color)),
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 5),
-            child: Align(
+          Align(
               alignment: Alignment.centerLeft,
               child: Text(note.isTrashed ? AppLocalizations.of(context).translate('yes') : AppLocalizations.of(context).translate('no'), style: Theme.of(context).textTheme.display1,),
-            ),
           ),
         ],
       )

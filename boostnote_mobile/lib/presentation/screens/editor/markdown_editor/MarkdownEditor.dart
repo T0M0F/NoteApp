@@ -147,8 +147,8 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
 
   void _selectedAction(String action){
       if(action == ActionConstants.DELETE_ACTION){
-        _noteService.moveToTrash(this.widget._note);
-        _newNavigationService.navigateBack(context);
+       /* _noteService.moveToTrash(this.widget._note);
+        _newNavigationService.navigateBack(context);*/
       } else if(action == ActionConstants.SAVE_ACTION){
         _noteService.save(this.widget._note);
          _newNavigationService.navigateBack(context);

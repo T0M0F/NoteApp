@@ -52,9 +52,7 @@ class OverviewPresenter { //TODO delete?
 
   void deleteForever(List<Note> selectedNotes) {
     _noteService.deleteAll(selectedNotes);
-    _noteService.findTrashed().then((notes) {
-      _overviewView.update(notes);
-    });
+    _overviewView.update(List());
   }
 
   /*void refresh() {

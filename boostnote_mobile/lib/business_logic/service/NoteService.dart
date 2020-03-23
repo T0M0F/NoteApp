@@ -97,7 +97,7 @@ class NoteService {
   Future<void> createNote(Note note) async{  //TODO Validation + kein note objekt als param sondern nur einzelne werte und created at selber genrieren
     note.id = note.createdAt.hashCode;   //TODO CHECK if folder / tag exists
     note.folder.id = note.folder.name.hashCode;
-    _noteRepository.save(note);
+    save(note);
   }
 
   void save(Note note) {  //TODO check if note already exists, if it doesnt exist throw exception -> use createNote method instead
@@ -110,13 +110,20 @@ class NoteService {
     _noteRepository.saveAll(notes);
   }
 
+  void restore(Note note) {
+    note.isTrashed = false;
+    note.folder.name = 'Default';
+    note.folder.id = 'Default'.hashCode;
+    save(note);
+  }
+
   void moveToTrash(Note note) {
     print('move to Trash');
     note.isTrashed = true;
     note.isStarred = false;
     note.folder.name = 'Trash';
     note.folder.id = 'Trash'.hashCode;
-    _noteRepository.save(note);
+    save(note);
   }
 
   void moveAllToTrash(List<Note> notes) {

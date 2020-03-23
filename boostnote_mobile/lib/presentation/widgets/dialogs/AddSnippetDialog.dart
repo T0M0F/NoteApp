@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -25,7 +26,10 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
   Container _buildTitle(BuildContext context) {
     return Container( 
       alignment: Alignment.center,
-      child: Text('Create a Code Snippet', style: TextStyle(color: Theme.of(context).textTheme.display1.color))
+      child: Text(
+        AppLocalizations.of(context).translate('create_a_snippet'), 
+        style: TextStyle(color: Theme.of(context).textTheme.display1.color),
+      )
     );
   }
 
@@ -38,6 +42,10 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
           TextField(
             controller: controller,
             style: TextStyle(color: Theme.of(context).textTheme.display1.color),
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context).translate('enter_name'),
+              hintStyle: Theme.of(context).textTheme.display2
+            ),
           ), 
         ],
       ),

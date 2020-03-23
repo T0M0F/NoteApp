@@ -86,11 +86,11 @@ class SnippetTile extends StatelessWidget{
   String getPreviewText(SnippetNote note, BuildContext context) {
     if(note.description.trim().isEmpty) {
        if(note.codeSnippets.isNotEmpty) {
-         return note.codeSnippets.first.content;
+         return note.codeSnippets.first.content.trim();
        } 
        return AppLocalizations.of(context).translate('no_data');
     } else {
-      return note.description;
+      return note.description.trim();
     }
   }
 

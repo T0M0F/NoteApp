@@ -18,7 +18,7 @@ class FolderList extends StatefulWidget {
 }
 
 class _FolderListState extends State<FolderList> {
-
+ 
   @override
   Widget build(BuildContext context) {
     print('rebuild');
@@ -27,6 +27,7 @@ class _FolderListState extends State<FolderList> {
     itemCount: this.widget.folders.length,
     itemBuilder: (context, index) {
       return GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: () => this.widget.onRowTap(this.widget.folders[index]),
         onLongPress: () => this.widget.onRowLongPress(this.widget.folders[index]),
         child: FolderListTile(folder: this.widget.folders[index])

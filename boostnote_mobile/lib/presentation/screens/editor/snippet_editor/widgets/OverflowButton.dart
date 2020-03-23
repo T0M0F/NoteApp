@@ -27,12 +27,13 @@ class _OverflowButtonState extends State<OverflowButton> {
                 title: Text(ActionConstants.SAVE_ACTION, style: Theme.of(context).textTheme.display1)
               )
             ),
+            /*
             PopupMenuItem(
               value: ActionConstants.DELETE_ACTION,
               child: ListTile(
                 title: Text(ActionConstants.DELETE_ACTION, style: Theme.of(context).textTheme.display1)
               )
-            ),
+            ),*/
             PopupMenuItem(
               value: this.widget.noteIsStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION,
               child: ListTile(

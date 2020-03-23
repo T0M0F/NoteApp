@@ -256,8 +256,8 @@ tags: ["[Gu[cci"
         title: map['title'],
         description: map['description'],
         folder: Folder(name: map['folder'], id: map['folder'].hashCode),
-        isStarred: bool.fromEnvironment(map['isStarred']),
-        isTrashed:  bool.fromEnvironment(map['isTrashed']),
+        isStarred: 'true' == map['isStarred'],
+        isTrashed: 'true' == map['isTrashed'],
         tags:  List<String>.from(map['tags']), 
         codeSnippets: List<Map<String,dynamic>>.from(map['snippets']).map((snippetMap) => CodeSnippet(
             content: snippetMap['content'],
@@ -273,8 +273,8 @@ tags: ["[Gu[cci"
         title: map['title'],
         content: map['content'],
         folder: Folder(name: map['folder'], id: map['folder'].hashCode),
-        isStarred: bool.fromEnvironment(map['isStarred']),
-        isTrashed:  bool.fromEnvironment(map['isTrashed']),
+        isStarred: 'true' == map['isStarred'],
+        isTrashed: 'true' == map['isTrashed'],
         tags:  List<String>.from(map['tags'])
       );
     }
@@ -327,7 +327,7 @@ tags: ["[Gu[cci"
     } else {
       tagString = '[';
       note.tags.forEach((tag) => tagString = tagString + '\n"' + tag + '"');
-      tagString = tagString + '\n]\n';
+      tagString = tagString + '\n]';
     }
 
     String snippets = '';
@@ -356,9 +356,9 @@ tags: ["[Gu[cci"
       ''' + snippets + '''
     ]
     title: "''' + note.title + '''"
-    tags: ''' + tagString + '''
-    isStarred: ''' + note.isStarred.toString() + '''
-    isTrashed: ''' + note.isTrashed.toString() + ''' 
+    tags: ''' + tagString + '''\n
+    isStarred: ''' + note.isStarred.toString() + '''\n
+    isTrashed: ''' + note.isTrashed.toString() + '''\n
     ''';
   }
 }

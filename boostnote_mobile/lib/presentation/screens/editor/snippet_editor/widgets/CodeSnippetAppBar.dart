@@ -32,55 +32,54 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
         icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColorLight), 
         onPressed: widget.onNavigateBackCallback
       ),
-      actions: <Widget>[
-        Row(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(right: 5), 
-              child: Icon(Icons.code)
-            ),
-            DropdownButton<CodeSnippet> (  
-              value: widget.selectedCodeSnippet, 
-              underline: Container(), 
-              iconEnabledColor:  Theme.of(context).primaryColorLight,
-              style: TextStyle(fontSize: 16, color:   Theme.of(context).textTheme.display3.color, fontWeight: FontWeight.bold),
-              selectedItemBuilder: (BuildContext context) {
-                String snippetName = widget.selectedCodeSnippet.name.length > 10 ? widget.selectedCodeSnippet.name.substring(0,10) : widget.selectedCodeSnippet.name;
-                Widget item = DropdownMenuItem<CodeSnippet>(
-                  value: widget.selectedCodeSnippet,
-                  child: Row(
-                    children: <Widget>[
-                      Text(snippetName + '    ', style: Theme.of(context).textTheme.display1),
-                    ],
-                  )
-                );
-                return <DropdownMenuItem<CodeSnippet>>[item];
-              },
-              items: widget.note.codeSnippets.map<DropdownMenuItem<CodeSnippet>>((codeSnippet) {
-                Widget item = DropdownMenuItem<CodeSnippet>(
-                  value: codeSnippet,
-                  child: Row(
-                    children: <Widget>[
-                      Text(codeSnippet.name, style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.display3.color, fontWeight: FontWeight.bold)),
-                      IconButton(
-                        icon: Icon(Icons.delete), 
-                        onPressed: () {
-                           widget.note.codeSnippets.remove(codeSnippet);
-                        })
-                    ],
-                  )
-                );
-                return item;
-              }).toList(),
-              onChanged: (CodeSnippet codeSnippet) => widget.onSelectedSnippetChanged(codeSnippet),
-            ),
-          ],
-        ),
-        OverflowButton(
-          noteIsStarred: this.widget.note.isStarred, 
-          selectedActionCallback: this.widget.selectedActionCallback
-        )
-      ]
+      actions: _buildActions()
     );
+  }
+
+
+  List<Widget> _buildActions() {
+    List<Widget> actions = <Widget>[
+      OverflowButton(
+        noteIsStarred: this.widget.note.isStarred, 
+        selectedActionCallback: this.widget.selectedActionCallback
+      )
+    ];
+
+    if(this.widget.selectedCodeSnippet != null) {
+
+      Widget row = Row(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 5), 
+            child: Icon(Icons.code,  color: Theme.of(context).primaryColorLight,)
+          ),
+          DropdownButton<CodeSnippet> (  
+            value: widget.selectedCodeSnippet, 
+            underline: Container(), 
+            iconEnabledColor:  Colors.black,
+            style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+            items: widget.note.codeSnippets.map<DropdownMenuItem<CodeSnippet>>((codeSnippet) {
+              Widget item = DropdownMenuItem<CodeSnippet>(
+                value: codeSnippet,
+                child:  Text(
+                  codeSnippet.name, 
+                  style: TextStyle(
+                    fontSize: 16, 
+                    color: Colors.black, 
+                    fontWeight: FontWeight.bold
+                  )
+                ),
+              );
+              return item;
+            }).toList(),
+            onChanged: (CodeSnippet codeSnippet) => widget.onSelectedSnippetChanged(codeSnippet),
+          ),
+        ],
+      );
+
+      actions.insert(0, row);
+    }
+
+    return actions;
   }
 }

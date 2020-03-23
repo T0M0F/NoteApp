@@ -1,5 +1,3 @@
-
-
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
@@ -9,13 +7,14 @@ import 'package:boostnote_mobile/presentation/localization/app_localizations.dar
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
-import 'package:boostnote_mobile/presentation/screens/note_overview/widgets/OverviewBottomSheet.dart';
-import 'package:boostnote_mobile/presentation/widgets/bottom_sheets/DeleteAllBottomNavigationBar.dart';
-import 'package:boostnote_mobile/presentation/widgets/buttons/AddFloatingActionButton.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/widgets/DeleteNoteBottomSheet.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/widgets/TrashNoteBottomSheet.dart';
+import 'package:boostnote_mobile/presentation/widgets/bottom_navigationbar/DeleteAllBottomNavigationBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewPresenter.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewAppbar.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/CreateNoteFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/notegrid/NoteGridTile.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
 import 'package:boostnote_mobile/presentation/widgets/search/NoteSearch.dart';
@@ -93,8 +92,10 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     });
   }
 
- @override    //TODO delte refreshable??
- void refresh() {} 
+ @override 
+ void refresh() {
+   _noteService.findAll().then((notes) => update(notes));
+ } 
 
  @override
  Widget build(BuildContext context) {
@@ -112,7 +113,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       appBar: _buildAppBar(),
       drawer: NavigationDrawer(), 
       body: _showListView ? _buildListViewBody() : _buildGridViewBody(),
-      floatingActionButton: _newNavigationService.isTrashMode() ? null : AddFloatingActionButton(onPressed: () => _createNoteDialog()),
+      floatingActionButton: _newNavigationService.isTrashMode() ? null : CreateNoteFloatingActionButton(onPressed: () => _createNoteDialog()),
       bottomNavigationBar: _buildBottomNavigationBar() 
     );
   }
@@ -205,17 +206,44 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   }
 
   void _onRowLongPress(List<Note> selectedNotes) {
-     showModalBottomSheet(     
-      context: context,
-      builder: (BuildContext buildContext){
-        return OverviewBottomSheet(
-          removeTagCallback: () {
-            Navigator.of(context).pop();
-           _noteService.delete(selectedNotes.first);
-          } ,
-        );
-      }
-    );
+    if(_newNavigationService.isTrashMode()){
+      showModalBottomSheet(     
+        context: context,
+        builder: (BuildContext buildContext){
+          return DeleteNoteBottomSheet(
+            restoreNoteCallback: () {
+              Navigator.of(context).pop();
+              _noteService.restore(selectedNotes.first);
+              setState(() {
+                _notes.remove(selectedNotes.first);
+              });
+            },
+            deleteNoteCallback: () {
+              Navigator.of(context).pop();
+              _noteService.delete(selectedNotes.first);
+              setState(() {
+                _notes.remove(selectedNotes.first);
+              });
+            } ,
+          );
+        }
+      );
+    } else {
+      showModalBottomSheet(     
+        context: context,
+        builder: (BuildContext buildContext){
+          return TrashNoteBottomSheet(
+            trashNoteCallback: () {
+              Navigator.of(context).pop();
+              _noteService.moveToTrash(selectedNotes.first);
+              setState(() {
+                _notes.remove(selectedNotes.first);
+              });
+            } ,
+          );
+        }
+      );
+    }
   }
 
   void _onRowTap(List<Note> selectedNotes, List<Note> notes) {  
@@ -228,17 +256,14 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
 
   Widget _buildBottomNavigationBar() {  
 
-    if(_newNavigationService.isTrashMode()) {
-     _noteService.findTrashed().then((notes) {
-        if(notes.isNotEmpty){
-          return DeleteAllBottomNavigationBar(
-            deleteAllCallback: () {
-              _presenter.deleteForever(_notes);
-            }
-          );
-        }
-        return null;
-     });
+    print('buildBottoms');
+    if(_newNavigationService.isTrashMode() && _notes.isNotEmpty) {
+      print('isTrashMOde');
+      return DeleteAllBottomNavigationBar(
+          deleteAllCallback: () {
+            _presenter.deleteForever(_notes);
+          }
+        );
     }
     return null;
   }

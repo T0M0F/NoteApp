@@ -75,7 +75,7 @@ class MarkdownTile extends StatelessWidget{
     child: Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        note.content.trim().isEmpty ? AppLocalizations.of(context).translate('no_data') : note.content, 
+        note.content.trim().isEmpty ? AppLocalizations.of(context).translate('no_data') : note.content.trim(), 
         maxLines: 2,
         style: note.content.trim().isEmpty ? TextStyle(fontSize: 16.0, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.display1.color) : TextStyle(fontSize: 16.0, color: Theme.of(context).textTheme.display1.color)
       ),

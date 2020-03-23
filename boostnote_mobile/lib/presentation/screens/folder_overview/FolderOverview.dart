@@ -6,11 +6,11 @@ import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
-import 'package:boostnote_mobile/presentation/widgets/buttons/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/FolderOverviewAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/bottom_sheets/FolderOverviewBottomSheet.dart';
 import 'package:boostnote_mobile/presentation/widgets/bottom_sheets/FolderOverviewErrorBottomSheet.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/CreateNoteFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/CreateFolderDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/RenameFolderDialog.dart';
@@ -72,7 +72,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
     ),
     drawer: NavigationDrawer(),
     body: _buildBody(context),
-    floatingActionButton: AddFloatingActionButton(onPressed: () => _createNoteDialog())
+    floatingActionButton: CreateNoteFloatingActionButton(onPressed: () => _createNoteDialog())
   );
 
   Widget _buildBody(BuildContext context) {

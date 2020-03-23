@@ -78,7 +78,7 @@ class NoteRepositoryImpl extends NoteRepository {
     Note noteToBeRemoved = notes.firstWhere((note) => note.id == id, orElse: () => null);
     if(noteToBeRemoved != null) {
       String path = await localPath;
-      File file = File(path + '/' + noteToBeRemoved.id.toString());
+      File file = File(path + '/' + noteToBeRemoved.id.toString() + '.json');
       file.exists().then((exists) {
         if(exists) {
           file.delete(); 
@@ -171,11 +171,11 @@ class NoteRepositoryImpl extends NoteRepository {
     print('save');
     String path = await localPath;
     print('id: ' + note.id.toString());
-    File file = File(path + '/' + note.id.toString());
+    File file = File(path + '/' + note.id.toString() + '.json');
     bool fileExists = await file.exists();
     if(fileExists) {
       print('File exists');
-      print('json: ' + jsonEncode(note));
+      print('json: ' + jsonEncode(note) );
       file.writeAsString(jsonEncode(note));
     } else {
       print('File does not yet exist');

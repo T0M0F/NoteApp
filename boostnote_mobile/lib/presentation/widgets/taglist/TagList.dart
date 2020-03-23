@@ -24,6 +24,7 @@ class _TagListState extends State<TagList> {
     itemCount: this.widget.tags.length,
     itemBuilder: (context, index) {
       return GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: () => this.widget.onRowTap(this.widget.tags[index]),
         onLongPress: () => this.widget.onRowLongPress(this.widget.tags[index]),
         child: TagListTile(tag: this.widget.tags[index])

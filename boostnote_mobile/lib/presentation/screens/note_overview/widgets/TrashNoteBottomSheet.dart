@@ -2,11 +2,11 @@ import 'package:boostnote_mobile/presentation/localization/app_localizations.dar
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class OverviewBottomSheet extends StatelessWidget {
+class TrashNoteBottomSheet extends StatelessWidget {
 
-  final Function() removeTagCallback;
+  final Function() trashNoteCallback;
 
-  OverviewBottomSheet({@required this.removeTagCallback});
+  TrashNoteBottomSheet({@required this.trashNoteCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class OverviewBottomSheet extends StatelessWidget {
             new ListTile(
               leading: Icon(Icons.delete),
               title: Text(AppLocalizations.of(context).translate('trash'), style: Theme.of(context).textTheme.display1,),
-              onTap: removeTagCallback     
+              onTap: trashNoteCallback     
             ),
         ],
       ),

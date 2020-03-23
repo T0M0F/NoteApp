@@ -1,4 +1,5 @@
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
     super.initState();
     _newNavigationService = NavigationService();
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -56,21 +57,15 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
         itemBuilder: (BuildContext context) {
           return <PopupMenuEntry<String>>[
             PopupMenuItem(
-              value: this.widget.actions['EDIT_ACTION'],
+              value: this.widget.listTilesAreExpanded ?  ActionConstants.COLLPASE_ACTION: ActionConstants.EXPAND_ACTION,
               child: ListTile(
-                title: Text(this.widget.actions['EDIT_ACTION'], style: Theme.of(context).textTheme.display1),
+                title: Text(this.widget.listTilesAreExpanded ?  ActionConstants.COLLPASE_ACTION : ActionConstants.EXPAND_ACTION , style: Theme.of(context).textTheme.display1), 
               )
             ),
             PopupMenuItem(
-              value: this.widget.listTilesAreExpanded ? this.widget.actions['COLLPASE_ACTION']: this.widget.actions['EXPAND_ACTION'],
+              value: this.widget.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION: ActionConstants.SHOW_LISTVIEW_ACTION,
               child: ListTile(
-                title: Text(this.widget.listTilesAreExpanded ? this.widget.actions['COLLPASE_ACTION'] : this.widget.actions['EXPAND_ACTION'] , style: Theme.of(context).textTheme.display1), 
-              )
-            ),
-            PopupMenuItem(
-              value: this.widget.showListView ? this.widget.actions['SHOW_GRIDVIEW_ACTION']: this.widget.actions['SHOW_LISTVIEW_ACTION'],
-              child: ListTile(
-                title: Text(this.widget.showListView ? this.widget.actions['SHOW_GRIDVIEW_ACTION'] : this.widget.actions['SHOW_LISTVIEW_ACTION'], style: Theme.of(context).textTheme.display1), 
+                title: Text(this.widget.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION : ActionConstants.SHOW_LISTVIEW_ACTION, style: Theme.of(context).textTheme.display1), 
               )
             ),
           ];

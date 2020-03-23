@@ -10,7 +10,7 @@ import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/FolderRepositoryIm
 import 'package:path_provider/path_provider.dart';
 
 class NoteRepositoryImpl extends NoteRepository {
-
+ 
   CsonParser csonParser = CsonParser();
   FolderRepository _folderRepository = FolderRepositoryImpl();
 
@@ -50,7 +50,7 @@ class NoteRepositoryImpl extends NoteRepository {
     Note noteToBeRemoved = notes.firstWhere((note) => note.id == id, orElse: () => null);
     if(noteToBeRemoved != null) {
       String path = await localPath;
-      File file = File(path + '/' + noteToBeRemoved.id.toString());
+      File file = File(path + '/' + noteToBeRemoved.id.toString() + '.cson');
       file.exists().then((exists) {
         if(exists) {
           file.delete(); 
@@ -100,7 +100,6 @@ class NoteRepositoryImpl extends NoteRepository {
     if(!fileExists) {
       print('File does not yet exist');
       print(note.createdAt);
-      file = File(path + '/' + note.id.toString());
       file.create();
     } 
     print('cson: ' + csonParser.convertToCson(note));

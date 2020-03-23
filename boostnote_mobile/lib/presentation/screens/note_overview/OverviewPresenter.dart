@@ -10,11 +10,13 @@ class OverviewPresenter { //TODO delete?
   OverviewView _overviewView;
   NoteService _noteService;
   NavigationService _navigationService;
+  Function() updateNotesCopy;
   
-  OverviewPresenter(OverviewView _overview){
+  OverviewPresenter(OverviewView _overview, updateNotesCopy){
     this._overviewView = _overview;
     _noteService = NoteService();
     _navigationService = NavigationService();
+    this.updateNotesCopy = updateNotesCopy;
   }
 
   void loadAllNotes(){
@@ -22,6 +24,7 @@ class OverviewPresenter { //TODO delete?
     notes.then((result) { 
      // _navigationService.noteListCache = result;
       _overviewView.update(result);
+      updateNotesCopy();
     });
   }
 
@@ -30,6 +33,7 @@ class OverviewPresenter { //TODO delete?
     notes.then((result) { 
       //_navigationService.noteListCache = result;
       _overviewView.update(result);
+      updateNotesCopy();
     });
   }
 
@@ -38,6 +42,7 @@ class OverviewPresenter { //TODO delete?
     notes.then((result) { 
       //_navigationService.noteListCache = result;
       _overviewView.update(result);
+      updateNotesCopy();
     });
   }
 
@@ -53,6 +58,7 @@ class OverviewPresenter { //TODO delete?
   void deleteForever(List<Note> selectedNotes) {
     _noteService.deleteAll(selectedNotes);
     _overviewView.update(List());
+    updateNotesCopy();
   }
 
   /*void refresh() {

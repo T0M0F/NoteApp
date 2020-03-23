@@ -118,7 +118,7 @@ class NavigationService {
       //TODO check if note is null or resfreshable is null
         ResponsiveChild widget = ResponsiveChild(
               smallFlex: 1, 
-              largeFlex: 2, 
+              largeFlex: 3, 
               child: MarkdownEditor(note)
            );
         navigate(destinationWidget:  widget, destinationMode: destinationMode);
@@ -127,7 +127,7 @@ class NavigationService {
       //TODO check if note is null or resfreshable is null
         ResponsiveChild widget = ResponsiveChild(
               smallFlex: 1, 
-              largeFlex: 2, 
+              largeFlex: 3, 
               child: CodeSnippetEditor(note)
            );
         navigate(destinationWidget:  widget, destinationMode: destinationMode);
@@ -152,6 +152,17 @@ class NavigationService {
     } else {
       widgets.addAll(responsiveWidget.widgets);
       if(destinationMode == NavigationMode2.SNIPPET_NOTE || destinationMode == NavigationMode2.MARKDOWN_NOTE) {
+        if(noteIsOpen){
+          //close old note
+          widgetHistory.last[1] = ResponsiveChild(
+            smallFlex: 0, 
+            largeFlex: 3, 
+            child: Scaffold(
+              appBar: AppBar(),
+              body: Container()
+              )
+          );
+        }
         widgets.first = ResponsiveChild(smallFlex: 0, largeFlex:  widgets.first.largeFlex, child:  widgets.first.child);
         widgets[1] = destinationWidget;
         noteIsOpen = true;

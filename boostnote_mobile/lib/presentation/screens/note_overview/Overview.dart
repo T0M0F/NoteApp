@@ -8,12 +8,12 @@ import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart'
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/widgets/DeleteNoteBottomSheet.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/widgets/OverviewAppbar.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/widgets/TrashNoteBottomSheet.dart';
 import 'package:boostnote_mobile/presentation/widgets/bottom_navigationbar/DeleteAllBottomNavigationBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewPresenter.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/OverviewView.dart';
-import 'package:boostnote_mobile/presentation/widgets/appbar/OverviewAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CreateNoteFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/notegrid/NoteGridTile.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
@@ -47,6 +47,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
 
   List<Note> _notes;
   List<Note> _selectedNotes;
+  List<Note> _notesCopy;
 
   bool _tilesAreExpanded = false;
   bool _showListView = true;
@@ -57,7 +58,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   void initState(){
     super.initState();
 
-    _presenter = OverviewPresenter(this);
+    _presenter = OverviewPresenter(this, _updateNotesCopy);
     _newNavigationService = NavigationService();
     _noteService = NoteService();
     _selectedNotes = List();
@@ -78,8 +79,15 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
           _presenter.loadAllNotes();
           break;
       } 
+    } else {
+       _updateNotesCopy();
+    }
   }
-}
+
+  //is needed for search
+  void _updateNotesCopy(){
+    _notesCopy = List<Note>.from(_notes);
+  }
 
  @override
  void update(List<Note> notes){
@@ -90,7 +98,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         _notes = notes;
       }
     });
-  }
+ }
 
  @override 
  void refresh() {
@@ -118,9 +126,10 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {  
+  PreferredSizeWidget _buildAppBar() { 
      return OverviewAppbar(
         pageTitle: _pageTitle,
+        notes: _notesCopy,
         actions: {
           'EXPAND_ACTION': ActionConstants.EXPAND_ACTION, 
           'COLLPASE_ACTION': ActionConstants.COLLPASE_ACTION, 
@@ -131,7 +140,10 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
         onNaviagteBackCallback: () => _newNavigationService.navigateBack(context), 
         onSearchClickCallback: () => search(),
-        onSelectedActionCallback: (String action) => _selectedAction(action)
+        onSelectedActionCallback: (String action) => _selectedAction(action),
+        onSearchCallback: (filteredNotes) {
+          update(filteredNotes);
+        },
       );
   }
 
@@ -224,6 +236,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
               setState(() {
                 _notes.remove(selectedNotes.first);
               });
+              _updateNotesCopy();
             } ,
           );
         }
@@ -239,6 +252,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
               setState(() {
                 _notes.remove(selectedNotes.first);
               });
+              _updateNotesCopy();
             } ,
           );
         }
@@ -286,6 +300,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
            setState(() {
               _notes.add(note);
            });
+           _updateNotesCopy();
             if(note is SnippetNote) {
               _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);  
             } else if (note is MarkdownNote) {

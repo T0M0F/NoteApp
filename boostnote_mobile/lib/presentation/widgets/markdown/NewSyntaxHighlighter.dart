@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:boostnote_mobile/presentation/theme/ThemeService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/themes/a11y-light.dart';
 import 'package:flutter_highlight/themes/a11y-dark.dart';
@@ -11,16 +12,19 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:highlight/highlight.dart';
 
 class NewSyntaxHighlighter extends SyntaxHighlighter{
-  var theme = a11yLightTheme;
 
   TextStyle textStyle;
   List<String> languages;
+  BuildContext context;
+  var theme;
 
-  NewSyntaxHighlighter({@required this.textStyle, this.languages});
+  NewSyntaxHighlighter({@required this.context, @required this.textStyle, this.languages});
 
   @override
   TextSpan format(String source) {
     String language = 'Dart';
+    theme = ThemeService().getEditorTheme(context);
+
     if(languages != null && languages.isNotEmpty && languages.first.trim().isNotEmpty){
       language = languages.first;
     } 

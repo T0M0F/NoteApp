@@ -53,16 +53,15 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
             child: TextField(
               controller: _textEditingController,
               style: TextStyle(
-                fontSize: 22, 
-                fontWeight: FontWeight.bold, 
-                color: Colors.black87
+                fontSize: 20, 
+                color: Theme.of(context).textTheme.display3.color
               ),
               maxLength: 100,
               decoration: null
             ),
           ),
         ),
-        Row(
+        Row( 
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Padding(
@@ -71,7 +70,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(right: 5), 
-                    child: Icon(Icons.folder_open, color: Theme.of(context).primaryColorLight),
+                    child: Icon(Icons.folder_open, color: Theme.of(context).iconTheme.color),
                   ),
                   Container(
                     width: 130,
@@ -79,7 +78,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
                       value: this.widget.selectedFolder, 
                       underline: Container(), 
                       iconEnabledColor: Colors.transparent,
-                      style: TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.display3.color),
                       items: this.widget.folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
                         value: folder,
                         child: Text(folder.name)
@@ -97,9 +96,9 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
             ),
             Row(
             children: <Widget>[
-              IconButton(icon: Icon(MdiIcons.tagOutline, color: Theme.of(context).primaryColorLight), onPressed: this.widget.onTagClickedCallback),
-              IconButton(icon: Icon(Icons.info_outline, color: Theme.of(context).primaryColorLight), onPressed: this.widget.onInfoClickedCallback),
-              IconButton(icon: Icon(Icons.description, color: Theme.of(context).primaryColorLight), onPressed: this.widget.onDescriptionClickCallback)
+              IconButton(icon: Icon(MdiIcons.tagOutline, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onTagClickedCallback),
+              IconButton(icon: Icon(Icons.info_outline, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onInfoClickedCallback),
+              IconButton(icon: Icon(Icons.description, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onDescriptionClickCallback)
              ],
             ),
           ],

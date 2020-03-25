@@ -9,5 +9,7 @@ class ActionConstants {
   static const String COLLPASE_ACTION = 'Collapse';
   static const String SHOW_GRIDVIEW_ACTION = 'Gridview';
   static const String SHOW_LISTVIEW_ACTION = 'Listview';
+  static const String RENAME_CURRENT_SNIPPET = 'Rename Snippet';
+  static const String DELETE_CURRENT_SNIPPET = 'Delete Snippet';
   
 }

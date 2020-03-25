@@ -58,7 +58,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
             ),
           ),
         ),
-        Row(
+        Row( 
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Padding(

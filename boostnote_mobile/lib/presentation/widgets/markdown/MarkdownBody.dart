@@ -35,7 +35,7 @@ class _MarkdownBodyState extends State<MarkdownBody>{
         controller: _textEditingController,
         keyboardType: TextInputType.multiline,
         maxLines: null,
-        minLines: 30,
+        minLines: 30, //TODO anpassen an höhe
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(0),
             border: InputBorder.none,),

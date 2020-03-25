@@ -3,11 +3,13 @@ import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/screens/editor/snippet_editor/widgets/CodeSnippetAppBar.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/AddFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/AddSnippetDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/SnippetDescription.dart';
@@ -65,13 +67,13 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
 
-    NoteService().save(this.widget._note);
+    _noteService.save(this.widget._note);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      NoteService().save(this.widget._note);    //TODO double save?
+      _noteService.save(this.widget._note);    //TODO double save?
     }
   }
 
@@ -83,19 +85,19 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
       floatingActionButton: _editMode ? null : _buildFloatingActionButton(context)
     );
   }
-
+ 
   Widget _buildAppBar(BuildContext context) {
     if(_editMode) {
       return AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColorLight), 
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
           onPressed: () {
             _newNavigationService.navigateBack(context);
           },
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.check), 
+            icon: Icon(Icons.check, color: Theme.of(context).buttonColor), 
             onPressed: () {
               setState(() {
                 _editMode = !_editMode;
@@ -122,9 +124,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
   Widget _buildBody(){ 
     return ListView(
       children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          child:  SnippetNoteHeader(
+        SnippetNoteHeader(
             note: this.widget._note,
             selectedFolder: _dropdownValueFolder,
             selectedCodeSnippet: _selectedCodeSnippet,
@@ -149,7 +149,6 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
                 _noteService.save(this.widget._note);
               }
             )
-          ),
         ),
         Align(
           alignment: Alignment.topLeft,
@@ -169,7 +168,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
   }
 
   Widget _buildEmptyBody(){ 
-    return ListView(
+    return Stack(
       children: <Widget>[
         SnippetNoteHeader(
           note: this.widget._note,
@@ -191,13 +190,16 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
               }
             )
         ),
-        Align(
-          alignment: Alignment.topLeft,
-          child: Container()
+        Center(
+          child: Text(
+            AppLocalizations.of(context).translate('add_snippet'),
+            style: TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 18)
+          )
         )
-      ],
+      ]
     );
   }
+
 
   AddFloatingActionButton _buildFloatingActionButton(BuildContext context) {
     return AddFloatingActionButton(
@@ -226,9 +228,20 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
   }
 
   void _selectedAction(String action){
-      if(action == ActionConstants.DELETE_ACTION){
-        /*_noteService.moveToTrash(this.widget._note);
-        _newNavigationService.navigateBack(context);*/
+      if(action == ActionConstants.RENAME_CURRENT_SNIPPET){
+        _showRenameSnippetDialog(context, (String name){
+          setState(() {
+            _selectedCodeSnippet.name = name;
+          });
+          Navigator.of(context).pop();
+          _noteService.save(this.widget._note);
+        });
+      } else if(action == ActionConstants.DELETE_CURRENT_SNIPPET){
+        setState(() {
+          this.widget._note.codeSnippets.remove(_selectedCodeSnippet);
+          _selectedCodeSnippet = this.widget._note.codeSnippets.isNotEmpty ? this.widget._note.codeSnippets.last : null;
+        });
+        _noteService.save(this.widget._note);
       } else if(action == ActionConstants.SAVE_ACTION){
         _noteService.save(this.widget._note);
         _newNavigationService.navigateBack(context);
@@ -279,6 +292,12 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     showDialog(context: context, 
       builder: (context){
         return AddSnippetDialog(controller: TextEditingController(), onSnippetAdded: callback);
+  });
+
+  Future<String> _showRenameSnippetDialog(BuildContext context, Function(String) callback) =>
+    showDialog(context: context, 
+      builder: (context){
+        return EditSnippetNameDialog(textEditingController: TextEditingController(), onNameChanged: callback, noteTitle: _selectedCodeSnippet.name);
   });
 
 }

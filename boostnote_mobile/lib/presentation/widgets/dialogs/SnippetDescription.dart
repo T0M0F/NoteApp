@@ -39,8 +39,8 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
   StatefulBuilder _buildContent() {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
-        return Container(
-          height: 250,
+        return FractionallySizedBox(
+          heightFactor: 0.9,
           child: TextField(
             style: Theme.of(context).textTheme.display1,
             controller: widget.textEditingController,

@@ -19,4 +19,8 @@ class ThemeService {
     _sharedPrefsManager.changeTheme(themeName);
   }
 
+  Map<String, TextStyle> getEditorTheme(BuildContext context) {
+    return Theme.of(context).backgroundColor.value == Color(0xFF202120).value ? BoostnoteTheme.darkEditorTheme : BoostnoteTheme.lightEditorTheme;
+  }
+
 }

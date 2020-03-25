@@ -25,11 +25,8 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
   @override
   Widget build(BuildContext context) { 
     return AppBar(
-      elevation: 0,
-      backgroundColor: Theme.of(context).backgroundColor,
-      brightness: Brightness.light,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColorLight), 
+        icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
         onPressed: widget.onNavigateBackCallback
       ),
       actions: _buildActions()
@@ -41,7 +38,8 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
     List<Widget> actions = <Widget>[
       OverflowButton(
         noteIsStarred: this.widget.note.isStarred, 
-        selectedActionCallback: this.widget.selectedActionCallback
+        selectedActionCallback: this.widget.selectedActionCallback,
+        snippetSelected: this.widget.selectedCodeSnippet != null,
       )
     ];
 
@@ -51,13 +49,13 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 5), 
-            child: Icon(Icons.code,  color: Theme.of(context).primaryColorLight,)
+            child: Icon(Icons.code,  color: Theme.of(context).buttonColor,)
           ),
           DropdownButton<CodeSnippet> (  
             value: widget.selectedCodeSnippet, 
             underline: Container(), 
-            iconEnabledColor:  Colors.black,
-            style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+            iconEnabledColor:  Theme.of(context).buttonColor,
+            style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.display1.color , fontWeight: FontWeight.bold),
             items: widget.note.codeSnippets.map<DropdownMenuItem<CodeSnippet>>((codeSnippet) {
               Widget item = DropdownMenuItem<CodeSnippet>(
                 value: codeSnippet,
@@ -65,7 +63,7 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
                   codeSnippet.name, 
                   style: TextStyle(
                     fontSize: 16, 
-                    color: Colors.black, 
+                    color: Theme.of(context).textTheme.display1.color, 
                     fontWeight: FontWeight.bold
                   )
                 ),

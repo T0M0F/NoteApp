@@ -1,9 +1,9 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/theme/ThemeService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
-import 'package:flutter_highlight/themes/a11y-light.dart';
-
+ 
 class CodeTab extends StatefulWidget{
  
   final CodeSnippet _codeSnippet;
@@ -41,6 +41,7 @@ class CodeTabState extends State<CodeTab> {
           controller: textEditingController,
           keyboardType: TextInputType.multiline,
           maxLines: null,
+          minLines: 30, //TODO anpassen an höhe
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(0),
             border: InputBorder.none),
@@ -55,26 +56,46 @@ class CodeTabState extends State<CodeTab> {
           },
         ),
       ) :
-      GestureDetector(
-        onTap: (){
-          setState(() {
-            this.widget._editMode = !this.widget._editMode;
-            this.widget._modeChange(this.widget._editMode);
-          });
-        },
-        child: Container(
-          child: HighlightView(
-          this.widget._codeSnippet.content,
-          language: this.widget._codeSnippet.mode,
-          theme: a11yLightTheme,
-          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-          textStyle: TextStyle(
-                      fontFamily: 'My awesome monospace font',
-                      fontSize: 16,
-                      color: Theme.of(context).textTheme.display1.color
-          )
-        )
-        )
+      Stack(
+        children: <Widget>[
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: (){
+              setState(() {
+                this.widget._editMode = !this.widget._editMode;
+                this.widget._modeChange(this.widget._editMode);
+              });
+            },
+            child: FractionallySizedBox(
+              widthFactor: 1,
+              child: Container(
+                height: 800,   //TODO height auf bildschirm - header und appbar anpassen
+              ),
+            )
+          ),
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: (){
+              setState(() {
+                this.widget._editMode = !this.widget._editMode;
+                this.widget._modeChange(this.widget._editMode);
+              });
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
+              child: HighlightView(
+                this.widget._codeSnippet.content,
+                language: this.widget._codeSnippet.mode,
+                theme: ThemeService().getEditorTheme(context),
+                textStyle: TextStyle(
+                            fontFamily: 'My awesome monospace font',
+                            fontSize: 16,
+                            color: Theme.of(context).textTheme.display1.color,
+                )
+              )
+            )
+          ),
+        ],
       );
   }
 }

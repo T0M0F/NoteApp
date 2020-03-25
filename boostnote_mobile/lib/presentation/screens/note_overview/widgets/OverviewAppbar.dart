@@ -124,7 +124,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
       )
     ];
   }
-
+ 
   _searchPressed() {
     setState(() {
       if (this._searchIcon.icon == Icons.search) {

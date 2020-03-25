@@ -17,7 +17,7 @@ class _OverflowButtonState extends State<OverflowButton> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: Icon(Icons.more_vert, color:  Theme.of(context).iconTheme.color),
+      icon: Icon(Icons.more_vert, color:  Theme.of(context).buttonColor),
       onSelected: widget.selectedActionCallback,
       itemBuilder: (BuildContext context) {
         return <PopupMenuEntry<String>>[

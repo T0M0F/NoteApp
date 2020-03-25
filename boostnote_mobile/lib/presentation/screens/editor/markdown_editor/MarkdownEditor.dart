@@ -118,7 +118,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     );
   }
 
-
+ 
   Widget _buildMarkdownEditor(){ //use minLines for Textfield to make it work
     return ListView(
       children: <Widget>[

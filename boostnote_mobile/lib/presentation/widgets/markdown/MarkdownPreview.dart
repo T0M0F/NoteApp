@@ -34,7 +34,8 @@ class MarkdownPreviewState extends State<MarkdownPreview>{
             textStyle: TextStyle(
               color: Theme.of(context).textTheme.display1.color, 
             ),
-            languages: languages
+            languages: languages,
+            context: context
           ),
           styleSheet: MarkdownStyleSheet(
             p: TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 16),

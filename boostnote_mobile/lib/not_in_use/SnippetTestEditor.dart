@@ -2,10 +2,10 @@ import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
 import 'package:boostnote_mobile/not_in_use/EditSnippetNoteDialog.dart';
+import 'package:boostnote_mobile/not_in_use/SnippetDescriptionDialog.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/AddSnippetDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/SnippetDescriptionDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/snippet/CodeTab.dart';
 import 'package:flutter/material.dart';
 

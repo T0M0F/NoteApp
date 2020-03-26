@@ -32,27 +32,43 @@ class MarkdownPreviewState extends State<MarkdownPreview>{
           data: this.widget._text,
           syntaxHighlighter: NewSyntaxHighlighter(
             textStyle: TextStyle(
-              color: Theme.of(context).textTheme.display1.color, 
-            ),
+                            fontFamily: 'My awesome monospace font',
+                            fontSize: 16,
+                            color: Theme.of(context).textTheme.display1.color),
             languages: languages,
             context: context
           ),
           styleSheet: MarkdownStyleSheet(
+            checkbox:  TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 19),
+            p: TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 16),
+            code: TextStyle(color: Theme.of(context).textTheme.display1.color, backgroundColor: Theme.of(context).dialogBackgroundColor),
+            codeblockDecoration: BoxDecoration(color: Theme.of(context).dialogBackgroundColor),
+            blockquoteDecoration: BoxDecoration(color: Theme.of(context).dialogBackgroundColor),
+            blockquote: TextStyle(color: Theme.of(context).textTheme.display1.color),
+            tableCellsDecoration: BoxDecoration(color: Theme.of(context).dialogBackgroundColor),
+            tableBorder: TableBorder(
+              bottom: BorderSide(color: Theme.of(context).textTheme.display3.color),
+              top: BorderSide(color: Theme.of(context).textTheme.display3.color),
+              left: BorderSide(color: Theme.of(context).textTheme.display3.color),
+              right: BorderSide(color: Theme.of(context).textTheme.display3.color),
+              horizontalInside: BorderSide(color: Theme.of(context).textTheme.display3.color),
+              verticalInside: BorderSide(color: Theme.of(context).textTheme.display3.color)
+            )
+
+
+            /*
             p: TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 16),
             code: TextStyle(color: Theme.of(context).accentTextTheme.display4.color),
             codeblockDecoration: BoxDecoration(
               color: Colors.grey,
-            )
+            )*/
           ),
           onTapLink: (String url){
             this.widget.launchUrlCallback(url);
           },
           extensionSet: ExtensionSet.gitHubFlavored,
-          checkboxBuilder: (bool){
-            return Checkbox(
-              value: bool, 
-              onChanged: null);
-          },
+         
+          selectable: true,
           
         )
       )

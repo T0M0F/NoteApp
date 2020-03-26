@@ -3,6 +3,7 @@ import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart'
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
 
@@ -109,14 +110,22 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
           return <PopupMenuEntry<String>>[
             PopupMenuItem(
               value: this.widget.listTilesAreExpanded ?  ActionConstants.COLLPASE_ACTION: ActionConstants.EXPAND_ACTION,
-              child: ListTile(
-                title: Text(this.widget.listTilesAreExpanded ?  ActionConstants.COLLPASE_ACTION : ActionConstants.EXPAND_ACTION , style: Theme.of(context).textTheme.display1), 
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Icon(this.widget.listTilesAreExpanded ? MdiIcons.arrowCollapse : MdiIcons.arrowExpand, color: Theme.of(context).iconTheme.color),
+                  Text(this.widget.listTilesAreExpanded ?  ActionConstants.COLLPASE_ACTION : ActionConstants.EXPAND_ACTION , style: Theme.of(context).textTheme.display1)
+                ]
               )
             ),
             PopupMenuItem(
               value: this.widget.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION: ActionConstants.SHOW_LISTVIEW_ACTION,
-              child: ListTile(
-                title: Text(this.widget.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION : ActionConstants.SHOW_LISTVIEW_ACTION, style: Theme.of(context).textTheme.display1), 
+              child:  Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Icon(this.widget.showListView ? MdiIcons.viewGrid : MdiIcons.viewList, color: Theme.of(context).iconTheme.color),
+                  Text(this.widget.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION: ActionConstants.SHOW_LISTVIEW_ACTION , style: Theme.of(context).textTheme.display1)
+                ]
               )
             ),
           ];

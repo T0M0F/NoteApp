@@ -1,24 +1,22 @@
-
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EditTagsDialog extends StatefulWidget {
-
   final List<String> tags;
   final Function cancelCallback;
   final Function(List<String>) saveCallback;
 
-  const EditTagsDialog({Key key, this.tags, this.saveCallback, this.cancelCallback}) : super(key: key);
+  const EditTagsDialog(
+      {Key key, this.tags, this.saveCallback, this.cancelCallback})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _EditTagsDialogState();
-  
 }
-  
-class _EditTagsDialogState extends State<EditTagsDialog>{
 
+class _EditTagsDialogState extends State<EditTagsDialog> {
   TextEditingController _textEditingController;
   List<String> _selectedTags;
   List<String> _allTags;
@@ -31,13 +29,59 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
     _textEditingController = TextEditingController();
     _selectedTags = this.widget.tags;
     _allTags = _selectedTags;
-    _tagService.findAll(). then((tags) {
+    _tagService.findAll().then((tags) {
       setState(() {
         _allTags = tags;
       });
     });
   }
 
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    title: Container(
+        alignment: Alignment.center,
+        child: Text(AppLocalizations.of(context).translate("select_tags"),
+            style: TextStyle(
+                color: Theme.of(context).textTheme.display1.color))),
+    content: ListView.builder(
+            shrinkWrap: true,
+            itemCount: _allTags.length +1,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                  onTap: () {
+                    if(index > 0) {
+                       _onRowTap(_allTags[index]);
+                    } 
+                  },
+                  child: _buildRow(index)
+              );
+            },
+          ),
+    actions: <Widget>[
+      MaterialButton(
+          //Auslagern
+          minWidth: 100,
+          child: Text(AppLocalizations.of(context).translate("cancel"),
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.display1.color)),
+          onPressed: () {
+            Navigator.of(context).pop();
+          }),
+      MaterialButton(
+          //Auslagern
+          minWidth: 100,
+          elevation: 5.0,
+          color: Theme.of(context).accentColor,
+          child: Text(AppLocalizations.of(context).translate("save"),
+              style: TextStyle(
+                  color: Theme.of(context).accentTextTheme.display1.color)),
+          onPressed: () {
+            this.widget.saveCallback(_selectedTags);
+          })
+    ],
+  );
+/*
   @override
   Widget build(BuildContext context) => 
    AlertDialog(
@@ -128,10 +172,68 @@ class _EditTagsDialogState extends State<EditTagsDialog>{
         )
       ],
     );
+*/
 
   void _onRowTap(String tag) {
     setState(() {
-      _selectedTags.contains(tag) ? _selectedTags.remove(tag) : _selectedTags.add(tag);
+      _selectedTags.contains(tag)
+          ? _selectedTags.remove(tag)
+          : _selectedTags.add(tag);
     });
+  }
+
+  Widget _buildRow(int index) {
+    if(index > 0) {
+      return Row(
+        children: <Widget>[
+          Flexible(
+            flex: 1,
+            child: Checkbox(
+                value: _selectedTags.contains(_allTags[index-1]),
+                onChanged: (bool selected) {
+                  setState(() {
+                    selected
+                        ? _selectedTags.add(_allTags[index-1])
+                        : _selectedTags.remove(_allTags[index-1]);
+                  });
+                }),
+          ),
+          Flexible(
+            flex: 3,
+            child: Text(_allTags[index-1],
+              style: TextStyle(
+                  color: Theme.of(context)
+                      .textTheme
+                      .display1
+                      .color)
+              )
+          )
+        ],
+      );
+    } else {
+      return Row(
+        children: <Widget>[
+          SizedBox(
+            width: 160,
+            child:  TextField(
+              decoration: InputDecoration(hintText: AppLocalizations.of(context).translate("add_tag"), hintStyle: TextStyle(color:  Theme.of(context).textTheme.display2.color)),
+              textInputAction: TextInputAction.done,
+              controller: _textEditingController,
+              style: TextStyle(color: Theme.of(context).textTheme.display1.color),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.check, color: Theme.of(context).buttonColor),
+            onPressed: (){
+              setState(() {
+                _allTags.add(_textEditingController.text);
+              });
+              TagService().createTagIfNotExisting(_textEditingController.text);
+              _textEditingController.clear();
+            },
+          )
+        ],
+      );
+    }
   }
 }

@@ -36,7 +36,8 @@ class NoteGridTile extends StatelessWidget {
       ];
     }  
 
-    return Padding(
+    return Container(
+      color: Theme.of(context).dialogBackgroundColor,
       padding: EdgeInsets.only(left: 5, right: 5, top: 8, bottom: 0),
       child: Column(
         children: widgets
@@ -49,7 +50,7 @@ class NoteGridTile extends StatelessWidget {
     List<Widget> widgets = [
       Row(
         children: <Widget>[
-          Icon(note is MarkdownNote ? Icons.description : Icons.code, color: Theme.of(context).primaryColorLight),
+          Icon(note is MarkdownNote ? Icons.description : Icons.code, color: Theme.of(context).indicatorColor),
           Padding(
             padding: EdgeInsets.only(left: 5),
             child: Text(

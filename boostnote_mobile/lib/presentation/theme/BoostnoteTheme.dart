@@ -81,7 +81,8 @@ class BoostnoteTheme {
     primaryColorLight: Color(0xFF2E3235),
     primaryColorDark: Colors.black87,
     accentColor: Color(0xFF1EC38B),
-    backgroundColor: Color(0xFFf2f2f2),
+    backgroundColor: Color(0xFFf2f2f2), 
+    scaffoldBackgroundColor: Color(0xFFf2f2f2),
     accentColorBrightness: Brightness.light,
     appBarTheme: AppBarTheme(
       color: Color(0xFF202120),
@@ -164,8 +165,8 @@ class BoostnoteTheme {
     'addition': TextStyle(color: Color(0xffabe338)),
     'title': TextStyle(color: Color(0xff00e0e0)),
     'section': TextStyle(color: Color(0xff00e0e0)),
-    'keyword': TextStyle(color: Color(0xffdcc6e0)),
-    'selector-tag': TextStyle(color: Color(0xffdcc6e0)),
+    'keyword': TextStyle(color: Color(0xffffc0cb)),
+    'selector-tag': TextStyle(color: Color(0xffffc0cb)),
     'root':
         TextStyle(backgroundColor: Color(0xFF202120), color: Color(0xfff8f8f2)),
     'emphasis': TextStyle(fontStyle: FontStyle.italic),

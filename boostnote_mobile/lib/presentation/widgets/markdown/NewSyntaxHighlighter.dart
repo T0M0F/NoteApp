@@ -2,12 +2,6 @@ import 'dart:ui';
 
 import 'package:boostnote_mobile/presentation/theme/ThemeService.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_highlight/themes/a11y-light.dart';
-import 'package:flutter_highlight/themes/a11y-dark.dart';
-import 'package:flutter_highlight/themes/atelier-heath-dark.dart';
-import 'package:flutter_highlight/themes/darcula.dart';
-import 'package:flutter_highlight/themes/atelier-forest-dark.dart';
-import 'package:flutter_highlight/themes/arduino-light.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:highlight/highlight.dart';
 

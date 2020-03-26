@@ -26,6 +26,7 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: _buildContent(),
       actions: _buildActions(context),
+      
     );
   }
 

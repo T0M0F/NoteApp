@@ -11,6 +11,9 @@ class BoostnoteTheme {
   ];
 
   static final ThemeData lightTheme = ThemeData(
+    cursorColor: Color(0xFF2E3235),
+    textSelectionColor: Color(0xFF1EC38B),
+    textSelectionHandleColor: Color(0xFF1EC38B),
     primaryColor: Color(0xFFF6F5F5),
     primaryColorLight: Color(0xFFf2f2f2),
     primaryColorDark:Color(0xDDF6F5F5),
@@ -43,6 +46,9 @@ class BoostnoteTheme {
   );
 
  static final ThemeData darkTheme = ThemeData(
+    cursorColor: Color(0xF3F5F3F5),
+    textSelectionColor: Color(0xFF1EC38B),
+    textSelectionHandleColor: Color(0xFF1EC38B),
     primaryColor: Color(0xFF202120),
     primaryColorLight: Color(0xFF202120),
     primaryColorDark: Colors.black87,
@@ -77,6 +83,9 @@ class BoostnoteTheme {
   );
 
   static final ThemeData boostnoteTheme = ThemeData(
+    cursorColor: Color(0xFF2E3235),
+    textSelectionColor: Color(0xFF1EC38B),
+    textSelectionHandleColor: Color(0xFF1EC38B),
     primaryColor: Color(0xFF202120),
     primaryColorLight: Color(0xFF2E3235),
     primaryColorDark: Colors.black87,

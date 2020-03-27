@@ -575,12 +575,12 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
       setState(() {
         List<String> s = text.split('.');
         if(s.length > 1){
-            this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: new List(),  //TODO CodeSnippetEntity...
+            this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
                                                       name: s[0],
                                                       mode: s[1],
                                                       content: ''));
         } else {
-            this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: new List(),
+            this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: '',
                                                       name: text,
                                                       mode: '',
                                                       content: ''));

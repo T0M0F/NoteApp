@@ -22,7 +22,7 @@ class SnippetNote extends Note {
 
 class CodeSnippet {
   
-  List<int> linesHighlighted;
+  String linesHighlighted;
   String name;
   String mode;
   String content;

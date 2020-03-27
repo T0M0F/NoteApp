@@ -120,6 +120,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
       key: _drawerKey,
       appBar: _buildAppBar(),
       drawer: NavigationDrawer(), 
+      drawerScrimColor: Colors.transparent,
       body: _showListView ? _buildListViewBody() : _buildGridViewBody(),
       floatingActionButton: _newNavigationService.isTrashMode() ? null : CreateNoteFloatingActionButton(onPressed: () => _createNoteDialog()),
       bottomNavigationBar: _buildBottomNavigationBar() 

@@ -5,6 +5,7 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 
+//IN Parser und Mapper unterteilen
 class CsonParser {
 
   // Problem wenn '''''' -> multiline beginnt und endet in der selben Zeile
@@ -126,8 +127,21 @@ tags: ["[Gu[cci"
       /*Check for linesHighlighted, Tags and Snippets*/
       if(key.contains('linesHighlighted')) {  
 
-        print('Skip linesHighlighted');
-        continue;
+        print('contains linesHighlighted');
+        String linesHighlighted = '';
+        skipLine = true;
+         String s = '';
+        for(int i2 = i; i2 < splittedByLine.length; i2++) {
+          linesHighlighted = linesHighlighted + '\n' + splittedByLine[i2];
+         s= splittedByLine[i2];
+          if(splittedByLine[i2].trim().endsWith(']')){   //Außer wenn escaped
+            print(']');
+            skipUntilIndex = i2;
+            break;
+          } 
+        } 
+
+        value = s;
 
       } else if(key.contains('tags')) {   
         skipLine = true;
@@ -186,7 +200,7 @@ tags: ["[Gu[cci"
           }
           
           if(splittedByLine[i2].contains(']') && splittedByLine[i2-1].contains('}')){   //Außer wenn im objekt drinne         
-            print(']');
+            print(']');     //TODO so geht das nicht es kann }] vorkommen
             break;
           }
         } 
@@ -283,7 +297,11 @@ tags: ["[Gu[cci"
   }
 
   String convertToCson(Note note){
-    return note is SnippetNote ? convertSnippetNoteToCson(note) : convertMarkdownNoteToCson(note);
+    String s = note is SnippetNote ? convertSnippetNoteToCson(note) : convertMarkdownNoteToCson(note);
+      print('------------------------------------');
+    print(s);
+    print('------------------------------------');
+    return s;
   }
 
   String convertMarkdownNoteToCson(MarkdownNote note){
@@ -336,13 +354,14 @@ tags: ["[Gu[cci"
        snippet.content = snippet.content.replaceAll(new RegExp(r'\\'), '\\\\');
        snippet.content = snippet.content.replaceAll('\'\'\'', '\\\'\'\'');
 
-      return
-      '''
-      linesHighlighted: []
-      name: "''' + snippet.name + '''"
-      mode: "''' + snippet.mode + '''"
-      content: \'\'\'''' + snippet.content + '''\'\'\'
-      ''';
+      snippets = snippets + '''\n
+                          {
+                            linesHighlighted: []
+                            name: "''' + snippet.name + '''"
+                            mode: "''' + snippet.mode + '''"
+                            content: \'\'\'''' + snippet.content + '''\'\'\'
+                          }
+                            ''';
     });
 
     return
@@ -351,7 +370,7 @@ tags: ["[Gu[cci"
     updatedAt: "''' + note.updatedAt.toString() + '''"
     type: "''' + (note is SnippetNote ? 'SNIPPET_NOTE' : 'MARKDOWN_NOTE') + '''"
     folder: \'\'\'''' + note.folder.name + '''\'\'\'
-    description: "''' + note.description + '''"
+    description: \'\'\'''' + note.description + '''\'\'\'
     snippets: [
       ''' + snippets + '''
     ]

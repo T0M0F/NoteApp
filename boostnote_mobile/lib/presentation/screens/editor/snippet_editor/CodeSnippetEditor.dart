@@ -208,13 +208,13 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
           List<String> s = text.split('.');
           CodeSnippet codeSnippet;
           if(s.length > 1){
-             codeSnippet = CodeSnippetEntity(linesHighlighted: new List(),  //TODO CodeSnippetEntity...
+             codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
                                                       name: s[0],
                                                       mode: s[1],
                                                       content: '');
               this.widget._note.codeSnippets.add(codeSnippet);
           } else {
-            codeSnippet = CodeSnippetEntity(linesHighlighted: new List(),  //TODO CodeSnippetEntity...
+            codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
                                                       name: text,
                                                       mode: '',
                                                       content: '');

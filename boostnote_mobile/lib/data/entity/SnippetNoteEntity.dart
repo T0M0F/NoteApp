@@ -56,12 +56,12 @@ class SnippetNoteEntity extends SnippetNote {
 
 class CodeSnippetEntity extends CodeSnippet {
 
-  CodeSnippetEntity({List<int> linesHighlighted, String name, String mode, String content}):
+  CodeSnippetEntity({String linesHighlighted, String name, String mode, String content}):
   super(linesHighlighted: linesHighlighted, name: name, mode: mode, content: content);
 
   factory CodeSnippetEntity.fromJson(Map<String, dynamic> json) {
     return CodeSnippetEntity(
-    //  linesHighlighted: List<String>.from(['linesHighlighted']).map((string) => int.parse(string)).toList(),    //TODO fix
+      linesHighlighted: json['linesHighlighted'],    
       name: json['name'],
       mode: json['mode'],
       content: json['content'],
@@ -69,7 +69,7 @@ class CodeSnippetEntity extends CodeSnippet {
   }
 
   Map<String, dynamic> toJson() => {
-  //  'linesHighlighted': linesHighlighted,
+    'linesHighlighted': linesHighlighted,
     'name': name,
     'mode': mode,
     'content': content

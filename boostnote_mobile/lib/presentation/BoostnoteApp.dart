@@ -1,7 +1,9 @@
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/pages/OverviewPage.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/theme/ThemeNotifier.dart';
+import 'package:boostnote_mobile/presentation/widgets/appbar/CustomAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,8 +50,32 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         initialRoute: '/',
         routes: {
           '/test': (context) => Overview(),
-          '/': (context) => _buildBody(),
+          '/': (context) => OverviewPage(),
         },
+    );
+  }
+
+  Widget _buildBody2() {
+    return WillPopScope(
+      child: Scaffold(
+        appBar: CustomAppbar(),
+        body: ResponsiveWidget(widgets: <ResponsiveChild> [
+            ResponsiveChild(
+              smallFlex: 1, 
+              largeFlex: 1, 
+              child: Container(color: Colors.red)
+            ),
+            ResponsiveChild(
+              smallFlex: 0, 
+              largeFlex: 1, 
+              child: Container(color: Colors.green)
+            )
+          ]
+        ), 
+      ),
+      onWillPop: () { //TODO fix
+       
+      }
     );
   }
 

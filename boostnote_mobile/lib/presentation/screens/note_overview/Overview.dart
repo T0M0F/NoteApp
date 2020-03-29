@@ -140,7 +140,6 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         showListView: _showListView,
         onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
         onNaviagteBackCallback: () => _newNavigationService.navigateBack(context), 
-        onSearchClickCallback: () => search(),
         onSelectedActionCallback: (String action) => _selectedAction(action),
         onSearchCallback: (filteredNotes) {
           update(filteredNotes);

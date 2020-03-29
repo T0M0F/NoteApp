@@ -7,7 +7,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
 
-  Function() onSearchClickCallback;
   Function(String action) onSelectedActionCallback;
   Function() onMenuClickCallback;
   Function() onNaviagteBackCallback;
@@ -19,7 +18,7 @@ class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
   Map<String, String> actions;
   List<Note> notes;
 
-  OverviewAppbar({this.listTilesAreExpanded, this.showListView, this.pageTitle, this.notes, this.actions, this.onSearchClickCallback, this.onMenuClickCallback, this.onNaviagteBackCallback, this.onSelectedActionCallback, this.onSearchCallback});
+  OverviewAppbar({this.listTilesAreExpanded, this.showListView, this.pageTitle, this.notes, this.actions, this.onMenuClickCallback, this.onNaviagteBackCallback, this.onSelectedActionCallback, this.onSearchCallback});
 
   @override
   _OverviewAppbarState createState() => _OverviewAppbarState();

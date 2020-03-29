@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 class CodeSnippetAppBar extends StatefulWidget implements PreferredSizeWidget{
 
-  final Function() onNavigateBackCallback;
+  final Function() closeNote;
   final Function(String) selectedActionCallback;
   final Function(CodeSnippet) onSelectedSnippetChanged;
 
   SnippetNote note;
   CodeSnippet selectedCodeSnippet;
 
-  CodeSnippetAppBar({@required this.note,@required this.selectedCodeSnippet, this.onNavigateBackCallback, this.selectedActionCallback, this.onSelectedSnippetChanged});
+  CodeSnippetAppBar({@required this.note,@required this.selectedCodeSnippet, this.closeNote, this.selectedActionCallback, this.onSelectedSnippetChanged});
 
   @override
   _CodeSnippetAppBarState createState() => _CodeSnippetAppBarState();
@@ -27,7 +27,7 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
     return AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
-        onPressed: widget.onNavigateBackCallback
+        onPressed: widget.closeNote
       ),
       actions: _buildActions()
     );
@@ -60,7 +60,7 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
               Widget item = DropdownMenuItem<CodeSnippet>(
                 value: codeSnippet,
                 child:  Text(
-                  codeSnippet.name, 
+                  codeSnippet.name ?? '', 
                   style: TextStyle(
                     fontSize: 16, 
                     color: Theme.of(context).textTheme.display1.color, 

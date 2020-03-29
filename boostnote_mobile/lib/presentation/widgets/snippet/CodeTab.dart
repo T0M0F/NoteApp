@@ -9,7 +9,7 @@ class CodeTab extends StatefulWidget{
   final CodeSnippet _codeSnippet;
   bool _editMode;
   Function(String) _callback;
-  Function(bool) _modeChange;
+  Function() _modeChange;
 
   CodeTab(this._codeSnippet, this._editMode, this._callback, this._modeChange);
 
@@ -63,7 +63,7 @@ class CodeTabState extends State<CodeTab> {
             onTap: (){
               setState(() {
                 this.widget._editMode = !this.widget._editMode;
-                this.widget._modeChange(this.widget._editMode);
+                this.widget._modeChange();
               });
             },
             child: FractionallySizedBox(
@@ -78,7 +78,7 @@ class CodeTabState extends State<CodeTab> {
             onTap: (){
               setState(() {
                 this.widget._editMode = !this.widget._editMode;
-                this.widget._modeChange(this.widget._editMode);
+                this.widget._modeChange();
               });
             },
             child: Container(

@@ -7,11 +7,12 @@ class ResponsiveWidget extends StatefulWidget {
   final int breakPoint;
   final List<ResponsiveChild> widgets;
   final bool showDivider;
+  Widget divider;
 
-  ResponsiveWidget({this.showDivider = true, this.breakPoint = 1200, @required this.widgets});
+  ResponsiveWidget({this.showDivider = true, this.breakPoint = 1200, @required this.widgets, this.divider});
 
   @override
-  State<StatefulWidget> createState() => ResponsiveWidgetState();
+  ResponsiveWidgetState createState() => ResponsiveWidgetState();
 
 }
   
@@ -23,7 +24,6 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
   @override
   void initState() {
     super.initState();
-    widgets = this.widget.widgets;
     NavigationService().init(this);
     NavigationService().widgetHistory.add(widgets);
     NavigationService().navigationModeHistory.add(NavigationMode2.ALL_NOTES_MODE);
@@ -31,13 +31,16 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.divider == null) {
+      widget.divider = Container(width: 0.5, color: Theme.of(context).dividerColor);
+    }
 
+    widgets = this.widget.widgets;
     _isTablet = MediaQuery.of(context).size.width > this.widget.breakPoint;
 
     return Row(
       children: _getWidgets(),
     );
-
   }
 
   List<Widget> _getWidgets() {
@@ -55,7 +58,7 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
           )
         );
         if(this.widget.showDivider){
-          result.add(Container(width: 0.5, color: Theme.of(context).dividerColor));
+          result.add(widget.divider);
         }
       } 
 

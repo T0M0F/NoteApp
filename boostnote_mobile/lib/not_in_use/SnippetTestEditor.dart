@@ -86,9 +86,9 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
         print(text);
         _currentSnippet.content = text;
       },
-      (bool){
+      (){
          setState(() {
-                _editMode = bool;
+                _editMode = !_editMode;
                 _currentSnippet.content = _currentSnippet.content;
               });
       }));
@@ -165,9 +165,9 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
               print(text);
               _currentSnippet.content = text;
             },
-            (bool){
+            (){
               setState(() {
-                      _editMode = bool;
+                      _editMode = !_editMode;
                       _currentSnippet.content = _currentSnippet.content;
                     });
             });

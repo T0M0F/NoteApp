@@ -82,12 +82,12 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     return MarkdownEditorAppBar(
       isPreviewMode: _previewMode,
       isNoteStarred: this.widget._note.isStarred,
-      onNavigateBackCallback: () => _newNavigationService.navigateBack(context),
-      onViewModeSwitchedCallback: (bool value) {
+      closeNote: () => _newNavigationService.navigateBack(context),
+     /* onViewModeSwitchedCallback: (bool value) {
          setState(() {
               _previewMode = value;
           });
-      },
+      },*/
       selectedActionCallback: (String action) => _selectedAction(action)
     );
   }

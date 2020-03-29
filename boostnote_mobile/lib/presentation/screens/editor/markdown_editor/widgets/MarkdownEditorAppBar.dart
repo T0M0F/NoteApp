@@ -5,14 +5,14 @@ import 'OverflowButton.dart';
 
 class MarkdownEditorAppBar extends StatefulWidget implements PreferredSizeWidget {
 
-  final Function() onNavigateBackCallback;
   final Function(bool) onViewModeSwitchedCallback;
   final Function(String) selectedActionCallback;
+  final Function() closeNote;
  
   bool isPreviewMode;
   bool isNoteStarred;
 
-  MarkdownEditorAppBar({this.isPreviewMode, this.isNoteStarred, this.onNavigateBackCallback, this.onViewModeSwitchedCallback, this.selectedActionCallback});
+  MarkdownEditorAppBar({this.isPreviewMode, this.isNoteStarred, this.onViewModeSwitchedCallback, this.selectedActionCallback, this.closeNote});
 
   @override
   _MarkdownEditorAppBarState createState() => _MarkdownEditorAppBarState();
@@ -26,10 +26,9 @@ class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-     
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color:  Theme.of(context).buttonColor), 
-        onPressed: widget.onNavigateBackCallback,
+        onPressed: widget.closeNote,
       ),
       actions: <Widget>[
         Switch(

@@ -33,7 +33,7 @@ class NavigationService {
 
   factory NavigationService(){
     return navigationService;
-  }
+  } 
 
   void navigateTo( BuildContext context, String overviewMode, {OverviewView overviewView, Folder folder, String tag}) {
     switch (overviewMode) {
@@ -124,32 +124,32 @@ class NavigationService {
       case NavigationMode.STARRED_NOTES_MODE:
         if(this.navigationMode == NavigationMode.FOLDERS_MODE || this.navigationMode == NavigationMode.TAGS_MODE) {
           this.navigationMode = NavigationMode.STARRED_NOTES_MODE;
-          _noteService.findStarred().then((notes) {
-            noteListCache = notes;
-            Route route = PageRouteBuilder( 
-              pageBuilder: (c, a1, a2) =>  ResponsiveWidget(widgets: <ResponsiveChild> [
-                ResponsiveChild(
-                  smallFlex: 1, 
-                  largeFlex: 2, 
-                  child: Overview(notes: notes)
-                ),
-                ResponsiveChild(
-                  smallFlex: 0, 
-                  largeFlex: 3, 
-                  child: Scaffold(
-                   appBar: AppBar(),
-                   body: Container()
+            _noteService.findStarred().then((notes) {
+              noteListCache = notes;
+              Route route = PageRouteBuilder( 
+                pageBuilder: (c, a1, a2) =>  ResponsiveWidget(widgets: <ResponsiveChild> [
+                  ResponsiveChild(
+                    smallFlex: 1, 
+                    largeFlex: 2, 
+                    child: Overview(notes: notes)
+                  ),
+                  ResponsiveChild(
+                    smallFlex: 0, 
+                    largeFlex: 3, 
+                    child: Scaffold(
+                    appBar: AppBar(),
+                    body: Container()
+                    )
                   )
-                )
-               ]
-              ),
-              transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
-              transitionDuration: Duration(milliseconds: 0),
-            );
-            Navigator.of(context).pushReplacement(
-              route
-            );
-          });
+                ]
+                ),
+                transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+                transitionDuration: Duration(milliseconds: 0),
+              );
+              Navigator.of(context).pushReplacement(
+                route
+              );
+            });
         } else {
           if(overviewView == null) throw Exception('OverviewView must be provided to navigate to ' + overviewMode +'. Current mode is ' + this.navigationMode);
           else {

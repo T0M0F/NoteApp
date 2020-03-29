@@ -111,7 +111,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
         note: this.widget._note, 
         selectedCodeSnippet: _selectedCodeSnippet,
         selectedActionCallback: (String action) => _selectedAction(action),
-        onNavigateBackCallback: () => _newNavigationService.navigateBack(context), 
+        closeNote: () => _newNavigationService.navigateBack(context), 
         onSelectedSnippetChanged: (CodeSnippet codeSnippet) {
           setState(() {
             _selectedCodeSnippet = codeSnippet;
@@ -156,9 +156,9 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
             _selectedCodeSnippet, 
             _editMode, 
             (String text) => _onTextChangedCallback(text), 
-            (bool editMode) {
+            () {
               setState(() {
-                _editMode = editMode;
+                _editMode = !_editMode;
               });
             }
           )

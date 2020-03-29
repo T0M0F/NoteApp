@@ -142,7 +142,7 @@ class NavigationService {
         break;
     }
   } 
-
+ 
   void navigate({@required ResponsiveChild destinationWidget,@required String destinationMode}) {
     //TODO check if destinationMode is known
     List<ResponsiveChild> widgets = List();

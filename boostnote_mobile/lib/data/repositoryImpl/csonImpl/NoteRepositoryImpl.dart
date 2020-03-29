@@ -79,7 +79,12 @@ class NoteRepositoryImpl extends NoteRepository {
     List<Note> notes = List();
     _files.forEach((file) {
       String content = file.readAsStringSync();
-      notes.add(csonParser.convertToNote(csonParser.parse(content)));
+      try {
+         notes.add(csonParser.convertToNote(csonParser.parse(content)));
+      } catch(e) {
+        print(e);
+      }
+     
     });
     return Future.value(notes);
   }

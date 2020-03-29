@@ -1,6 +1,7 @@
+import 'package:boostnote_mobile/data/internationalization%20%20%20%20/Translation.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
-import 'package:boostnote_mobile/presentation/pages/OverviewPage.dart';
+import 'package:boostnote_mobile/presentation/pages/NotesPage.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
 import 'package:boostnote_mobile/presentation/theme/ThemeNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbar/CustomAppbar.dart';
@@ -50,7 +51,7 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         initialRoute: '/',
         routes: {
           '/test': (context) => Overview(),
-          '/': (context) => OverviewPage(),
+          '/': (context) => NotesPage(pageTitle: AppLocalizations.of(context).translate('all_notes'),),
         },
     );
   }

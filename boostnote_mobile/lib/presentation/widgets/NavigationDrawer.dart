@@ -1,11 +1,17 @@
+import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class NavigationDrawer extends StatefulWidget {
+
+  Note note;
+
+  NavigationDrawer({this.note});
 
   @override
   State<StatefulWidget> createState() => NavigationDrawerState();
@@ -15,6 +21,7 @@ class NavigationDrawer extends StatefulWidget {
 class NavigationDrawerState extends State<NavigationDrawer> {
 
   NavigationService _navigationService = NavigationService();
+  PageNavigator _pageNavigator = PageNavigator();
 
   @override
   Widget build(BuildContext context) {
@@ -49,45 +56,45 @@ class NavigationDrawerState extends State<NavigationDrawer> {
               ],
             ),
         ),
-      ),
+      ), 
      ListTile(
-            leading: Icon(MdiIcons.fileMultiple, size: 21, color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
-            title: Text(AppLocalizations.of(context).translate('all_notes'), style: TextStyle(color: _navigationService.isAllNotesMode() ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
+            leading: Icon(MdiIcons.fileMultiple, size: 21, color: _pageNavigator.pageNavigatorState == PageNavigatorState.ALL_NOTES ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+            title: Text(AppLocalizations.of(context).translate('all_notes'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.ALL_NOTES ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
             onTap: () {
               Navigator.pop(context);
-              _navigationService.navigateTo(destinationMode: NavigationMode2.ALL_NOTES_MODE);
+              _pageNavigator.navigateToAllNotes(context, note: widget.note);
             },
       ),
       ListTile(
-        leading: Icon(Icons.folder, color: _navigationService.isFoldersMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
-        title: Text(AppLocalizations.of(context).translate('folders'), style: TextStyle(color: _navigationService.isFoldersMode() ? Theme.of(context).accentColor :Theme.of(context).accentTextTheme.display1.color)),
+        leading: Icon(Icons.folder, color:  _pageNavigator.pageNavigatorState == PageNavigatorState.FOLDERS ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('folders'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.FOLDERS ? Theme.of(context).accentColor :Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
-          _navigationService.navigateTo(destinationMode: NavigationMode2.FOLDERS_MODE);
+          _pageNavigator.navigateToFolders(context, note: widget.note);
         },
       ),
       ListTile(
-        leading: Icon(MdiIcons.tagMultiple, color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
-        title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color: _navigationService.isTagsMode() ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
+        leading: Icon(MdiIcons.tagMultiple, color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TAGS? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TAGS ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
-          _navigationService.navigateTo(destinationMode: NavigationMode2.TAGS_MODE);
+          _pageNavigator.navigateToTags(context, note: widget.note);
         }
       ),
       ListTile(
-        leading: Icon(Icons.star, color: _navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
-        title: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color: _navigationService.isStarredNotesMode() ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
+        leading: Icon(Icons.star, color:  _pageNavigator.pageNavigatorState == PageNavigatorState.STARRED ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.STARRED ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
-          _navigationService.navigateTo(destinationMode: NavigationMode2.STARRED_NOTES_MODE);
+          _pageNavigator.navigateToStarredNotes(context, note: widget.note);
         },
       ),
       ListTile(
-        leading: Icon(Icons.delete, color: _navigationService.isTrashMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
-        title: Text(AppLocalizations.of(context).translate('trash'), style: TextStyle(color: _navigationService.isTrashMode() ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
+        leading: Icon(Icons.delete, color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TRASH ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('trash'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TRASH ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
-          _navigationService.navigateTo(destinationMode: NavigationMode2.TRASH_MODE);
+          _pageNavigator.navigateToTrash(context, note: widget.note);
         },
       ),
       Padding(
@@ -99,7 +106,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
       ),
       ListTile(
-        leading: Icon(Icons.settings, color: _navigationService.isSettingsMode() ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        leading: Icon(Icons.settings, color: Theme.of(context).buttonColor),
         title: Text(AppLocalizations.of(context).translate('settings'), style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color),),
         onTap: () {
           Navigator.pop(context);

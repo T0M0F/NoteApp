@@ -1,5 +1,7 @@
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -40,46 +42,30 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
   Widget build(BuildContext context) => AlertDialog(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     title: Container(
-        alignment: Alignment.center,
-        child: Text(AppLocalizations.of(context).translate("select_tags"),
-            style: TextStyle(
-                color: Theme.of(context).textTheme.display1.color))),
+      alignment: Alignment.center,
+      child: Text(AppLocalizations.of(context).translate("select_tags"),
+          style: TextStyle(
+              color: Theme.of(context).textTheme.display1.color))),
     content: ListView.builder(
-            shrinkWrap: true,
-            itemCount: _allTags.length +1,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                  onTap: () {
-                    if(index > 0) {
-                       _onRowTap(_allTags[index]);
-                    } 
-                  },
-                  child: _buildRow(index)
-              );
+      shrinkWrap: true,
+      itemCount: _allTags.length +1,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+            onTap: () {
+              if(index > 0) {
+                  _onRowTap(_allTags[index]);
+              } 
             },
-          ),
+            child: _buildRow(index)
+        );
+      },
+    ),
     actions: <Widget>[
-      MaterialButton(
-          //Auslagern
-          minWidth: 100,
-          child: Text(AppLocalizations.of(context).translate("cancel"),
-              style: TextStyle(
-                  color: Theme.of(context).textTheme.display1.color)),
-          onPressed: () {
-            Navigator.of(context).pop();
-          }),
-      MaterialButton(
-          //Auslagern
-          minWidth: 100,
-          elevation: 5.0,
-          color: Theme.of(context).accentColor,
-          child: Text(AppLocalizations.of(context).translate("save"),
-              style: TextStyle(
-                  color: Theme.of(context).accentTextTheme.display1.color)),
-          onPressed: () {
+          CancelButton(),
+          SaveButton(save: () {
             this.widget.saveCallback(_selectedTags);
           })
-    ],
+        ],
   );
 /*
   @override

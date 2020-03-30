@@ -3,6 +3,8 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -74,20 +76,10 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
         },
       ),
       actions: <Widget>[
-       MaterialButton(
-          minWidth:100,
-          child: Text('Cancel', style: TextStyle(color:  Theme.of(context).textTheme.display1.color)),
-          onPressed: (){
-            this.widget.cancelCallback();
-          }
-        ),
-        MaterialButton(
-          minWidth:100,
-          elevation: 5.0,
-          color: Theme.of(context).accentColor,
-          child: Text('Save', style: TextStyle(color:  Theme.of(context).accentTextTheme.display1.color)),
-          onPressed: _save
-        )
+        CancelButton(),
+        SaveButton(save: () {
+          _save();
+        })
       ],
     );
   }

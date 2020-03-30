@@ -1,5 +1,9 @@
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
+import 'package:boostnote_mobile/presentation/screens/note_overview/widgets/DeleteNoteBottomSheet.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/widgets/TrashNoteBottomSheet.dart';
 import 'package:boostnote_mobile/presentation/widgets/notegrid/NoteGridTile.dart';
 import 'package:boostnote_mobile/presentation/widgets/notelist/NoteList.dart';
@@ -13,11 +17,13 @@ class Overview extends StatefulWidget {   //TODO imutable
   bool tilesAreExpanded;
   bool showListView;
   Function(Note) openNote;
+  final Function(Note) trashOrDeleteOrRestoreNote;
 
   Overview({@required this.notes, 
             @required this.tilesAreExpanded, 
             @required this.showListView,
-            @required this.openNote});   //TODO constructor
+            @required this.openNote, 
+            this.trashOrDeleteOrRestoreNote});   //TODO constructor
 
   @override
   _OverviewState createState() => _OverviewState();
@@ -86,20 +92,47 @@ class _OverviewState extends State<Overview> {
   }
 
   void _onRowLongPress(List<Note> selectedNotes) {
-    showModalBottomSheet(     
-      context: context,
-      builder: (BuildContext buildContext){
-        return TrashNoteBottomSheet(
-          trashNoteCallback: () {
-            Navigator.of(context).pop();
-            _noteService.moveToTrash(selectedNotes.first);
-            setState(() {
-               this.widget.notes.remove(selectedNotes.first);
-            });
-          } ,
-        );
-      }
-    );
+    if(PageNavigator().pageNavigatorState != PageNavigatorState.TRASH) {
+      showModalBottomSheet(     
+        context: context,
+        builder: (BuildContext buildContext){
+          return TrashNoteBottomSheet(
+            trashNoteCallback: () {
+              Navigator.of(context).pop();
+              _noteService.moveToTrash(selectedNotes.first);
+              setState(() {
+                this.widget.notes.remove(selectedNotes.first);
+              });
+              widget.trashOrDeleteOrRestoreNote(selectedNotes.first);
+            } ,
+          );
+        }
+      );
+    } else {
+      showModalBottomSheet(     
+        context: context,
+        builder: (BuildContext buildContext){
+          return DeleteNoteBottomSheet(
+            deleteNoteCallback: () {
+              Navigator.of(context).pop();
+              _noteService.delete(selectedNotes.first);
+              setState(() {
+                this.widget.notes.remove(selectedNotes.first);
+              });
+              widget.trashOrDeleteOrRestoreNote(selectedNotes.first);
+            },
+            restoreNoteCallback: () {
+              Navigator.of(context).pop();
+              _noteService.restore(selectedNotes.first);
+              setState(() {
+                this.widget.notes.remove(selectedNotes.first);
+              });
+              widget.trashOrDeleteOrRestoreNote(selectedNotes.first);
+            } ,
+          );
+        }
+      );
+    }
   }
 
 }

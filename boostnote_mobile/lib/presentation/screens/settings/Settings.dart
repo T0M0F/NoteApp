@@ -51,7 +51,7 @@ class SettingsState extends State<Settings> {
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor), 
         onPressed: () {
-          _newNavigationService.navigateBack(context);
+          Navigator.of(context).pop();
         }
       )
     );

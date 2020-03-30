@@ -44,7 +44,7 @@ class BoostnoteTheme {
       display4: TextStyle(color: Colors.black, fontSize: 16)  //used by Markdown code color
     )
   );
-
+ 
  static final ThemeData darkTheme = ThemeData(
     cursorColor: Color(0xF3F5F3F5),
     textSelectionColor: Color(0xFF1EC38B),

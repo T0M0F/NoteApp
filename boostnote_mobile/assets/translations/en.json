@@ -17,6 +17,7 @@
     "enter_name":"Name",
     "expand":"Expanf",
     "collapse":"Collapse",
+    "change":"Change",
     "gridview":"Grid",
     "listview":"List",
     "search":"Search",

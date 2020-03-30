@@ -1,5 +1,6 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +92,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
     }
     return AppBar(
       title: _appbarTitle,
-      leading: _buildLeadingIcon(),
+      leading: _buildLeadingIcon(context),
       actions: _buildActions(),
     );
   }
@@ -142,6 +143,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.search, color: Theme.of(context).buttonColor),
             hintText: 'Search...',
+            hintStyle: Theme.of(context).accentTextTheme.title,
             border: InputBorder.none,
           ),
           style: Theme.of(context).accentTextTheme.title,
@@ -155,15 +157,17 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
     });
   }
 
-  IconButton _buildLeadingIcon() {
-    return (_newNavigationService.isNotesWithTagMode() || _newNavigationService.isNotesInFolderMode())
+  IconButton _buildLeadingIcon(BuildContext context) {
+    return PageNavigator().pageNavigatorState == PageNavigatorState.NOTES_IN_FOLDER 
+            ||  PageNavigator().pageNavigatorState == PageNavigatorState.NOTES_WITH_TAG 
       ? IconButton(
-        icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor), 
-        onPressed: this.widget.onNaviagteBackCallback,
-      ) : IconButton(
-        icon: Icon(Icons.menu, color: Theme.of(context).accentColor), 
-        onPressed: this.widget.onMenuClickCallback,
-    );
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor),
+          onPressed: ()  => Navigator.of(context).pop(),
+        )
+      : IconButton(
+          icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
+          onPressed: widget.onMenuClickCallback,
+        );
   }
 
 }

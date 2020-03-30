@@ -7,6 +7,7 @@ import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/pages/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/MarkdownEditor.dart';
+import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
@@ -40,7 +41,7 @@ class TagsPage extends StatefulWidget {
  
 class _TagsPageState extends State<TagsPage> implements Refreshable{
 
-  NavigationService _newNavigationService;
+  PageNavigator _pageNavigator;
   NoteService _noteService;
   TagService _tagService;
   List<String> _tags;
@@ -57,7 +58,7 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
     super.initState();
 
     _tags = List();
-    _newNavigationService = NavigationService();
+    _pageNavigator = PageNavigator();
     _noteService = NoteService();
     _tagService = TagService();
 
@@ -283,12 +284,9 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
         saveCallback: (Note note) {
           Navigator.of(context).pop();
           _createNote(note);
-          if(note is MarkdownNote) {
-            _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);
-          } else if(note is SnippetNote) {
-            _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);
-          }
-          
+          setState(() {
+            widget.note = note;
+          });
         },
       );
     });
@@ -325,9 +323,7 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
     });
   }
 
-  void _onRowTap(String tag) => _newNavigationService
-                                      .navigateTo(destinationMode: NavigationMode2.NOTES_WITH_TAG_MODE, tag: tag);
-
+  void _onRowTap(String tag) => _pageNavigator.navigateToNotesWithTag(context, tag, note: widget.note);
 
   void _onRowLongPress(String tag) {
     showModalBottomSheet(     

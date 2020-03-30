@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
@@ -26,8 +27,10 @@ class NotesPage extends StatefulWidget {
   Note note;
   String pageTitle;
   List<Note> notes;
+  String tag;
+  Folder folder;
 
-  NotesPage({@required this.pageTitle, this.note, this.notes});
+  NotesPage({@required this.pageTitle, this.note, this.notes, this.tag, this.folder});
 
   @override
   _NotesPageState createState() => _NotesPageState();
@@ -47,6 +50,8 @@ class _NotesPageState extends State<NotesPage> {
 
   CodeSnippet selectedCodeSnippet;
 
+  List<Note> notesCopy;
+
   @override
   void initState() {
     super.initState();
@@ -60,9 +65,11 @@ class _NotesPageState extends State<NotesPage> {
     if(widget.notes == null) {
       widget.notes = List();
       _noteService.findNotTrashed().then((result) { 
-      update(result);
-    });
-    }
+        update(result);
+      });
+    } 
+
+    notesCopy = List<Note>.from(widget.notes);
   }
 
   void update(List<Note> notes){
@@ -72,6 +79,7 @@ class _NotesPageState extends State<NotesPage> {
       } else {
         widget.notes = notes;
       }
+      notesCopy = List<Note>.from(widget.notes);
     });
   }
 
@@ -95,7 +103,7 @@ class _NotesPageState extends State<NotesPage> {
   PreferredSizeWidget _buildAppBar() { 
      return OverviewPageAppbar(
         pageTitle: widget.pageTitle,
-        notes: List<Note>.from(widget.notes),
+        notes: notesCopy,
         note: widget.note,
         selectedCodeSnippet: selectedCodeSnippet,
         tilesAreExpanded: _tilesAreExpanded,
@@ -217,6 +225,12 @@ class _NotesPageState extends State<NotesPage> {
                 }
               });
             },
+            trashOrDeleteOrRestoreNote: (note) {
+              setState(() {
+                if(widget.note == note) widget.note = null;
+                notesCopy.remove(note);
+              });
+            },
           )
         ),
         ResponsiveChild(
@@ -315,10 +329,13 @@ class _NotesPageState extends State<NotesPage> {
             Navigator.of(context).pop();
           }, 
           saveCallback: (Note note) {
+            if(widget.tag != null) note.tags.add(widget.tag);
+            if(widget.folder != null) note.folder = widget.folder;
             _noteService.save(note);
             setState(() {
               widget.notes.add(note);
               this.widget.note = note;
+              notesCopy.add(note);
             });
             Navigator.of(context).pop();
           },

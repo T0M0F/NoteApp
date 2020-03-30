@@ -9,6 +9,7 @@ import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart'
 import 'package:boostnote_mobile/presentation/pages/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/FoldersPageAppbar.dart';
 import 'package:boostnote_mobile/presentation/pages/MarkdownEditor.dart';
+import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
@@ -43,7 +44,7 @@ class _FoldersPageState extends State<FoldersPage> {
 
   NoteService _noteService;
   FolderService _folderService;
-  NavigationService _newNavigationService;
+  PageNavigator _pageNavigator;
   List<Folder> _folders;
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -59,7 +60,7 @@ class _FoldersPageState extends State<FoldersPage> {
 
     _folders = List();
     _noteService = NoteService();
-    _newNavigationService = NavigationService();
+    _pageNavigator = PageNavigator();
     _folderService = FolderService();
 
     if(widget.note is SnippetNote) {
@@ -319,7 +320,7 @@ class _FoldersPageState extends State<FoldersPage> {
       );
   });
 
-  void _onFolderTap(Folder folder) => _newNavigationService.navigateTo(destinationMode: NavigationMode2.NOTES_IN_FOLDER_MODE, folder: folder);
+  void _onFolderTap(Folder folder) => _pageNavigator.navigateToNotesInFolder(context, folder, note: widget.note);
   
   void _onFolderLongPress(Folder folder) {
     if (folder.id != 'Default'.hashCode && folder.id != 'Trash'.hashCode) {

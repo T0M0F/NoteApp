@@ -66,16 +66,16 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             },
       ),
       ListTile(
-        leading: Icon(Icons.folder, color:  _pageNavigator.pageNavigatorState == PageNavigatorState.FOLDERS ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
-        title: Text(AppLocalizations.of(context).translate('folders'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.FOLDERS ? Theme.of(context).accentColor :Theme.of(context).accentTextTheme.display1.color)),
+        leading: Icon(Icons.folder, color:  _pageNavigator.pageNavigatorState == PageNavigatorState.FOLDERS || _pageNavigator.pageNavigatorState == PageNavigatorState.NOTES_IN_FOLDER ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('folders'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.FOLDERS || _pageNavigator.pageNavigatorState == PageNavigatorState.NOTES_IN_FOLDER ? Theme.of(context).accentColor :Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
           _pageNavigator.navigateToFolders(context, note: widget.note);
         },
       ),
       ListTile(
-        leading: Icon(MdiIcons.tagMultiple, color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TAGS? Theme.of(context).accentColor : Theme.of(context).buttonColor),
-        title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TAGS ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
+        leading: Icon(MdiIcons.tagMultiple, color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TAGS || _pageNavigator.pageNavigatorState == PageNavigatorState.NOTES_WITH_TAG ? Theme.of(context).accentColor : Theme.of(context).buttonColor),
+        title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TAGS || _pageNavigator.pageNavigatorState == PageNavigatorState.NOTES_WITH_TAG ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
           _pageNavigator.navigateToTags(context, note: widget.note);
@@ -110,7 +110,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text(AppLocalizations.of(context).translate('settings'), style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color),),
         onTap: () {
           Navigator.pop(context);
-          _navigationService.navigateTo(destinationMode: NavigationMode2.SETTINGS_MODE);
+          _pageNavigator.navigateToSettings(context);
         },
       ),
       ListTile(

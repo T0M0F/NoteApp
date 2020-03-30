@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class EditSnippetNameDialog extends StatelessWidget {
     Container _buildTitle(BuildContext context) {
       return Container( 
         alignment: Alignment.center,
-        child: Text('Change', style: TextStyle(color:  Theme.of(context).textTheme.display1.color))
+        child: Text(AppLocalizations.of(context).translate('change'), style: TextStyle(color:  Theme.of(context).textTheme.display1.color))
       );
     }
 

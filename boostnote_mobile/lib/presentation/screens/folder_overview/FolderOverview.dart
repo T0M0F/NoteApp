@@ -68,7 +68,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
     key: _drawerKey,
     appBar: FolderOverviewAppbar(
       onCreateFolderCallback: () => _createFolderDialog(),
-      onMenuClickCallback: () => _drawerKey.currentState.openDrawer()
+    
     ),
     drawer: NavigationDrawer(),
     body: _buildBody(context),
@@ -88,20 +88,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
   void _createNoteDialog() => showDialog(
     context: context,
     builder: (context) {
-      return CreateNoteDialog(
-        cancelCallback: () {
-          Navigator.of(context).pop();
-        },
-        saveCallback: (Note note) {
-          Navigator.of(context).pop();
-          _createNote(note);
-          if(note is MarkdownNote) {
-            _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);
-          } else if(note is SnippetNote) {
-            _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);
-          }
-        },
-      );
+      return CreateNoteDialog( );
   });
   
   void _createFolderDialog() => showDialog(

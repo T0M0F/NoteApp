@@ -2,35 +2,39 @@ import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateNoteDialog extends StatefulWidget {
 
-  //TODO CONTINUE HERE
-
   static const int _MARKDOWNNOTE = 1;
   static const int _SNIPPETNOTE = 2;
-
-  final Function(Note note) saveCallback;
-  final Function() cancelCallback;
-
-  const CreateNoteDialog({Key key, @required this.saveCallback, @required this.cancelCallback}) : super(key: key); //TODO: Constructor
 
   @override
   _CreateNoteDialogState createState() => _CreateNoteDialogState();
 }
 
 class _CreateNoteDialogState extends State<CreateNoteDialog> {
+
   final TextEditingController controller = TextEditingController();
+  NoteService _noteService = NoteService();
+  NoteNotifier _noteNotifier;
+  NoteOverviewNotifier _noteOverviewNotifier;
 
   int groupvalue = CreateNoteDialog._MARKDOWNNOTE;
 
   @override
   Widget build(BuildContext context) {
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
+
     return AlertDialog(
       title: Container( 
         alignment: Alignment.center,
@@ -77,9 +81,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
       ),
       actions: <Widget>[
         CancelButton(),
-        SaveButton(save: () {
-          _save();
-        })
+        SaveButton(save: _save)
       ],
     );
   }
@@ -111,7 +113,13 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
           codeSnippets: []
         );
       }
-      this.widget.saveCallback(note);
+      //if(widget.tag != null) note.tags.add(widget.tag); //TODO
+      // if(widget.folder != null) note.folder = widget.folder;  //TODO
+      _noteService.save(note);
+      _noteOverviewNotifier.notes.add(note);
+      _noteOverviewNotifier.notesCopy.add(note);
+      _noteNotifier.note = note;
+      Navigator.of(context).pop();
     }
   }
 }

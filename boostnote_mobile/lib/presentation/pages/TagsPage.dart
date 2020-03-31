@@ -5,6 +5,7 @@ import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
@@ -24,6 +25,7 @@ import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:boostnote_mobile/presentation/widgets/taglist/TagList.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'TagsPageAppbar.dart';
 
@@ -52,6 +54,8 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
   bool _snippetEditorEditMode = false;
 
   CodeSnippet selectedCodeSnippet;
+
+  NoteOverviewNotifier _noteOverviewNotifier;
 
   @override
   void initState(){
@@ -89,13 +93,17 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    key: _drawerKey,
-    appBar: _buildAppBar(context),
-    drawer: NavigationDrawer(),
-    body: _buildBody(context),
-    floatingActionButton: _buildFloatingActionButton()
-  );
+  Widget build(BuildContext context) {
+    _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
+    
+    return Scaffold(
+      key: _drawerKey,
+      appBar: _buildAppBar(context),
+      drawer: NavigationDrawer(),
+      body: _buildBody(context),
+      floatingActionButton: _buildFloatingActionButton()
+    );
+  }
 
   Widget _buildAppBar(BuildContext context) {
     return TagsPageAppbar(
@@ -124,7 +132,6 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
           widget.note = null;
         });},
       onCreateTagCallback: () => _createTagDialog(),
-      onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
     );
   }
 
@@ -192,34 +199,8 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
           child: this.widget.note == null
             ? Container()
             : this.widget.note is MarkdownNote
-              ? MarkdownEditor(
-                note: this.widget.note, 
-                previedMode: _markdownEditorPreviewMode,
-                onEditTags: (tags) {
-                  widget.note.tags = tags;
-                  _noteService.save(widget.note);
-                }
-              )
-              : CodeSnippetEditor(
-                note: this.widget.note,
-                isEditMode: _snippetEditorEditMode,
-                selectedCodeSnippet: selectedCodeSnippet,
-                onAddTag: (tags) {
-                  widget.note.tags = tags;
-                  _noteService.save(widget.note);
-                },
-                onChangeSnippetDescription: (description) {
-                  setState(() {
-                    (widget.note as SnippetNote).description = description;
-                    _noteService.save(widget.note);
-                  });
-                },
-                onSnippetEditorViewModeSwitched: () {
-                    setState(() {
-                      _snippetEditorEditMode = !_snippetEditorEditMode;
-                    });
-                  }
-                )
+              ? MarkdownEditor()
+              : CodeSnippetEditor()
         )
       ]
     );
@@ -277,18 +258,7 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
   Future<String> _createNoteDialog() {
     return showDialog(context: context, 
     builder: (context){
-      return CreateNoteDialog(
-        cancelCallback: () {
-          Navigator.of(context).pop();
-        }, 
-        saveCallback: (Note note) {
-          Navigator.of(context).pop();
-          _createNote(note);
-          setState(() {
-            widget.note = note;
-          });
-        },
-      );
+      return CreateNoteDialog();
     });
   }
 
@@ -323,7 +293,7 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
     });
   }
 
-  void _onRowTap(String tag) => _pageNavigator.navigateToNotesWithTag(context, tag, note: widget.note);
+  void _onRowTap(String tag) => _pageNavigator.navigateToNotesWithTag(context, tag);
 
   void _onRowLongPress(String tag) {
     showModalBottomSheet(     
@@ -346,7 +316,7 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
   Future<String> _showRenameSnippetDialog(BuildContext context, Function(String) callback) =>
     showDialog(context: context, 
       builder: (context){
-        return EditSnippetNameDialog(textEditingController: TextEditingController(), onNameChanged: callback, noteTitle: selectedCodeSnippet.name);
+        return EditSnippetNameDialog();
   });  
 
   Future<String> _showAddSnippetDialog(BuildContext context, Function(String) callback) =>

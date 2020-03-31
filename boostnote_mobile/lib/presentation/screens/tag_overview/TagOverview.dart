@@ -65,7 +65,6 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   Widget build(BuildContext context) => Scaffold(
     key: _drawerKey,
     appBar: TagOverviewAppbar(
-      onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
       onCreateTagCallback: _createTagDialog,
     ),
     drawer: NavigationDrawer(),
@@ -87,20 +86,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     return showDialog(context: context, 
     builder: (context){
       return CreateNoteDialog(
-        cancelCallback: () {
-          Navigator.of(context).pop();
-        }, 
-        saveCallback: (Note note) {
-          Navigator.of(context).pop();
-          _createNote(note);
-          if(note is MarkdownNote) {
-            _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);
-          } else if(note is SnippetNote) {
-            _newNavigationService.navigateTo(destinationMode: NavigationMode2.SNIPPET_NOTE, note: note);
-          }
-          
-        },
-      );
+       );
     });
   }
 

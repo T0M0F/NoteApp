@@ -1,27 +1,29 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
-class SnippetDescriptionDialog extends StatefulWidget {
-
-  final TextEditingController textEditingController;
-  final Function(String) onDescriptionChanged;
-  final SnippetNote note;
-
-  const SnippetDescriptionDialog({Key key, this.textEditingController, this.onDescriptionChanged, this.note}) : super(key: key); //TODO: Constructor
+class SnippetDescriptionDialog extends StatefulWidget { 
 
   @override
   _SnippetDescriptionDialogState createState() => _SnippetDescriptionDialogState();
 }
 
 class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
+
+  NoteNotifier _noteNotifier;
+  TextEditingController _textEditingController;
+
   @override
   Widget build(BuildContext context) {
-
-    this.widget.textEditingController.text = this.widget.note.description;
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _textEditingController = TextEditingController();
+    _textEditingController.text = (_noteNotifier.note as SnippetNote).description;
 
     return AlertDialog(
       title: _buildTitle(),
@@ -43,7 +45,7 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
       builder: (BuildContext context, StateSetter setState) {
         return TextField(
             style: Theme.of(context).textTheme.display1,
-            controller: widget.textEditingController,
+            controller: _textEditingController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             decoration: InputDecoration(
@@ -61,7 +63,7 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
     return <Widget>[
       CancelButton(),
       SaveButton(save: () {
-         this.widget.onDescriptionChanged(widget.textEditingController.text);
+         (_noteNotifier.note as SnippetNote).description = _textEditingController.text;
          Navigator.of(context).pop();
       })
     ];

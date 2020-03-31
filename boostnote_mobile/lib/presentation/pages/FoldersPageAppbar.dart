@@ -1,6 +1,9 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/EmptyAppbar.dart';
 import 'package:boostnote_mobile/presentation/screens/editor/markdown_editor/widgets/MarkdownEditorAppBar.dart';
 import 'package:boostnote_mobile/presentation/screens/editor/snippet_editor/widgets/CodeSnippetAppBar.dart';
@@ -9,23 +12,14 @@ import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FoldersPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
   Function(String action) onSelectedActionCallback;
-  Function(bool) onMarkdownEditorViewModeSwitchedCallback;
-  Function() onSnippetEditorViewModeSwitched;
-  Function() closeNote;
   final Function() onCreateFolderCallback;
-  final Function() onMenuClickCallback;
 
-  bool markdownEditorPreviewMode;
-  Note note;
-  CodeSnippet selectedCodeSnippet;
-  Function(CodeSnippet) onSelectedCodeSnippetChanged;
-  bool snippetEditorEditMode;
-
-  FoldersPageAppbar({this.note, this.selectedCodeSnippet , this.snippetEditorEditMode, this.markdownEditorPreviewMode, this.onSelectedActionCallback, this.onMarkdownEditorViewModeSwitchedCallback, this.onSelectedCodeSnippetChanged, this.onSnippetEditorViewModeSwitched, this.closeNote, this.onCreateFolderCallback, this.onMenuClickCallback});
+  FoldersPageAppbar({this.onSelectedActionCallback, this.onCreateFolderCallback});
 
   @override
   _FoldersPageAppbarState createState() => _FoldersPageAppbarState();
@@ -36,21 +30,26 @@ class FoldersPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
 class _FoldersPageAppbarState extends State<FoldersPageAppbar> {
 
+  NoteNotifier _noteNotifier;
+  SnippetNotifier _snippetNotifier;
+
   @override
   Widget build(BuildContext context) {
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _snippetNotifier = Provider.of<SnippetNotifier>(context);
+
     return ResponsiveWidget(
       showDivider: true,
       widgets: <ResponsiveChild> [
          ResponsiveChild(
-              smallFlex: widget.note == null ? 1 : 0, 
+              smallFlex: _noteNotifier.note == null ? 1 : 0, 
               largeFlex: 2, 
               child: FolderOverviewAppbar(
                 onCreateFolderCallback: widget.onCreateFolderCallback,
-                onMenuClickCallback: widget.onMenuClickCallback,
               )
             ),
         ResponsiveChild(
-          smallFlex: widget.note == null ? 0 : 1, 
+          smallFlex: _noteNotifier.note == null ? 0 : 1, 
           largeFlex: 3, 
           child: buildChild(context)
         )
@@ -59,35 +58,28 @@ class _FoldersPageAppbarState extends State<FoldersPageAppbar> {
   }
 
   Widget buildChild(BuildContext context) {
-    return widget.note == null   //Sonst fliegt komische exception, wenn in methode ausgelagert
+    return _noteNotifier.note == null   //Sonst fliegt komische exception, wenn in methode ausgelagert
           ? EmptyAppbar()
-          : widget.note is MarkdownNote
+          : _noteNotifier.note is MarkdownNote
             ? MarkdownEditorAppBar(
-                isPreviewMode: widget.markdownEditorPreviewMode,
-                isNoteStarred: widget.note.isStarred,
-                onViewModeSwitchedCallback: widget.onMarkdownEditorViewModeSwitchedCallback,
+                isNoteStarred: _noteNotifier.note.isStarred,
                 selectedActionCallback: widget.onSelectedActionCallback,
-                closeNote: widget.closeNote
             )
-            : widget.snippetEditorEditMode
+            : _snippetNotifier.isEditMode
               ? AppBar(
                   leading: IconButton(
                     icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
-                    onPressed: widget.closeNote
+                    onPressed: () {
+                      _noteNotifier.note = null;
+                    }
                   ),
                   actions: <Widget>[
                     IconButton(
                       icon: Icon(Icons.check, color: Theme.of(context).buttonColor), 
-                      onPressed: widget.onSnippetEditorViewModeSwitched
+                      onPressed: () => _snippetNotifier.isEditMode = !_snippetNotifier.isEditMode
                     )
                   ]
               )
-              : CodeSnippetAppBar(
-                note: widget.note, 
-                selectedCodeSnippet: widget.selectedCodeSnippet,
-                selectedActionCallback: widget.onSelectedActionCallback,
-                onSelectedSnippetChanged: widget.onSelectedCodeSnippetChanged,
-                closeNote: widget.closeNote
-              );
+              : CodeSnippetAppBar(selectedActionCallback: widget.onSelectedActionCallback);
   }
 }

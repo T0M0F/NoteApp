@@ -11,11 +11,9 @@ class NoteList extends StatefulWidget {
   final List<Note> notes;
   final Function(List<Note>) onTapCallback;
   final Function(List<Note>) onLongPressCallback;
- // final bool editMode;
-  final bool expandedMode;
   final List<Note> selectedNotes;
 
-  NoteList({@required this.notes/*,@required  this.editMode*/, @required this.onTapCallback, @required this.onLongPressCallback, @required this.expandedMode, @required this.selectedNotes}); //TODO: constructor
+  NoteList({@required this.notes, @required this.onTapCallback, @required this.onLongPressCallback, @required this.selectedNotes}); //TODO: constructor
 
   void clearSelectedElements() => selectedNotes.clear(); //TODO: unelegant??
   
@@ -70,6 +68,6 @@ Widget _buildBody(int index) {
   }
 }*/
 
-Widget _buildTile(Note note) => note is MarkdownNote ? MarkdownTile(note: note, expanded: this.widget.expandedMode) : SnippetTile(note: note, expanded: this.widget.expandedMode);
+Widget _buildTile(Note note) => note is MarkdownNote ? MarkdownTile(note: note) : SnippetTile(note: note);
 }
 

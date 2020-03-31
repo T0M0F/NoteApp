@@ -1,21 +1,21 @@
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class EditSnippetNameDialog extends StatelessWidget {
 
-  final TextEditingController textEditingController; 
-  final String noteTitle;
-  final Function(String) onNameChanged; //TODO Rename all Callbacks
-
-  const EditSnippetNameDialog({Key key, this.textEditingController, this.noteTitle, this.onNameChanged}) : super(key: key); //TODO Constructor
+    SnippetNotifier _snippetNotifier;
+    TextEditingController _textEditingController;
 
     @override
     Widget build(BuildContext context) {
 
-      textEditingController.text = noteTitle;
+      _snippetNotifier = Provider.of<SnippetNotifier>(context);
+      _textEditingController.text = _snippetNotifier.selectedCodeSnippet.name;
 
       return AlertDialog(
         title: _buildTitle(context),
@@ -44,7 +44,7 @@ class EditSnippetNameDialog extends StatelessWidget {
         child: Column(
           children: <Widget>[
             TextField(
-              controller: textEditingController,
+              controller: _textEditingController,
               style: TextStyle(color:  Theme.of(context).textTheme.display1.color),
             ), 
           ],
@@ -57,8 +57,9 @@ class EditSnippetNameDialog extends StatelessWidget {
       return <Widget>[
           CancelButton(),
           SaveButton(save: () {
-            if(textEditingController.text.trim().length > 0){
-                onNameChanged(textEditingController.text); 
+            if(_textEditingController.text.trim().length > 0){
+                _snippetNotifier.selectedCodeSnippet.name = _textEditingController.text;
+                Navigator.of(context).pop();
               }
           })
         ];

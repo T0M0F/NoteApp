@@ -1,17 +1,19 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class NoteInfoDialog extends StatelessWidget {  
 
-  final Note note;
-
-  const NoteInfoDialog(this.note);
+  NoteNotifier _noteNotifier;
 
   @override
   Widget build(BuildContext context) {
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+
     return AlertDialog(
       title: _buildTitle(context),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -32,7 +34,7 @@ class NoteInfoDialog extends StatelessWidget {
           children: <Widget>[
             Container( 
               alignment: Alignment.center,
-              child: Text(note.title, style: TextStyle(color:  Theme.of(context).textTheme.display1.color))
+              child: Text(_noteNotifier.note.title, style: TextStyle(color:  Theme.of(context).textTheme.display1.color))
             ),
             Padding(
               padding: EdgeInsets.only(left: 5, top: 3),
@@ -59,7 +61,7 @@ class NoteInfoDialog extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 5),
             child:  Align(
               alignment: Alignment.centerLeft,
-              child:  Text(note.updatedAt.toString(), style: Theme.of(context).textTheme.display1),
+              child:  Text(_noteNotifier.note.updatedAt.toString(), style: Theme.of(context).textTheme.display1),
             ),
           ),
           Align(
@@ -70,7 +72,7 @@ class NoteInfoDialog extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 5),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(note.createdAt.toString(), style: Theme.of(context).textTheme.display1),
+              child: Text(_noteNotifier.note.createdAt.toString(), style: Theme.of(context).textTheme.display1),
             ),
           ),
           Align(
@@ -81,7 +83,7 @@ class NoteInfoDialog extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 5),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(note.id.toString(), style: Theme.of(context).textTheme.display1),
+              child: Text(_noteNotifier.note.id.toString(), style: Theme.of(context).textTheme.display1),
             ),
           ),
           Align(
@@ -92,7 +94,7 @@ class NoteInfoDialog extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 5),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(note.folder.name, style: Theme.of(context).textTheme.display1),
+              child: Text(_noteNotifier.note.folder.name, style: Theme.of(context).textTheme.display1),
             ),
           ),
           Align(
@@ -103,7 +105,7 @@ class NoteInfoDialog extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 5),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(note.isStarred ? AppLocalizations.of(context).translate('yes') : AppLocalizations.of(context).translate('no'), style: Theme.of(context).textTheme.display1,),
+              child: Text(_noteNotifier.note.isStarred ? AppLocalizations.of(context).translate('yes') : AppLocalizations.of(context).translate('no'), style: Theme.of(context).textTheme.display1,),
             ),
           ),
           Align(
@@ -112,7 +114,7 @@ class NoteInfoDialog extends StatelessWidget {
           ),
           Align(
               alignment: Alignment.centerLeft,
-              child: Text(note.isTrashed ? AppLocalizations.of(context).translate('yes') : AppLocalizations.of(context).translate('no'), style: Theme.of(context).textTheme.display1,),
+              child: Text(_noteNotifier.note.isTrashed ? AppLocalizations.of(context).translate('yes') : AppLocalizations.of(context).translate('no'), style: Theme.of(context).textTheme.display1,),
           ),
         ],
       )

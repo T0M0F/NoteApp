@@ -9,10 +9,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class NavigationDrawer extends StatefulWidget {
 
-  Note note;
-
-  NavigationDrawer({this.note});
-
   @override
   State<StatefulWidget> createState() => NavigationDrawerState();
 
@@ -62,7 +58,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
             title: Text(AppLocalizations.of(context).translate('all_notes'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.ALL_NOTES ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
             onTap: () {
               Navigator.pop(context);
-              _pageNavigator.navigateToAllNotes(context, note: widget.note);
+              _pageNavigator.navigateToAllNotes(context);
             },
       ),
       ListTile(
@@ -70,7 +66,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text(AppLocalizations.of(context).translate('folders'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.FOLDERS || _pageNavigator.pageNavigatorState == PageNavigatorState.NOTES_IN_FOLDER ? Theme.of(context).accentColor :Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
-          _pageNavigator.navigateToFolders(context, note: widget.note);
+          _pageNavigator.navigateToFolders(context);
         },
       ),
       ListTile(
@@ -78,7 +74,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text(AppLocalizations.of(context).translate('tags'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TAGS || _pageNavigator.pageNavigatorState == PageNavigatorState.NOTES_WITH_TAG ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
-          _pageNavigator.navigateToTags(context, note: widget.note);
+          _pageNavigator.navigateToTags(context);
         }
       ),
       ListTile(
@@ -86,7 +82,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.STARRED ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
-          _pageNavigator.navigateToStarredNotes(context, note: widget.note);
+          _pageNavigator.navigateToStarredNotes(context);
         },
       ),
       ListTile(
@@ -94,7 +90,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text(AppLocalizations.of(context).translate('trash'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TRASH ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
-          _pageNavigator.navigateToTrash(context, note: widget.note);
+          _pageNavigator.navigateToTrash(context);
         },
       ),
       Padding(

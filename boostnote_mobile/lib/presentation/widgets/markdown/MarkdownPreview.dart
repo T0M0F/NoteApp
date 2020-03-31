@@ -1,19 +1,18 @@
 
 import 'dart:convert';
 
+import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/NewSyntaxHighlighter.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/SyntaxHighlighter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart' ;
 import 'package:markdown/markdown.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MarkdownPreview extends StatefulWidget {
-
-  final String _text;
-  final Function(String) launchUrlCallback;
-
-  MarkdownPreview(this._text, this.launchUrlCallback); //TODO: Constructor
 
   @override
   State<StatefulWidget> createState() => MarkdownPreviewState();
@@ -22,14 +21,19 @@ class MarkdownPreview extends StatefulWidget {
   
 class MarkdownPreviewState extends State<MarkdownPreview>{
 
+  String _text;
+  NoteNotifier _noteNotifier;
+
   @override
   Widget build(BuildContext context) {
-    List<String> languages = _detectLanguage(this.widget._text);
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _text = (_noteNotifier.note as MarkdownNote).content;
+    List<String> languages = _detectLanguage(_text);
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
         child: MarkdownBody(
-          data: this.widget._text,
+          data: _text,
           syntaxHighlighter: NewSyntaxHighlighter(
             textStyle: TextStyle(
                             fontFamily: 'My awesome monospace font',
@@ -64,7 +68,7 @@ class MarkdownPreviewState extends State<MarkdownPreview>{
             )*/
           ),
           onTapLink: (String url){
-            this.widget.launchUrlCallback(url);
+            _launchURL(url);
           },
           extensionSet: ExtensionSet.gitHubFlavored,
          
@@ -90,5 +94,13 @@ class MarkdownPreviewState extends State<MarkdownPreview>{
     });
 
     return languages;
+  }
+
+   void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

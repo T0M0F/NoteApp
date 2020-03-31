@@ -1,24 +1,22 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 class SnippetNoteHeader extends StatefulWidget {
  
   final Function(FolderEntity) onFolderChangedCallback;
-  final Function(CodeSnippet) onCodeSnippetChangedCallback;
-  final Function(String) onTitleChangedCallback;
   final Function() onInfoClickedCallback;
   final Function() onTagClickedCallback;
   final Function() onDescriptionClickCallback;
 
   List<FolderEntity> folders;
   FolderEntity selectedFolder;
-  CodeSnippet selectedCodeSnippet;
-  SnippetNote note;
 
-  SnippetNoteHeader({this.folders, this.selectedFolder, this.selectedCodeSnippet, this.note, this.onFolderChangedCallback, this.onInfoClickedCallback, this.onTagClickedCallback, this.onTitleChangedCallback, this.onCodeSnippetChangedCallback, this.onDescriptionClickCallback});
+  SnippetNoteHeader({this.folders, this.selectedFolder, this.onFolderChangedCallback, this.onInfoClickedCallback, this.onTagClickedCallback, this.onDescriptionClickCallback});
 
   @override
   State<StatefulWidget> createState() => _SnippetNoteHeaderState();
@@ -28,6 +26,7 @@ class SnippetNoteHeader extends StatefulWidget {
 class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
 
   TextEditingController _textEditingController;
+  NoteNotifier _noteNotifier;
 
   @override
   void initState() {
@@ -38,9 +37,11 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
 
   @override
   Widget build(BuildContext context) {
-    _textEditingController.text = this.widget.note.title; 
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+
+    _textEditingController.text = _noteNotifier.note.title; 
     _textEditingController.addListener((){
-      this.widget.onTitleChangedCallback(_textEditingController.text);
+      _noteNotifier.note.title = _textEditingController.text;
     });
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16),
@@ -96,9 +97,26 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
             ),
             Row(
             children: <Widget>[
-              IconButton(icon: Icon(MdiIcons.tagOutline, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onTagClickedCallback),
-              IconButton(icon: Icon(Icons.info_outline, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onInfoClickedCallback),
-              IconButton(icon: Icon(Icons.description, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onDescriptionClickCallback)
+              IconButton(
+                icon: Icon(
+                  MdiIcons.tagOutline, 
+                  color: Theme.of(context).iconTheme.color
+                ), 
+                onPressed: this.widget.onTagClickedCallback
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.info_outline, 
+                  color: Theme.of(context).iconTheme.color
+                ), 
+                onPressed: this.widget.onInfoClickedCallback
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.description, 
+                  color: Theme.of(context).iconTheme.color
+                ), 
+                onPressed: this.widget.onDescriptionClickCallback)
              ],
             ),
           ],

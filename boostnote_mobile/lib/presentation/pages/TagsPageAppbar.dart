@@ -18,7 +18,6 @@ class TagsPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
   Function() onSnippetEditorViewModeSwitched;
   Function() closeNote;
   final Function() onCreateTagCallback;
-  final Function() onMenuClickCallback;
 
   bool markdownEditorPreviewMode;
   Note note;
@@ -26,7 +25,7 @@ class TagsPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
   Function(CodeSnippet) onSelectedCodeSnippetChanged;
   bool snippetEditorEditMode;
 
-  TagsPageAppbar({this.note, this.selectedCodeSnippet , this.snippetEditorEditMode, this.markdownEditorPreviewMode, this.onSelectedActionCallback, this.onMarkdownEditorViewModeSwitchedCallback, this.onSelectedCodeSnippetChanged, this.onSnippetEditorViewModeSwitched, this.closeNote, this.onCreateTagCallback, this.onMenuClickCallback});
+  TagsPageAppbar({this.note, this.selectedCodeSnippet , this.snippetEditorEditMode, this.markdownEditorPreviewMode, this.onSelectedActionCallback, this.onMarkdownEditorViewModeSwitchedCallback, this.onSelectedCodeSnippetChanged, this.onSnippetEditorViewModeSwitched, this.closeNote, this.onCreateTagCallback});
 
   @override
   _TagsPageAppbarState createState() => _TagsPageAppbarState();
@@ -46,7 +45,6 @@ class _TagsPageAppbarState extends State<TagsPageAppbar> {
               smallFlex: widget.note == null ? 1 : 0, 
               largeFlex: 2, 
               child: TagOverviewAppbar(
-                onMenuClickCallback: widget.onMenuClickCallback,
                 onCreateTagCallback: widget.onCreateTagCallback,
               )
             ),
@@ -64,11 +62,8 @@ class _TagsPageAppbarState extends State<TagsPageAppbar> {
           ? EmptyAppbar()
           : widget.note is MarkdownNote
             ? MarkdownEditorAppBar(
-                isPreviewMode: widget.markdownEditorPreviewMode,
                 isNoteStarred: widget.note.isStarred,
-                onViewModeSwitchedCallback: widget.onMarkdownEditorViewModeSwitchedCallback,
                 selectedActionCallback: widget.onSelectedActionCallback,
-                closeNote: widget.closeNote
             )
             : widget.snippetEditorEditMode
               ? AppBar(
@@ -83,12 +78,6 @@ class _TagsPageAppbarState extends State<TagsPageAppbar> {
                     )
                   ]
               )
-              : CodeSnippetAppBar(
-                note: widget.note, 
-                selectedCodeSnippet: widget.selectedCodeSnippet,
-                selectedActionCallback: widget.onSelectedActionCallback,
-                onSelectedSnippetChanged: widget.onSelectedCodeSnippetChanged,
-                closeNote: widget.closeNote
-              );
+              : CodeSnippetAppBar(selectedActionCallback: widget.onSelectedActionCallback);
   }
 }

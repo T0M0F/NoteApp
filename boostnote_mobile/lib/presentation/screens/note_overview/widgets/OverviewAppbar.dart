@@ -1,25 +1,25 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
 
   Function(String action) onSelectedActionCallback;
-  Function() onMenuClickCallback;
   Function() onNaviagteBackCallback;
   Function(List<Note>) onSearchCallback;
+  final Function() onMenuClick;
 
   String pageTitle;
-  bool listTilesAreExpanded;
-  bool showListView;
   Map<String, String> actions;
   List<Note> notes;
 
-  OverviewAppbar({this.listTilesAreExpanded, this.showListView, this.pageTitle, this.notes, this.actions, this.onMenuClickCallback, this.onNaviagteBackCallback, this.onSelectedActionCallback, this.onSearchCallback});
+  OverviewAppbar({this.pageTitle, this.notes, this.actions, this.onNaviagteBackCallback, this.onSelectedActionCallback, this.onSearchCallback, this.onMenuClick});
 
   @override
   _OverviewAppbarState createState() => _OverviewAppbarState();
@@ -40,6 +40,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
 
   bool _firstLoad;
 
+  NoteOverviewNotifier _noteOverviewNotifier;
 
   @override
   void initState(){
@@ -87,6 +88,8 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
  
   @override
   Widget build(BuildContext context) {
+    _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
+
     if(_firstLoad){
       _init();
     }
@@ -109,22 +112,22 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
         itemBuilder: (BuildContext context) {
           return <PopupMenuEntry<String>>[
             PopupMenuItem(
-              value: this.widget.listTilesAreExpanded ?  ActionConstants.COLLPASE_ACTION: ActionConstants.EXPAND_ACTION,
+              value: _noteOverviewNotifier.expandedTiles ?  ActionConstants.COLLPASE_ACTION: ActionConstants.EXPAND_ACTION,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Icon(this.widget.listTilesAreExpanded ? MdiIcons.arrowCollapse : MdiIcons.arrowExpand, color: Theme.of(context).iconTheme.color),
-                  Text(this.widget.listTilesAreExpanded ?  ActionConstants.COLLPASE_ACTION : ActionConstants.EXPAND_ACTION , style: Theme.of(context).textTheme.display1)
+                  Icon(_noteOverviewNotifier.expandedTiles ? MdiIcons.arrowCollapse : MdiIcons.arrowExpand, color: Theme.of(context).iconTheme.color),
+                  Text(_noteOverviewNotifier.expandedTiles ?  ActionConstants.COLLPASE_ACTION : ActionConstants.EXPAND_ACTION , style: Theme.of(context).textTheme.display1)
                 ]
               )
             ),
             PopupMenuItem(
-              value: this.widget.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION: ActionConstants.SHOW_LISTVIEW_ACTION,
+              value: _noteOverviewNotifier.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION: ActionConstants.SHOW_LISTVIEW_ACTION,
               child:  Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Icon(this.widget.showListView ? MdiIcons.viewGrid : MdiIcons.viewList, color: Theme.of(context).iconTheme.color),
-                  Text(this.widget.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION: ActionConstants.SHOW_LISTVIEW_ACTION , style: Theme.of(context).textTheme.display1)
+                  Icon(_noteOverviewNotifier.showListView ? MdiIcons.viewGrid : MdiIcons.viewList, color: Theme.of(context).iconTheme.color),
+                  Text(_noteOverviewNotifier.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION: ActionConstants.SHOW_LISTVIEW_ACTION , style: Theme.of(context).textTheme.display1)
                 ]
               )
             ),
@@ -166,7 +169,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
         )
       : IconButton(
           icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
-          onPressed: widget.onMenuClickCallback,
+          onPressed: () => widget.onMenuClick
         );
   }
 

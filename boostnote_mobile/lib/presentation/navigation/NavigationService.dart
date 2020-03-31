@@ -116,22 +116,23 @@ class NavigationService {
         break;
       case NavigationMode2.MARKDOWN_NOTE:
       //TODO check if note is null or resfreshable is null
-        ResponsiveChild widget = ResponsiveChild(
+        /*ResponsiveChild widget = ResponsiveChild(
               smallFlex: 1, 
               largeFlex: 3, 
-              child: MarkdownEditor(note)
+              child: MarkdownEditor()
            );
         navigate(destinationWidget:  widget, destinationMode: destinationMode);
-        break;
+        break;*/
       case NavigationMode2.SNIPPET_NOTE:
       //TODO check if note is null or resfreshable is null
+      /*
         ResponsiveChild widget = ResponsiveChild(
               smallFlex: 1, 
               largeFlex: 3, 
-              child: CodeSnippetEditor(note)
+              child: CodeSnippetEditor()
            );
         navigate(destinationWidget:  widget, destinationMode: destinationMode);
-        break;
+        break;*/
       case NavigationMode2.SETTINGS_MODE:
         ResponsiveChild widget = ResponsiveChild(
           smallFlex: 1, 

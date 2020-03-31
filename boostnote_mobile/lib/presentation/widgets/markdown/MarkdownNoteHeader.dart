@@ -1,21 +1,20 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 class MarkdownNoteHeader extends StatefulWidget {
 
-  final Function(FolderEntity) onFolderChangedCallback;
-  final Function(String) onTitleChangedCallback;
   final Function() onInfoClickedCallback;
   final Function() onTagClickedCallback;
 
   List<FolderEntity> folders;
   FolderEntity selectedFolder;
-  Note note;
 
-  MarkdownNoteHeader({this.folders, this.selectedFolder, this.note, this.onFolderChangedCallback, this.onInfoClickedCallback, this.onTagClickedCallback, this.onTitleChangedCallback});
+  MarkdownNoteHeader({this.folders, this.selectedFolder, this.onInfoClickedCallback, this.onTagClickedCallback});
 
   @override
   State<StatefulWidget> createState() => _MarkdownNoteHeaderState();
@@ -25,6 +24,7 @@ class MarkdownNoteHeader extends StatefulWidget {
 class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
 
   TextEditingController _textEditingController;
+  NoteNotifier _noteNotifier;
 
   @override
   void initState() {
@@ -35,10 +35,10 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
 
   @override
   Widget build(BuildContext context) {
-    _textEditingController.text = this.widget.note.title; 
-    _textEditingController.addListener((){
-      this.widget.onTitleChangedCallback(_textEditingController.text);
-    });
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _textEditingController.text = _noteNotifier.note.title; 
+    _textEditingController.addListener(() => _noteNotifier.note.title = _textEditingController.text);
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16),
       child: Column(
@@ -80,12 +80,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
                         value: folder,
                         child: Text(folder.name)
                       )).toList(),
-                      onChanged: (folder) {
-                          setState(() {
-                            this.widget.selectedFolder = folder;
-                          });
-                          this.widget.onFolderChangedCallback(folder);
-                        }
+                      onChanged: (folder) => _noteNotifier.note.folder = folder,
                     ),
                   )
                 ],
@@ -93,8 +88,20 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
             ),
             Row(
             children: <Widget>[
-              IconButton(icon: Icon(MdiIcons.tagOutline, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onTagClickedCallback),
-              IconButton(icon: Icon(Icons.info_outline, color: Theme.of(context).iconTheme.color), onPressed: this.widget.onInfoClickedCallback)
+                IconButton(
+                  icon: Icon(
+                    MdiIcons.tagOutline, 
+                    color: Theme.of(context).iconTheme.color
+                  ), 
+                  onPressed: this.widget.onTagClickedCallback
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.info_outline, 
+                    color: Theme.of(context).iconTheme.color
+                  ), 
+                  onPressed: this.widget.onInfoClickedCallback
+                )
               ],
             ),
           ],

@@ -1,37 +1,26 @@
-import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/theme/ThemeService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
+import 'package:provider/provider.dart';
  
 class CodeTab extends StatefulWidget{
- 
-  final CodeSnippet _codeSnippet;
-  bool _editMode;
-  Function(String) _callback;
-  Function() _modeChange;
-
-  CodeTab(this._codeSnippet, this._editMode, this._callback, this._modeChange);
-
   @override
   State<StatefulWidget> createState() => CodeTabState();
-  
 }
   
 class CodeTabState extends State<CodeTab> {
 
-  @override
-  void initState(){
-    super.initState();
-
-  }
+  SnippetNotifier _snippetNotifier;
   
   @override
   Widget build(BuildContext context) {
+    _snippetNotifier = Provider.of<SnippetNotifier>(context);
     TextEditingController textEditingController = TextEditingController();
-    textEditingController.text = this.widget._codeSnippet.content;
+    textEditingController.text = _snippetNotifier.selectedCodeSnippet.content;
 
-    return this.widget._editMode ? 
+    return _snippetNotifier.isEditMode ? 
       Container(
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
         child: TextField(
@@ -45,27 +34,14 @@ class CodeTabState extends State<CodeTab> {
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(0),
             border: InputBorder.none),
-          onChanged: (String text){
-            this.widget._callback(text);
-          },
-          onEditingComplete: (){
-            print('EDITING COMPLETED');
-          },
-          onSubmitted: (text){
-            print('SUBMITTED');
-          },
+          onChanged: (String text) => _snippetNotifier.selectedCodeSnippet.content = text,
         ),
       ) :
       Stack(
         children: <Widget>[
           GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: (){
-              setState(() {
-                this.widget._editMode = !this.widget._editMode;
-                this.widget._modeChange();
-              });
-            },
+            onTap: () => _snippetNotifier.isEditMode = !_snippetNotifier.isEditMode,
             child: FractionallySizedBox(
               widthFactor: 1,
               child: Container(
@@ -75,17 +51,12 @@ class CodeTabState extends State<CodeTab> {
           ),
           GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: (){
-              setState(() {
-                this.widget._editMode = !this.widget._editMode;
-                this.widget._modeChange();
-              });
-            },
+            onTap: () => _snippetNotifier.isEditMode = !_snippetNotifier.isEditMode,
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
               child: HighlightView(
-                this.widget._codeSnippet.content,
-                language: this.widget._codeSnippet.mode,
+                _snippetNotifier.selectedCodeSnippet.content,
+                language: _snippetNotifier.selectedCodeSnippet.content,
                 theme: ThemeService().getEditorTheme(context),
                 textStyle: TextStyle(
                             fontFamily: 'My awesome monospace font',

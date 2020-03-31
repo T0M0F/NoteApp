@@ -1,4 +1,4 @@
-import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+/*import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
@@ -108,10 +108,8 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
       );
     } else {
       return CodeSnippetAppBar(
-        note: this.widget._note, 
         selectedCodeSnippet: _selectedCodeSnippet,
-        selectedActionCallback: (String action) => _selectedAction(action),
-        closeNote: () => _newNavigationService.navigateBack(context), 
+        selectedActionCallback: (String action) => _selectedAction(action), 
         onSelectedSnippetChanged: (CodeSnippet codeSnippet) {
           setState(() {
             _selectedCodeSnippet = codeSnippet;
@@ -125,11 +123,11 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     return ListView(
       children: <Widget>[
         SnippetNoteHeader(
-            note: this.widget._note,
+           
             selectedFolder: _dropdownValueFolder,
             selectedCodeSnippet: _selectedCodeSnippet,
             folders: _folders,
-            onTitleChangedCallback: (String title) => this.widget._note.title = title,
+          
             onFolderChangedCallback: (FolderEntity folder) {
               this.widget._note.folder = folder;
               _noteService.save(this.widget._note);
@@ -171,10 +169,10 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     return Stack(
       children: <Widget>[
         SnippetNoteHeader(
-          note: this.widget._note,
+      
           selectedFolder: _dropdownValueFolder,
           folders: _folders,
-          onTitleChangedCallback: (String title) => this.widget._note.title = title,
+        
           onFolderChangedCallback: (FolderEntity folder) {
             this.widget._note.folder = folder;
             _noteService.save(this.widget._note);
@@ -307,3 +305,4 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
 
 
  
+*/

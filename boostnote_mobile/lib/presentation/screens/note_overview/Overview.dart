@@ -136,9 +136,6 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
           'COLLPASE_ACTION': ActionConstants.COLLPASE_ACTION, 
           'SHOW_LISTVIEW_ACTION': ActionConstants.SHOW_LISTVIEW_ACTION, 
           'SHOW_GRIDVIEW_ACTION' : ActionConstants.SHOW_GRIDVIEW_ACTION},
-        listTilesAreExpanded: _tilesAreExpanded,
-        showListView: _showListView,
-        onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
         onNaviagteBackCallback: () => _newNavigationService.navigateBack(context), 
         onSelectedActionCallback: (String action) => _selectedAction(action),
         onSearchCallback: (filteredNotes) {
@@ -175,15 +172,14 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
   Widget _buildListViewBody() {
     return Container(
       child: NoteList(
-              notes: _notes, 
-              selectedNotes: _selectedNotes,
-              expandedMode: _tilesAreExpanded,
-              onTapCallback: (selectedNotes){
-               _onRowTap(selectedNotes, _notes);
-              },
-              onLongPressCallback: (selectedNotes){
-               _onRowLongPress(selectedNotes);
-              }
+        notes: _notes, 
+        selectedNotes: _selectedNotes,
+        onTapCallback: (selectedNotes){
+          _onRowTap(selectedNotes, _notes);
+        },
+        onLongPressCallback: (selectedNotes){
+          _onRowLongPress(selectedNotes);
+        }
       )
     );
   }
@@ -223,22 +219,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         context: context,
         builder: (BuildContext buildContext){
           return DeleteNoteBottomSheet(
-            restoreNoteCallback: () {
-              Navigator.of(context).pop();
-              _noteService.restore(selectedNotes.first);
-              setState(() {
-                _notes.remove(selectedNotes.first);
-              });
-            },
-            deleteNoteCallback: () {
-              Navigator.of(context).pop();
-              _noteService.delete(selectedNotes.first);
-              setState(() {
-                _notes.remove(selectedNotes.first);
-              });
-              _updateNotesCopy();
-            } ,
-          );
+             );
         }
       );
     } else {
@@ -246,14 +227,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
         context: context,
         builder: (BuildContext buildContext){
           return TrashNoteBottomSheet(
-            trashNoteCallback: () {
-              Navigator.of(context).pop();
-              _noteService.moveToTrash(selectedNotes.first);
-              setState(() {
-                _notes.remove(selectedNotes.first);
-              });
-              _updateNotesCopy();
-            } ,
+          
           );
         }
       );
@@ -286,7 +260,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
     return showDialog(context: context, 
       builder: (context){
         return CreateNoteDialog(
-          cancelCallback: () {
+          /*cancelCallback: () {
             Navigator.of(context).pop();
           }, 
           saveCallback: (Note note) {
@@ -307,7 +281,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
               _newNavigationService.navigateTo(destinationMode: NavigationMode2.MARKDOWN_NOTE, note: note);   
             }
           },
-        );
+       */);
     });
   }
 

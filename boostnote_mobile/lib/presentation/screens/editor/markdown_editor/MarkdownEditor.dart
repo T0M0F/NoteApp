@@ -1,4 +1,4 @@
-
+/*
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
@@ -82,7 +82,6 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     return MarkdownEditorAppBar(
       isPreviewMode: _previewMode,
       isNoteStarred: this.widget._note.isStarred,
-      closeNote: () => _newNavigationService.navigateBack(context),
      /* onViewModeSwitchedCallback: (bool value) {
          setState(() {
               _previewMode = value;
@@ -112,7 +111,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
         ),
         Align(
           alignment: Alignment.topLeft,
-          child: MarkdownPreview(this.widget._note.content, _launchURL),
+          child: MarkdownPreview(),
         )
       ],
     );
@@ -139,7 +138,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
         ),
         Align(
           alignment: Alignment.topLeft,
-          child: MarkdownBody(this.widget._note.content, _onTextChangedCallback),
+          child: MarkdownBody(),
         )
       ],
     );
@@ -256,3 +255,4 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
 
 
  
+*/

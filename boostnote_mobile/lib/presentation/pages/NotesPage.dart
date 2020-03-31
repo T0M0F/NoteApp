@@ -4,6 +4,9 @@ import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/Overview.dart';
@@ -21,16 +24,15 @@ import 'package:boostnote_mobile/presentation/widgets/dialogs/SnippetDescription
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NotesPage extends StatefulWidget {
 
-  Note note;
   String pageTitle;
-  List<Note> notes;
   String tag;
   Folder folder;
 
-  NotesPage({@required this.pageTitle, this.note, this.notes, this.tag, this.folder});
+  NotesPage({@required this.pageTitle, this.tag, this.folder});
 
   @override
   _NotesPageState createState() => _NotesPageState();
@@ -43,164 +45,124 @@ class _NotesPageState extends State<NotesPage> {
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
-  bool _tilesAreExpanded = false;
-  bool _showListView = true;
-  bool _markdownEditorPreviewMode = false;
-  bool _snippetEditorEditMode = false;
-
-  CodeSnippet selectedCodeSnippet;
-
-  List<Note> notesCopy;
+  NoteNotifier noteNotifier;
+  NoteOverviewNotifier _noteOverviewNotifier;
+  SnippetNotifier _snippetNotifier;
 
   @override
   void initState() {
     super.initState();
 
-    if(widget.note is SnippetNote) {
+    /*if(widget.note is SnippetNote) {
       selectedCodeSnippet = (widget.note as SnippetNote).codeSnippets.isNotEmpty 
         ? (widget.note as SnippetNote).codeSnippets.first
         : null;
-    }
+    }*/
 
-    if(widget.notes == null) {
+   /* if(widget.notes == null) {
       widget.notes = List();
       _noteService.findNotTrashed().then((result) { 
         update(result);
       });
     } 
 
-    notesCopy = List<Note>.from(widget.notes);
+    notesCopy = List<Note>.from(widget.notes);*/
   }
 
-  void update(List<Note> notes){
+  void update(List<Note> notes, BuildContext context){
     setState(() {
-      if(widget.notes != null){
-        widget.notes.replaceRange(0, widget.notes.length, notes);
+      if(_noteOverviewNotifier.notes != null){
+        _noteOverviewNotifier.notes.replaceRange(0, _noteOverviewNotifier.notes.length, notes);
       } else {
-        widget.notes = notes;
+        _noteOverviewNotifier.notes = notes;
       }
-      notesCopy = List<Note>.from(widget.notes);
+      _noteOverviewNotifier.notesCopy = List<Note>.from(_noteOverviewNotifier.notes);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      child: Scaffold(
-        key: _drawerKey,
-        appBar: _buildAppBar(),
-        drawer: NavigationDrawer(note: widget.note), 
-        body: _buildBody(), 
-        floatingActionButton: _buildFloatingActionButton()
-      ),
-      
-      onWillPop: () { 
-       
-      }
+    noteNotifier = Provider.of<NoteNotifier>(context);
+    _snippetNotifier = Provider.of<SnippetNotifier>(context);
+    _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
+
+    return  Scaffold(
+      key: _drawerKey,
+      appBar: _buildAppBar(),
+      drawer: NavigationDrawer(), 
+      body: _buildBody(), 
+      floatingActionButton: _buildFloatingActionButton()
     );
+      
+     
   }
 
   PreferredSizeWidget _buildAppBar() { 
      return OverviewPageAppbar(
         pageTitle: widget.pageTitle,
-        notes: notesCopy,
-        note: widget.note,
-        selectedCodeSnippet: selectedCodeSnippet,
-        tilesAreExpanded: _tilesAreExpanded,
-        showListView: _showListView,
-        markdownEditorPreviewMode: _markdownEditorPreviewMode,
-        snippetEditorEditMode: _snippetEditorEditMode,
-        onSelectedCodeSnippetChanged: (snippet){
-          setState(() {
-            selectedCodeSnippet = snippet;
-          });
-        },
-        onMenuClickCallback: () => _drawerKey.currentState.openDrawer(),
         onNaviagteBackCallback: () {}, 
-        closeNote: () {
-          setState(() {
-            widget.note = null;
-          });
-        },
         onSelectedActionCallback: (String action) => _selectedAction(action),
         onSearchCallback: (filteredNotes) {
-          update(filteredNotes);
+          update(filteredNotes, context);
         },
-        onMarkdownEditorViewModeSwitchedCallback: (bool value) {
-          setState(() {
-            _markdownEditorPreviewMode = value;
-          });
-        },
-        onSnippetEditorViewModeSwitched: () {
-          setState(() {
-            _snippetEditorEditMode = !_snippetEditorEditMode;
-          });
-        },
+        onMenuClick: () => _drawerKey.currentState.openDrawer(),
       );
   }
 
   void _selectedAction(String action){
     switch (action) {
       case ActionConstants.COLLPASE_ACTION:
-        setState(() {
-            _tilesAreExpanded = false;
-          });
+        _noteOverviewNotifier.expandedTiles = false;
         break;
       case ActionConstants.EXPAND_ACTION:
-        setState(() {
-            _tilesAreExpanded = true;
-          });
+        _noteOverviewNotifier.expandedTiles = true;
         break;
       case ActionConstants.SHOW_GRIDVIEW_ACTION:
-        setState(() {
-          _showListView = false;
-        });
+        _noteOverviewNotifier.showListView = false;
         break;
       case ActionConstants.SHOW_LISTVIEW_ACTION:
-        setState(() {
-          _showListView = true;
-        });
+        _noteOverviewNotifier.showListView = true;
         break;
       case ActionConstants.SAVE_ACTION:
         setState(() {
-          widget.note = null;
+          noteNotifier.note = null;
         });
-        _noteService.save(widget.note);
+        _noteService.save(noteNotifier.note);
         break;
       case ActionConstants.MARK_ACTION:
        setState(() {
-          widget.note.isStarred = true;
+          noteNotifier.note.isStarred = true;
         });
-        _noteService.save(widget.note);
+        _noteService.save(noteNotifier.note);
         break;
       case ActionConstants.UNMARK_ACTION:
         setState(() {
-          widget.note.isStarred = false;
+          noteNotifier.note.isStarred = false;
         });
-        _noteService.save(widget.note);
+        _noteService.save(noteNotifier.note);
         break;
       case ActionConstants.RENAME_CURRENT_SNIPPET:
        _showRenameSnippetDialog(context, (String name){
           setState(() {
-            selectedCodeSnippet.name = name;
+            _snippetNotifier.selectedCodeSnippet.name = name;
           });
           Navigator.of(context).pop();
-          _noteService.save(widget.note);
+          _noteService.save(noteNotifier.note);
         });
         break;
       case ActionConstants.DELETE_CURRENT_SNIPPET:
         setState(() {
-          (widget.note as SnippetNote).codeSnippets.remove(selectedCodeSnippet);
-          selectedCodeSnippet = (widget.note as SnippetNote).codeSnippets.isNotEmpty ? (widget.note as SnippetNote).codeSnippets.last : null;
+          (noteNotifier.note as SnippetNote).codeSnippets.remove(_snippetNotifier.selectedCodeSnippet);
+          _snippetNotifier.selectedCodeSnippet = (noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty ? (noteNotifier.note as SnippetNote).codeSnippets.last : null;
         });
-        _noteService.save(widget.note);
+        _noteService.save(noteNotifier.note);
         break;
       case ActionConstants.DELETE_CURRENT_SNIPPET:
          setState(() {
-          (widget.note as SnippetNote).codeSnippets.remove(selectedCodeSnippet);
-          selectedCodeSnippet = (widget.note as SnippetNote).codeSnippets.isNotEmpty ? (widget.note as SnippetNote).codeSnippets.last : null;
+          (noteNotifier.note as SnippetNote).codeSnippets.remove(_snippetNotifier.selectedCodeSnippet);
+          _snippetNotifier.selectedCodeSnippet = (noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty ? (noteNotifier.note as SnippetNote).codeSnippets.last : null;
         });
-        _noteService.save(widget.note);
+        _noteService.save(noteNotifier.note);
         break;
     }
   }
@@ -209,64 +171,18 @@ class _NotesPageState extends State<NotesPage> {
     return ResponsiveWidget(
       widgets: <ResponsiveChild> [
         ResponsiveChild(
-          smallFlex: widget.note == null ? 1 : 0, 
+          smallFlex: noteNotifier.note == null ? 1 : 0, 
           largeFlex: 2, 
-          child: Overview(
-            notes: widget.notes, 
-            showListView: _showListView, 
-            tilesAreExpanded: _tilesAreExpanded,
-            openNote: (note){
-              setState(() {
-                this.widget.note = note;
-                if(widget.note is SnippetNote) {
-                  selectedCodeSnippet = (widget.note as SnippetNote).codeSnippets.isNotEmpty 
-                    ? (widget.note as SnippetNote).codeSnippets.first
-                    : null;
-                }
-              });
-            },
-            trashOrDeleteOrRestoreNote: (note) {
-              setState(() {
-                if(widget.note == note) widget.note = null;
-                notesCopy.remove(note);
-              });
-            },
-          )
+          child: Overview()
         ),
         ResponsiveChild(
-          smallFlex: widget.note == null ? 0 : 1, 
+          smallFlex: noteNotifier.note == null ? 0 : 1, 
           largeFlex: 3, 
-          child: this.widget.note == null
+          child: noteNotifier.note == null
             ? Container()
-            : this.widget.note is MarkdownNote
-              ? MarkdownEditor(
-                note: this.widget.note, 
-                previedMode: _markdownEditorPreviewMode,
-                onEditTags: (tags) {
-                  widget.note.tags = tags;
-                  _noteService.save(widget.note);
-                }
-              )
-              : CodeSnippetEditor(
-                note: this.widget.note,
-                isEditMode: _snippetEditorEditMode,
-                selectedCodeSnippet: selectedCodeSnippet,
-                onAddTag: (tags) {
-                  widget.note.tags = tags;
-                  _noteService.save(widget.note);
-                },
-                onChangeSnippetDescription: (description) {
-                  setState(() {
-                    (widget.note as SnippetNote).description = description;
-                    _noteService.save(widget.note);
-                  });
-                },
-                onSnippetEditorViewModeSwitched: () {
-                    setState(() {
-                      _snippetEditorEditMode = !_snippetEditorEditMode;
-                    });
-                  }
-                )
+            : noteNotifier.note is MarkdownNote
+              ? MarkdownEditor()
+              : CodeSnippetEditor()
         )
       ]
     );
@@ -278,7 +194,7 @@ class _NotesPageState extends State<NotesPage> {
       divider: Container(width: 0.5, color: Colors.transparent),
       widgets: <ResponsiveChild> [
         ResponsiveChild(
-          smallFlex: widget.note == null ? 1 : 0,
+          smallFlex: noteNotifier.note == null ? 1 : 0,
           largeFlex: 2,
           child: Align(
             alignment: Alignment.bottomRight,
@@ -286,9 +202,9 @@ class _NotesPageState extends State<NotesPage> {
           )
         ),
         ResponsiveChild(
-          smallFlex: widget.note == null ? 0 : 1,
+          smallFlex: noteNotifier.note == null ? 0 : 1,
           largeFlex: 3,
-          child: widget.note is SnippetNote 
+          child: noteNotifier.note is SnippetNote 
             ? Align(
               alignment: Alignment.bottomRight,
               child: AddFloatingActionButton(
@@ -301,15 +217,15 @@ class _NotesPageState extends State<NotesPage> {
                                                                 name: s[0],
                                                                 mode: s[1],
                                                                 content: '');
-                        (widget.note as SnippetNote).codeSnippets.add(codeSnippet);
+                        (noteNotifier.note as SnippetNote).codeSnippets.add(codeSnippet);
                     } else {
                       codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
                                                                 name: text,
                                                                 mode: '',
                                                                 content: '');
-                        (widget.note as SnippetNote).codeSnippets.add(codeSnippet);
+                        (noteNotifier.note as SnippetNote).codeSnippets.add(codeSnippet);
                     }
-                    selectedCodeSnippet = codeSnippet;
+                    _snippetNotifier.selectedCodeSnippet = codeSnippet;
                   });
                   Navigator.of(context).pop();
                 })
@@ -324,29 +240,14 @@ class _NotesPageState extends State<NotesPage> {
    Future<String> _createNoteDialog() {
     return showDialog(context: context, 
       builder: (context){
-        return CreateNoteDialog(
-          cancelCallback: () {
-            Navigator.of(context).pop();
-          }, 
-          saveCallback: (Note note) {
-            if(widget.tag != null) note.tags.add(widget.tag);
-            if(widget.folder != null) note.folder = widget.folder;
-            _noteService.save(note);
-            setState(() {
-              widget.notes.add(note);
-              this.widget.note = note;
-              notesCopy.add(note);
-            });
-            Navigator.of(context).pop();
-          },
-        );
+        return CreateNoteDialog();
     });
   }
 
   Future<String> _showRenameSnippetDialog(BuildContext context, Function(String) callback) =>
     showDialog(context: context, 
       builder: (context){
-        return EditSnippetNameDialog(textEditingController: TextEditingController(), onNameChanged: callback, noteTitle: selectedCodeSnippet.name);
+        return EditSnippetNameDialog();
   });
 
   Future<String> _showAddSnippetDialog(BuildContext context, Function(String) callback) =>

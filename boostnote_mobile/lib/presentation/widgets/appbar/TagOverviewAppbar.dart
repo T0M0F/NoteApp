@@ -1,15 +1,16 @@
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 class TagOverviewAppbar extends StatelessWidget implements PreferredSizeWidget{
 
-  final Function() onMenuClickCallback;
   final Function() onCreateTagCallback;
 
-  TagOverviewAppbar({this.onCreateTagCallback, this.onMenuClickCallback});
+  TagOverviewAppbar({this.onCreateTagCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class TagOverviewAppbar extends StatelessWidget implements PreferredSizeWidget{
       title: Text(AppLocalizations.of(context).translate('tags'), style: Theme.of(context).accentTextTheme.title),
       leading: IconButton(
         icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
-        onPressed: onMenuClickCallback,
+        onPressed: () => GlobalKey<ScaffoldState>().currentState.openDrawer(),
       ),
       actions: <Widget>[
         IconButton(

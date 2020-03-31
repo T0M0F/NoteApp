@@ -1,18 +1,16 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/screens/editor/snippet_editor/widgets/OverflowButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CodeSnippetAppBar extends StatefulWidget implements PreferredSizeWidget{
 
-  final Function() closeNote;
   final Function(String) selectedActionCallback;
-  final Function(CodeSnippet) onSelectedSnippetChanged;
 
-  SnippetNote note;
-  CodeSnippet selectedCodeSnippet;
-
-  CodeSnippetAppBar({@required this.note,@required this.selectedCodeSnippet, this.closeNote, this.selectedActionCallback, this.onSelectedSnippetChanged});
+  CodeSnippetAppBar({this.selectedActionCallback});
 
   @override
   _CodeSnippetAppBarState createState() => _CodeSnippetAppBarState();
@@ -22,12 +20,21 @@ class CodeSnippetAppBar extends StatefulWidget implements PreferredSizeWidget{
 }
 
 class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
+
+  NoteNotifier _noteNotifier;
+  SnippetNotifier _snippetNotifier;
+
   @override
   Widget build(BuildContext context) { 
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _snippetNotifier = Provider.of<SnippetNotifier>(context);
+
     return AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
-        onPressed: widget.closeNote
+        onPressed: () {
+          _noteNotifier.note = null;
+        }
       ),
       actions: _buildActions()
     );
@@ -37,13 +44,13 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
   List<Widget> _buildActions() {
     List<Widget> actions = <Widget>[
       OverflowButton(
-        noteIsStarred: this.widget.note.isStarred, 
+        noteIsStarred: _noteNotifier.note.isStarred, 
         selectedActionCallback: this.widget.selectedActionCallback,
-        snippetSelected: this.widget.selectedCodeSnippet != null,
+        snippetSelected: _snippetNotifier.selectedCodeSnippet != null,
       )
     ];
 
-    if(this.widget.selectedCodeSnippet != null) {
+    if(_snippetNotifier.selectedCodeSnippet != null) {
 
       Widget row = Row(
         children: <Widget>[
@@ -52,11 +59,11 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
             child: Icon(Icons.code,  color: Theme.of(context).buttonColor,)
           ),
           DropdownButton<CodeSnippet> (  
-            value: widget.selectedCodeSnippet, 
+            value: _snippetNotifier.selectedCodeSnippet, 
             underline: Container(), 
             iconEnabledColor:  Theme.of(context).buttonColor,
             style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.display1.color , fontWeight: FontWeight.bold),
-            items: widget.note.codeSnippets.map<DropdownMenuItem<CodeSnippet>>((codeSnippet) {
+            items: (_noteNotifier.note as SnippetNote).codeSnippets.map<DropdownMenuItem<CodeSnippet>>((codeSnippet) {
               Widget item = DropdownMenuItem<CodeSnippet>(
                 value: codeSnippet,
                 child:  Text(
@@ -70,7 +77,7 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
               );
               return item;
             }).toList(),
-            onChanged: (CodeSnippet codeSnippet) => widget.onSelectedSnippetChanged(codeSnippet),
+            onChanged: (CodeSnippet codeSnippet) => _snippetNotifier.selectedCodeSnippet = codeSnippet,
           ),
         ],
       );

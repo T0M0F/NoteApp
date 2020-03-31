@@ -1,18 +1,17 @@
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditTagsDialog extends StatefulWidget {
-  final List<String> tags;
-  final Function cancelCallback;
-  final Function(List<String>) saveCallback;
 
-  const EditTagsDialog(
-      {Key key, this.tags, this.saveCallback, this.cancelCallback})
-      : super(key: key);
+  final List<String> tags;
+
+  EditTagsDialog({@required this.tags});
 
   @override
   State<StatefulWidget> createState() => _EditTagsDialogState();
@@ -23,6 +22,8 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
   List<String> _selectedTags;
   List<String> _allTags;
   TagService _tagService;
+
+  NoteNotifier _noteNotifier;
 
   @override
   void initState() {
@@ -39,34 +40,39 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    title: Container(
-      alignment: Alignment.center,
-      child: Text(AppLocalizations.of(context).translate("select_tags"),
-          style: TextStyle(
-              color: Theme.of(context).textTheme.display1.color))),
-    content: ListView.builder(
-      shrinkWrap: true,
-      itemCount: _allTags.length +1,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-            onTap: () {
-              if(index > 0) {
-                  _onRowTap(_allTags[index]);
-              } 
-            },
-            child: _buildRow(index)
-        );
-      },
-    ),
-    actions: <Widget>[
-          CancelButton(),
-          SaveButton(save: () {
-            this.widget.saveCallback(_selectedTags);
-          })
-        ],
-  );
+  Widget build(BuildContext context) {
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      title: Container(
+        alignment: Alignment.center,
+        child: Text(AppLocalizations.of(context).translate("select_tags"),
+            style: TextStyle(
+                color: Theme.of(context).textTheme.display1.color))),
+      content: ListView.builder(
+        
+        itemCount: _allTags.length +1,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+              onTap: () {
+                if(index > 0) {
+                    _onRowTap(_allTags[index]);
+                } 
+              },
+              child: _buildRow(index)
+          );
+        },
+      ),
+      actions: <Widget>[
+        CancelButton(),
+        SaveButton(save: () {
+          _noteNotifier.note.tags = _selectedTags;
+          Navigator.of(context).pop();
+        })
+      ],
+    );
+  }
 /*
   @override
   Widget build(BuildContext context) => 

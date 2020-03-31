@@ -27,7 +27,7 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
   void initState() {
     super.initState();
 
-    PageNavigator().pageNavigatorState = PageNavigatorState.ALL_NOTES;
+    
   }
 
   @override
@@ -59,7 +59,30 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         initialRoute: '/',
         routes: {
           '/': (context) {
-            return NotesPage(pageTitle: AppLocalizations.of(context).translate('all_notes'));
+            return WillPopScope(
+              child: NotesPage(pageTitle: AppLocalizations.of(context).translate('all_notes')),
+              onWillPop: () {
+                return Future.value(true);
+                                /*
+                PageNavigator().navigateBack();
+                if(MediaQuery.of(context).size.width > 1200) {
+                  if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES) {
+                    //Kill app
+                  } else {
+                    Navigator.of(context).pop();
+                  }
+                } else {
+                  if(NoteIsOpen){
+                    note == null
+                  } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
+                    //Kill app
+                  } else {
+                    Navigator.of(context).pop();
+                  }
+                }
+                */
+              },
+            );
           },
         },
     );

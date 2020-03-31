@@ -1,18 +1,18 @@
+import 'package:boostnote_mobile/presentation/notifiers/MarkdownEditorNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'OverflowButton.dart';
 
 class MarkdownEditorAppBar extends StatefulWidget implements PreferredSizeWidget {
 
-  final Function(bool) onViewModeSwitchedCallback;
   final Function(String) selectedActionCallback;
-  final Function() closeNote;
- 
-  bool isPreviewMode;
+
   bool isNoteStarred;
 
-  MarkdownEditorAppBar({this.isPreviewMode, this.isNoteStarred, this.onViewModeSwitchedCallback, this.selectedActionCallback, this.closeNote});
+  MarkdownEditorAppBar({this.isNoteStarred, this.selectedActionCallback});
 
   @override
   _MarkdownEditorAppBarState createState() => _MarkdownEditorAppBarState();
@@ -22,20 +22,28 @@ class MarkdownEditorAppBar extends StatefulWidget implements PreferredSizeWidget
 }
  
 class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
+
+  NoteNotifier _noteNotifier;
+  MarkdownEditorNotifier _markdownEditorNotifier;
   
   @override
   Widget build(BuildContext context) {
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
+
     return AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color:  Theme.of(context).buttonColor), 
-        onPressed: widget.closeNote,
+        onPressed:() {
+          _noteNotifier.note = null;
+        },
       ),
       actions: <Widget>[
         Switch(
           inactiveThumbColor: Theme.of(context).accentColor,
           inactiveTrackColor: Theme.of(context).buttonColor,
-          value: widget.isPreviewMode, 
-          onChanged: widget.onViewModeSwitchedCallback
+          value: _markdownEditorNotifier.isPreviewMode, 
+          onChanged: (bool isPreviewMode) => _markdownEditorNotifier.isPreviewMode = isPreviewMode,
         ),
         OverflowButton(
           noteIsStarred: widget.isNoteStarred,

@@ -4,8 +4,10 @@ import 'package:boostnote_mobile/presentation/converter/DateTimeConverter.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/presentation/converter/TagListConverter.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 //TODO: Merge with MarkdownTile
 class SnippetTile extends StatelessWidget{
@@ -14,17 +16,19 @@ class SnippetTile extends StatelessWidget{
   final TagListConverter tagListConverter = TagListConverter();
    
   final SnippetNote note;
-  final bool expanded;
 
   bool expandedAndNotEmpty;
 
-  SnippetTile({this.note, this.expanded});
+  SnippetTile({this.note});
+
+  NoteOverviewNotifier _noteOverviewNotifier;
 
   @override
   Widget build(BuildContext context) {
+    _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
     List<Widget> widgets;
 
-    expandedAndNotEmpty = expanded && (note.isStarred || note.tags.isNotEmpty);
+    expandedAndNotEmpty = _noteOverviewNotifier.expandedTiles && (note.isStarred || note.tags.isNotEmpty);
     if (expandedAndNotEmpty) {
       widgets = <Widget>[
         buildHeaderRow(context),

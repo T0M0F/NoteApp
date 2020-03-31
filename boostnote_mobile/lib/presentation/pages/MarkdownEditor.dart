@@ -3,9 +3,8 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
-import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
-import 'package:boostnote_mobile/presentation/screens/editor/markdown_editor/widgets/MarkdownEditorAppBar.dart';
+import 'package:boostnote_mobile/presentation/notifiers/MarkdownEditorNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownBody.dart';
@@ -13,16 +12,9 @@ import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownNoteHeade
 import 'package:boostnote_mobile/presentation/widgets/markdown/MarkdownPreview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 
 class MarkdownEditor extends StatefulWidget {
-
-  final MarkdownNote note;
-  bool previedMode;
-  Function(List<String>) onEditTags;
-
-  MarkdownEditor({this.note, this.previedMode, this.onEditTags});
-
   @override
   State<StatefulWidget> createState() => MarkdownEditorState();
 }
@@ -30,10 +22,11 @@ class MarkdownEditor extends StatefulWidget {
 
 class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObserver{
 
-  FolderService _folderService;
-
   List<FolderEntity> _folders;
   FolderEntity _dropdownValueFolder;
+
+  NoteNotifier _noteNotifier;
+  MarkdownEditorNotifier _markdownEditorNotifier;
 
 
   @override
@@ -41,15 +34,15 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     WidgetsBinding.instance.addObserver(this);
     super.initState();
     
-    _folderService = FolderService();
     _folders = List();
    
+   /*
     _folderService.findAllUntrashed().then((folders) { 
       setState(() { 
         _folders = folders;
          _dropdownValueFolder = _folders.firstWhere((folder) => folder.id == this.widget.note.folder.id);
       });
-    });
+    });*/
   }
 
   @override
@@ -57,18 +50,22 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
 
-    NoteService().save(this.widget.note);
+    NoteService().save(_noteNotifier.note);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      NoteService().save(this.widget.note);    //mit bool überprüfen ob schon gesaved?
+      NoteService().save(_noteNotifier.note);    //mit bool überprüfen ob schon gesaved?
     }
   }
 
   @override
-  Widget build(BuildContext context) => widget.previedMode ? _buildMarkdownPreview() : _buildMarkdownEditor();
+  Widget build(BuildContext context) {
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
+    return _markdownEditorNotifier.isPreviewMode ? _buildMarkdownPreview() : _buildMarkdownEditor();
+  }
 
   Widget _buildMarkdownPreview(){
     return ListView(
@@ -76,21 +73,15 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 5),
           child: MarkdownNoteHeader(
-            note: this.widget.note,
             selectedFolder: _dropdownValueFolder,
             folders: _folders,
-            onTitleChangedCallback: (String title) => this.widget.note.title = title,
-            onFolderChangedCallback: (FolderEntity folder) {
-              this.widget.note.folder = folder;
-              //_noteService.save(this.widget._note); brauch ich hier wirklich saven?
-            },
-            onTagClickedCallback: () => _showTagDialog(context, this.widget.note.tags),
-            onInfoClickedCallback: () => _showNoteInfoDialog(this.widget.note),
+            onTagClickedCallback: () => _showTagDialog(context),
+            onInfoClickedCallback: () => _showNoteInfoDialog(),
           ),
         ),
         Align(
           alignment: Alignment.topLeft,
-          child: MarkdownPreview(this.widget.note.content, _launchURL),
+          child: MarkdownPreview(),
         )
       ],
     );
@@ -103,57 +94,30 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 5),
           child: MarkdownNoteHeader(
-            note: this.widget.note,
             selectedFolder: _dropdownValueFolder,
             folders: _folders,
-            onTitleChangedCallback: (String title) => this.widget.note.title = title,
-            onFolderChangedCallback: (FolderEntity folder) {
-              this.widget.note.folder = folder;
-               //_noteService.save(this.widget._note); brauch ich hier wirklich saven?
-            },
-            onTagClickedCallback: () => _showTagDialog(context, this.widget.note.tags),
-            onInfoClickedCallback: () => _showNoteInfoDialog(this.widget.note),
+            onTagClickedCallback: () => _showTagDialog(context),
+            onInfoClickedCallback: () => _showNoteInfoDialog(),
           ),
         ),
         Align(
           alignment: Alignment.topLeft,
-          child: MarkdownBody(this.widget.note.content, _onTextChangedCallback),
+          child: MarkdownBody(),
         )
       ],
     );
   }
 
-  void _onTextChangedCallback(String text){
-       this.widget.note.content = text;
-  }
-
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  Future<List<String>> _showTagDialog(BuildContext context, List<String> tags) => showDialog(
+  Future<List<String>> _showTagDialog(BuildContext context) => showDialog(
     context: context, 
     builder: (context){
-      return EditTagsDialog(
-        tags: tags, 
-        saveCallback: (selectedTags){
-          widget.onEditTags(tags);
-          Navigator.of(context).pop();
-        },
-        cancelCallback: (){
-          Navigator.of(context).pop();
-        },
-      );
+      return EditTagsDialog(tags: _noteNotifier.note.tags);
   });
 
-  Future<List<String>> _showNoteInfoDialog(MarkdownNote note) => showDialog(
+  Future<List<String>> _showNoteInfoDialog() => showDialog(
     context: context, 
     builder: (context){
-      return NoteInfoDialog(note);
+      return NoteInfoDialog();
   });
 
 }

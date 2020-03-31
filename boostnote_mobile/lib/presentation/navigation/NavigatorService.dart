@@ -38,10 +38,10 @@ class NavigatorService {
           ResponsiveChild(
             smallFlex: 0, 
             largeFlex: 3, 
-            child: note is MarkdownNote 
+            child:  Container(),) /*note is MarkdownNote 
               ? MarkdownEditor(note) 
               : CodeSnippetEditor(note)
-          )
+          )*/
           ]
         ),
         transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),

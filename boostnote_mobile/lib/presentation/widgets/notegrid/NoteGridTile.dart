@@ -156,11 +156,9 @@ class NoteGridTile extends StatelessWidget {
   Widget _buildFooterRow2(BuildContext context) {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: EdgeInsets.only(bottom: 10),
-        child: Text(
+      child: Text(
           _dateTimeConverter.convertToReadableForm(note.updatedAt), 
-          style: TextStyle(fontSize: 15.0, color: Theme.of(context).textTheme.display2.color))
+          style: TextStyle(fontSize: 15.0, color: Theme.of(context).textTheme.display2.color)
       )
     );
   }

@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
-class Overview extends StatefulWidget {   //TODO imutable
+class Overview extends StatefulWidget {   //TODO Delete and move into OverviewPage???
 
   @override
   _OverviewState createState() => _OverviewState();
@@ -40,19 +40,7 @@ class _OverviewState extends State<Overview> {
 
   Widget _buildListViewBody() {
     return Container( 
-      child: NoteList(
-        notes:  _noteOverviewNotifier.notes, 
-        selectedNotes: _selectedNotes,
-        onTapCallback: (selectedNotes){
-          _noteNotifier.note = selectedNotes.first;
-              /*if(_noteNotifier.note is SnippetNote) {
-                  selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty 
-                    ? (_noteNotifier.note as SnippetNote).codeSnippets.first
-                    : null;
-                }*/
-        },
-        onLongPressCallback: _onRowLongPress
-      )
+      child: NoteList()
     );
   }
 
@@ -89,18 +77,7 @@ class _OverviewState extends State<Overview> {
     } else {
       return 0.8;
     }
-  }
-
-  void _onRowLongPress(List<Note> selectedNotes) {
-    showModalBottomSheet(     
-        context: context,
-        builder: (BuildContext buildContext){
-          return PageNavigator().pageNavigatorState != PageNavigatorState.TRASH 
-            ? TrashNoteBottomSheet()
-            : DeleteNoteBottomSheet();
-        }
-      );
-  }
+  } 
 
 }
 

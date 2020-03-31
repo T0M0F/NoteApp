@@ -1,14 +1,9 @@
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
-import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/CreateFolderDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class FolderOverviewAppbar extends StatelessWidget implements PreferredSizeWidget{
-
-  final Function() onCreateFolderCallback;
-
-  FolderOverviewAppbar({this.onCreateFolderCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +16,7 @@ class FolderOverviewAppbar extends StatelessWidget implements PreferredSizeWidge
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.create_new_folder, color: Theme.of(context).buttonColor),
-          onPressed: onCreateFolderCallback,
+          onPressed: () => _createFolderDialog(context),
         )
       ],
     );
@@ -29,4 +24,10 @@ class FolderOverviewAppbar extends StatelessWidget implements PreferredSizeWidge
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
+
+  void _createFolderDialog(BuildContext context) => showDialog(
+    context: context,
+    builder: (context) {
+      return CreateFolderDialog();
+  });
 }

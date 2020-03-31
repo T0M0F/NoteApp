@@ -67,7 +67,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
   Widget build(BuildContext context) => Scaffold(
     key: _drawerKey,
     appBar: FolderOverviewAppbar(
-      onCreateFolderCallback: () => _createFolderDialog(),
+     
     
     ),
     drawer: NavigationDrawer(),
@@ -77,11 +77,7 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
 
   Widget _buildBody(BuildContext context) {
     return Container(
-        child: FolderList(
-            folders: _folders,
-            onRowTap: _onFolderTap,
-            onRowLongPress: _onFolderLongPress
-        )
+        child: FolderList()
     );
   }
 
@@ -91,79 +87,6 @@ class _FolderOverviewState extends State<FolderOverview> implements Refreshable 
       return CreateNoteDialog( );
   });
   
-  void _createFolderDialog() => showDialog(
-    context: context,
-    builder: (context) {
-      return CreateFolderDialog(
-        cancelCallback: () {
-          Navigator.of(context).pop();
-        },
-        saveCallback: (String folderName) {
-          Navigator.of(context).pop();
-          _createFolder(folderName);
-        },
-      );
-  });
-
-  void _renameFolderDialog(Folder folder) => showDialog(
-    context: context,
-    builder: (context) {
-      return RenameFolderDialog(
-        folder: folder,
-        cancelCallback: () {
-          Navigator.of(context).pop();
-        },
-        saveCallback: (String newFolderName) {
-          Navigator.of(context).pop();
-          _renameFolder(folder, newFolderName);
-        },
-      );
-  });
-
-  void _onFolderTap(Folder folder) => _newNavigationService.navigateTo(destinationMode: NavigationMode2.NOTES_IN_FOLDER_MODE, folder: folder);
-  
-  void _onFolderLongPress(Folder folder) {
-    if (folder.id != 'Default'.hashCode && folder.id != 'Trash'.hashCode) {
-      showModalBottomSheet(    
-        context: context,
-        builder: (BuildContext buildContext) {
-          return FolderOverviewBottomSheet(
-            removeFolderCallback: () {
-              Navigator.of(context).pop();
-              _removeFolder(folder);
-            },
-            renameFolderCallback: () {
-              Navigator.of(context).pop();
-              _renameFolderDialog(folder);
-            },
-          );
-        }
-      );
-    } else {
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext buildContext) {
-          return FolderOverviewErrorBottomSheet();
-        }
-      );
-    }
-  }
-
-  void _createFolder(String folderName) => _folderService
-                                                .createFolderIfNotExisting(Folder(name: folderName))
-                                                .whenComplete(() => refresh());
-
-  void _renameFolder(Folder oldFolder, String newName) =>  _folderService
-                                                              .renameFolder(oldFolder, newName)
-                                                              .whenComplete(() => refresh());
-  void _removeFolder(Folder folder) =>  _folderService
-                                            .delete(folder)
-                                            .whenComplete(() => refresh());
-  
-  void _createNote(Note note) => _noteService
-                                      .createNote(note)
-                                      .whenComplete(() => refresh());
-
 }
 
 

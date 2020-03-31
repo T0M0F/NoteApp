@@ -1,6 +1,9 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
+import 'package:boostnote_mobile/not_in_use/SnippetDescriptionDialog.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -9,14 +12,11 @@ import 'package:provider/provider.dart';
 class SnippetNoteHeader extends StatefulWidget {
  
   final Function(FolderEntity) onFolderChangedCallback;
-  final Function() onInfoClickedCallback;
-  final Function() onTagClickedCallback;
-  final Function() onDescriptionClickCallback;
 
   List<FolderEntity> folders;
   FolderEntity selectedFolder;
 
-  SnippetNoteHeader({this.folders, this.selectedFolder, this.onFolderChangedCallback, this.onInfoClickedCallback, this.onTagClickedCallback, this.onDescriptionClickCallback});
+  SnippetNoteHeader({this.folders, this.selectedFolder, this.onFolderChangedCallback});
 
   @override
   State<StatefulWidget> createState() => _SnippetNoteHeaderState();
@@ -38,11 +38,11 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
   @override
   Widget build(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
-
     _textEditingController.text = _noteNotifier.note.title; 
     _textEditingController.addListener((){
       _noteNotifier.note.title = _textEditingController.text;
     });
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16),
       child: Column(
@@ -102,21 +102,21 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
                   MdiIcons.tagOutline, 
                   color: Theme.of(context).iconTheme.color
                 ), 
-                onPressed: this.widget.onTagClickedCallback
+                onPressed: _showTagDialog
               ),
               IconButton(
                 icon: Icon(
                   Icons.info_outline, 
                   color: Theme.of(context).iconTheme.color
                 ), 
-                onPressed: this.widget.onInfoClickedCallback
+                onPressed: _showNoteInfoDialog
               ),
               IconButton(
                 icon: Icon(
                   Icons.description, 
                   color: Theme.of(context).iconTheme.color
                 ), 
-                onPressed: this.widget.onDescriptionClickCallback)
+                onPressed: _showDescriptionDialog)
              ],
             ),
           ],
@@ -132,5 +132,26 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
     ),
     );
   }
+
+  Future<List<String>> _showNoteInfoDialog() => showDialog(
+    context: context, 
+    builder: (context){
+      return NoteInfoDialog();
+  });
+
+  Future<List<String>> _showTagDialog() => showDialog(
+    context: context, 
+    builder: (context){
+      return EditTagsDialog(
+        tags: _noteNotifier.note.tags, 
+      );
+  });
+  
+  Future<String> _showDescriptionDialog() =>
+    showDialog(
+      context: context,  
+      builder: (context){
+        return SnippetDescriptionDialog();
+  });
 
 }

@@ -171,16 +171,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
 
   Widget _buildListViewBody() {
     return Container(
-      child: NoteList(
-        notes: _notes, 
-        selectedNotes: _selectedNotes,
-        onTapCallback: (selectedNotes){
-          _onRowTap(selectedNotes, _notes);
-        },
-        onLongPressCallback: (selectedNotes){
-          _onRowLongPress(selectedNotes);
-        }
-      )
+      child: NoteList()
     );
   }
 

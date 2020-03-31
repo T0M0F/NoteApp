@@ -1,15 +1,14 @@
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
+import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateFolderDialog extends StatefulWidget {
-
-  final Function(String folderName) saveCallback;
-  final Function() cancelCallback;
-
-  const CreateFolderDialog({Key key, @required this.saveCallback, @required this.cancelCallback}) : super(key: key); //TODO: Constructor
 
   @override
   _CreateNoteDialogState createState() => _CreateNoteDialogState();
@@ -17,10 +16,14 @@ class CreateFolderDialog extends StatefulWidget {
 
 class _CreateNoteDialogState extends State<CreateFolderDialog> {
 
+  final FolderService _folderService = FolderService();
   final TextEditingController _textEditingController = TextEditingController();
+  FolderNotifier _folderNotifier;
 
   @override
   Widget build(BuildContext context) {
+    _folderNotifier = Provider.of<FolderNotifier>(context);
+
     return AlertDialog(
       title: Container( 
         alignment: Alignment.center,
@@ -47,10 +50,25 @@ class _CreateNoteDialogState extends State<CreateFolderDialog> {
       ),
       actions: <Widget>[
         CancelButton(),
-        SaveButton(save: () {
-          this.widget.saveCallback(_textEditingController.text);
-        })
+        SaveButton(save: _save)
       ],
     );
+  }
+
+  void _save() {
+     Navigator.of(context).pop();
+      _folderService
+        .createFolderIfNotExisting(Folder(name: _textEditingController.text))
+        .whenComplete(() => _refresh);
+  }
+
+  void _refresh() {
+    _folderService.findAllUntrashed().then((folders) {
+      if(_folderNotifier.folders != null){
+          _folderNotifier.folders.replaceRange(0, _folderNotifier.folders.length, folders);
+      } else {
+        _folderNotifier.folders = folders;
+      }
+    });
   }
 }

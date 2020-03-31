@@ -11,16 +11,10 @@ import 'package:boostnote_mobile/presentation/pages/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/Overview.dart';
 import 'package:boostnote_mobile/presentation/pages/OverviewPageAppbar.dart';
+import 'package:boostnote_mobile/presentation/pages/ResponsiveFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
-import 'package:boostnote_mobile/presentation/widgets/buttons/AddFloatingActionButton.dart';
-import 'package:boostnote_mobile/presentation/widgets/buttons/CreateNoteFloatingActionButton.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/AddSnippetDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/NewNoteDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/SnippetDescription.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/material.dart';
@@ -86,15 +80,17 @@ class _NotesPageState extends State<NotesPage> {
     _snippetNotifier = Provider.of<SnippetNotifier>(context);
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
 
+    return _buildScaffold(context);
+  }
+
+  Scaffold _buildScaffold(BuildContext context) {
     return  Scaffold(
       key: _drawerKey,
       appBar: _buildAppBar(),
       drawer: NavigationDrawer(), 
       body: _buildBody(), 
-      floatingActionButton: _buildFloatingActionButton()
-    );
-      
-     
+      floatingActionButton: ResponsiveFloatingActionButton()
+    );  
   }
 
   PreferredSizeWidget _buildAppBar() { 
@@ -188,72 +184,10 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  ResponsiveWidget _buildFloatingActionButton() {
-    return ResponsiveWidget(
-      showDivider: true,
-      divider: Container(width: 0.5, color: Colors.transparent),
-      widgets: <ResponsiveChild> [
-        ResponsiveChild(
-          smallFlex: noteNotifier.note == null ? 1 : 0,
-          largeFlex: 2,
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: CreateNoteFloatingActionButton(onPressed: () => _createNoteDialog())
-          )
-        ),
-        ResponsiveChild(
-          smallFlex: noteNotifier.note == null ? 0 : 1,
-          largeFlex: 3,
-          child: noteNotifier.note is SnippetNote 
-            ? Align(
-              alignment: Alignment.bottomRight,
-              child: AddFloatingActionButton(
-                onPressed: () => _showAddSnippetDialog(context, (text){
-                  setState(() {
-                    List<String> s = text.split('.');
-                    CodeSnippet codeSnippet;
-                    if(s.length > 1){
-                      codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
-                                                                name: s[0],
-                                                                mode: s[1],
-                                                                content: '');
-                        (noteNotifier.note as SnippetNote).codeSnippets.add(codeSnippet);
-                    } else {
-                      codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
-                                                                name: text,
-                                                                mode: '',
-                                                                content: '');
-                        (noteNotifier.note as SnippetNote).codeSnippets.add(codeSnippet);
-                    }
-                    _snippetNotifier.selectedCodeSnippet = codeSnippet;
-                  });
-                  Navigator.of(context).pop();
-                })
-              )
-            )
-            : Container()
-        )
-      ]
-    );
-  }
-
-   Future<String> _createNoteDialog() {
-    return showDialog(context: context, 
-      builder: (context){
-        return CreateNoteDialog();
-    });
-  }
-
   Future<String> _showRenameSnippetDialog(BuildContext context, Function(String) callback) =>
     showDialog(context: context, 
       builder: (context){
         return EditSnippetNameDialog();
-  });
-
-  Future<String> _showAddSnippetDialog(BuildContext context, Function(String) callback) =>
-    showDialog(context: context, 
-      builder: (context){
-        return AddSnippetDialog(controller: TextEditingController(), onSnippetAdded: callback);
   });
 
 }

@@ -9,6 +9,7 @@ import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dar
 import 'package:boostnote_mobile/presentation/pages/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
+import 'package:boostnote_mobile/presentation/pages/ResponsiveFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Refreshable.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
@@ -101,7 +102,7 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
       appBar: _buildAppBar(context),
       drawer: NavigationDrawer(),
       body: _buildBody(context),
-      floatingActionButton: _buildFloatingActionButton()
+      floatingActionButton: ResponsiveFloatingActionButton()
     );
   }
 
@@ -205,63 +206,7 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
       ]
     );
   }
-
-  ResponsiveWidget _buildFloatingActionButton() {
-    return ResponsiveWidget(
-      showDivider: true,
-      divider: Container(width: 0.5, color: Colors.transparent),
-      widgets: <ResponsiveChild> [
-        ResponsiveChild(
-          smallFlex: widget.note == null ? 1 : 0,
-          largeFlex: 2,
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: CreateNoteFloatingActionButton(onPressed: () => _createNoteDialog())
-          )
-        ),
-        ResponsiveChild(
-          smallFlex: widget.note == null ? 0 : 1,
-          largeFlex: 3,
-          child: widget.note is SnippetNote 
-            ? Align(
-              alignment: Alignment.bottomRight,
-              child: AddFloatingActionButton(
-                onPressed: () => _showAddSnippetDialog(context, (text){
-                  setState(() {
-                    List<String> s = text.split('.');
-                    CodeSnippet codeSnippet;
-                    if(s.length > 1){
-                      codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
-                                                                name: s[0],
-                                                                mode: s[1],
-                                                                content: '');
-                        (widget.note as SnippetNote).codeSnippets.add(codeSnippet);
-                    } else {
-                      codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
-                                                                name: text,
-                                                                mode: '',
-                                                                content: '');
-                        (widget.note as SnippetNote).codeSnippets.add(codeSnippet);
-                    }
-                    selectedCodeSnippet = codeSnippet;
-                  });
-                  Navigator.of(context).pop();
-                })
-              )
-            )
-            : Container()
-        )
-      ]
-    );
-  }
   
-  Future<String> _createNoteDialog() {
-    return showDialog(context: context, 
-    builder: (context){
-      return CreateNoteDialog();
-    });
-  }
-
   void _createTagDialog() {
    showDialog(context: context, 
     builder: (context){
@@ -319,11 +264,6 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
         return EditSnippetNameDialog();
   });  
 
-  Future<String> _showAddSnippetDialog(BuildContext context, Function(String) callback) =>
-    showDialog(context: context, 
-      builder: (context){
-        return AddSnippetDialog(controller: TextEditingController(), onSnippetAdded: callback);
-  });
 
   void _createTag(String tag) => _tagService
                                     .createTagIfNotExisting(tag)
@@ -335,9 +275,5 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
   
   void _removeTag(String tag) => _tagService
                                       .delete(tag)
-                                      .whenComplete(() => refresh());
-  
-  void _createNote(Note note) => _noteService
-                                      .createNote(note)
                                       .whenComplete(() => refresh());
 }

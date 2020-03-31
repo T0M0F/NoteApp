@@ -1,9 +1,11 @@
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/BoostnoteApp.dart';
+import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/MarkdownEditorNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/TagsNotifier.dart';
 import 'package:boostnote_mobile/presentation/theme/ThemeNotifier.dart';
 import 'package:boostnote_mobile/presentation/theme/ThemeService.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,12 @@ void main() {
           ),
           ChangeNotifierProvider<NoteOverviewNotifier>(
              create: (context) => NoteOverviewNotifier.withNotes(false,true, notes),
+          ),
+          ChangeNotifierProvider<FolderNotifier>(
+             create: (context) => FolderNotifier(),
+          ),
+          ChangeNotifierProvider<TagsNotifier>(
+             create: (context) => TagsNotifier(),
           )
         ],
         child: BoostnoteApp()

@@ -1,12 +1,8 @@
-import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/SnippetDescription.dart';
 import 'package:boostnote_mobile/presentation/widgets/snippet/CodeTab.dart';
 import 'package:boostnote_mobile/presentation/widgets/snippet/SnippetNoteHeader.dart';
 import 'package:flutter/cupertino.dart';
@@ -67,28 +63,6 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
 
     return _snippetNotifier.selectedCodeSnippet == null ? _buildEmptyBody() : _buildBody();
   }
- 
-  Widget _buildBody(){ 
-    return ListView(
-      children: <Widget>[
-        SnippetNoteHeader(
-            selectedFolder: _dropdownValueFolder,
-            folders: _folders,
-            onFolderChangedCallback: (FolderEntity folder) {
-              _noteNotifier.note.folder = folder;
-              _noteService.save(_noteNotifier.note);
-            },
-            onTagClickedCallback: () => _showTagDialog(context),
-            onInfoClickedCallback: () => _showNoteInfoDialog(),
-            onDescriptionClickCallback: () => _showDescriptionDialog(context)
-        ),
-        Align(
-          alignment: Alignment.topLeft,
-          child: CodeTab()
-        )
-      ],
-    );
-  }
 
   Widget _buildEmptyBody(){ 
     return Stack(
@@ -100,9 +74,6 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
             _noteNotifier.note.folder = folder;
             _noteService.save(_noteNotifier.note);
           },
-          onTagClickedCallback: () => _showTagDialog(context),
-          onInfoClickedCallback: () => _showNoteInfoDialog(),
-          onDescriptionClickCallback: () => _showDescriptionDialog(context)
         ),
         Center(
           child: Text(
@@ -113,28 +84,25 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
       ]
     );
   }
-
-  Future<List<String>> _showNoteInfoDialog() => showDialog(
-    context: context, 
-    builder: (context){
-      return NoteInfoDialog();
-  });
-
-  Future<List<String>> _showTagDialog(BuildContext context) => showDialog(
-    context: context, 
-    builder: (context){
-      return EditTagsDialog(
-        tags: _noteNotifier.note.tags, 
-      );
-  });
-  
-  Future<String> _showDescriptionDialog(BuildContext context) =>
-    showDialog(
-      context: context,  
-      builder: (context){
-        return SnippetDescriptionDialog();
-  });
-
+ 
+  Widget _buildBody(){ 
+    return ListView(
+      children: <Widget>[
+        SnippetNoteHeader(
+            selectedFolder: _dropdownValueFolder,
+            folders: _folders,
+            onFolderChangedCallback: (FolderEntity folder) {
+              _noteNotifier.note.folder = folder;
+              _noteService.save(_noteNotifier.note);
+            },
+        ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: CodeTab()
+        )
+      ],
+    );
+  }
 }
 
 

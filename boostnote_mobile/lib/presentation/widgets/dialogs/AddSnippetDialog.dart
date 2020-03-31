@@ -1,18 +1,25 @@
+import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or StatefulWidget?
 
-  final TextEditingController controller;
-  final Function(String) onSnippetAdded;
-
-  const AddSnippetDialog({Key key, this.controller, this.onSnippetAdded}) : super(key: key); //TODO Constructor
+  final TextEditingController controller = TextEditingController();
+  NoteNotifier _noteNotifier;
+  SnippetNotifier _snippetNotifier;
 
   @override
   Widget build(BuildContext context) {
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _snippetNotifier = Provider.of<SnippetNotifier>(context);
+
     return AlertDialog(
       title: _buildTitle(context),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -54,16 +61,35 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
     );
   }
 
-
   List<Widget> _buildActions(BuildContext context) {
     return <Widget>[
       CancelButton(),
       SaveButton(save: () {
         if(controller.text.trim().length > 0){
-          onSnippetAdded(controller.text); 
+          _addSnippet(context);
         }
       })
     ];
   }
+
+  void _addSnippet(BuildContext context) {
+    List<String> s = controller.text.split('.');
+    CodeSnippet codeSnippet;
+    if(s.length > 1){
+      codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
+                                                name: s[0],
+                                                mode: s[1],
+                                                content: '');
+        (_noteNotifier.note as SnippetNote).codeSnippets.add(codeSnippet);
+    } else {
+      codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
+                                                name: controller.text,
+                                                mode: '',
+                                                content: '');
+        (_noteNotifier.note as SnippetNote).codeSnippets.add(codeSnippet);
+    }
+    _snippetNotifier.selectedCodeSnippet = codeSnippet;
+    Navigator.of(context).pop();
+}   
 
 }

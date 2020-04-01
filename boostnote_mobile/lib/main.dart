@@ -10,9 +10,15 @@ import 'package:boostnote_mobile/presentation/theme/ThemeNotifier.dart';
 import 'package:boostnote_mobile/presentation/theme/ThemeService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:strings/strings.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  String s = '\\kjf\\s';
+  print(s);
+  print(escape(s));
+  print(toPrintable(escape(s)));
 
   ThemeService().getThemeData().then((themeData){
     NoteService().findNotTrashed().then((notes){

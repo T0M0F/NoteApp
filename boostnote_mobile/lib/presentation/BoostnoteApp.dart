@@ -12,7 +12,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
+import 'package:strings/strings.dart';
 
 class BoostnoteApp extends StatefulWidget {
 
@@ -32,6 +34,24 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
 
   @override
   Widget build(BuildContext context) {
+
+    String text = '''
+  sdsd
+  '
+  affsa
+  \'''
+  sadfsdf
+  \''' sdaf \'''
+  
+  \\
+  \\\\
+''';
+  String text2 = text.replaceAll("\\\\", '');
+
+
+
+    String s = 'kfljsk\\asidfjksdlf';
+    String b;
     
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
@@ -56,8 +76,26 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
           print(locale.languageCode + ' not supported. Load default: ' + supportedLocales.first.languageCode);
           return supportedLocales.first;
         },
-        initialRoute: '/',
+        initialRoute: 'abc',
         routes: {
+          'abc': (context) => Scaffold(
+            body: Padding(
+              padding: EdgeInsets.only(top: 100),
+              child: Column(children: <Widget>[
+              MarkdownBody(data:text),
+              MarkdownBody(data:text2),
+              TextField(
+                
+               maxLines: null,
+                onChanged: (a) {
+                  setState(() {
+                    s = escape(a);
+                    b = toPrintable(s);
+                  });
+                })
+            ],)
+            )
+          ),
           '/': (context) {
             return WillPopScope(
               child: NotesPage(pageTitle: AppLocalizations.of(context).translate('all_notes')),

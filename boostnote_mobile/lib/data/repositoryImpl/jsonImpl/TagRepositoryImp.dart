@@ -1,8 +1,11 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
 import 'package:boostnote_mobile/business_logic/repository/TagRepository.dart';
 import 'package:boostnote_mobile/data/entity/BoostnoteEntity.dart';
+import 'package:boostnote_mobile/data/repositoryImpl/csonImpl/NoteRepositoryImpl.dart';
 import 'package:path_provider/path_provider.dart';
 
 class TagRepositoryImpl implements TagRepository{

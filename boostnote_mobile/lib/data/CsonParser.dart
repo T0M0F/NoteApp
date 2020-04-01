@@ -4,6 +4,7 @@ import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:strings/strings.dart';
 
 //IN Parser und Mapper unterteilen
 class CsonParser {
@@ -306,7 +307,7 @@ tags: ["[Gu[cci"
 
   String convertMarkdownNoteToCson(MarkdownNote note){
 
-    note.content = note.content.replaceAll(new RegExp(r'\\'), '\\\\');
+    // note.content = note.content.replaceAll(new RegExp(r'\\'), '\\\\');
     note.content = note.content.replaceAll('\'\'\'', '\\\'\'\'');
 
 

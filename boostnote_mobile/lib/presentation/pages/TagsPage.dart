@@ -133,6 +133,7 @@ class _TagsPageState extends State<TagsPage> implements Refreshable{
           widget.note = null;
         });},
       onCreateTagCallback: () => _createTagDialog(),
+      openDrawer: () => _drawerKey.currentState.openDrawer(),
     );
   }
 

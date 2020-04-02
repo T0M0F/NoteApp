@@ -16,11 +16,11 @@ class NavigationDrawer extends StatefulWidget {
 
 class NavigationDrawerState extends State<NavigationDrawer> {
 
-  NavigationService _navigationService = NavigationService();
   PageNavigator _pageNavigator = PageNavigator();
 
   @override
   Widget build(BuildContext context) {
+  
 
     return Theme(
       data: Theme.of(context).copyWith(
@@ -82,6 +82,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text(AppLocalizations.of(context).translate('starred'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.STARRED ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
+         
           _pageNavigator.navigateToStarredNotes(context);
         },
       ),
@@ -90,6 +91,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text(AppLocalizations.of(context).translate('trash'), style: TextStyle(color:  _pageNavigator.pageNavigatorState == PageNavigatorState.TRASH ? Theme.of(context).accentColor : Theme.of(context).accentTextTheme.display1.color)),
         onTap: () {
           Navigator.pop(context);
+       
           _pageNavigator.navigateToTrash(context);
         },
       ),
@@ -106,6 +108,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text(AppLocalizations.of(context).translate('settings'), style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color),),
         onTap: () {
           Navigator.pop(context);
+        
           _pageNavigator.navigateToSettings(context);
         },
       ),
@@ -114,6 +117,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         title: Text(AppLocalizations.of(context).translate('about'), style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color),),
         onTap: () {
           Navigator.pop(context);
+       
         },
       ),
     ];

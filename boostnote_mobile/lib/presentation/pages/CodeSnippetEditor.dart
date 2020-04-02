@@ -1,3 +1,5 @@
+import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
@@ -18,9 +20,7 @@ class CodeSnippetEditor extends StatefulWidget {
 class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindingObserver {
 
   NoteService _noteService;
-
-  List<FolderEntity> _folders;
-  FolderEntity _dropdownValueFolder;
+  FolderService _folderService;
 
   NoteNotifier _noteNotifier;
   SnippetNotifier _snippetNotifier;
@@ -31,14 +31,20 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     super.initState();
 
     _noteService = NoteService();
-    _folders = List();
+    _folderService = FolderService(); 
 
-    /*_folderService.findAllUntrashed().then((folders) { 
-      setState(() { 
-        _folders = folders;
-         _dropdownValueFolder = _folders.firstWhere((folder) => folder.id == this.widget.note.folder.id);
-      });
-    });*/
+    _folderService.findAllUntrashed().then((folders) { 
+      _snippetNotifier.folders = folders;
+      _snippetNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id);
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _snippetNotifier = Provider.of<SnippetNotifier>(context);
   }
 
   @override
@@ -58,23 +64,17 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
 
   @override
   Widget build(BuildContext context) {
-    _noteNotifier = Provider.of<NoteNotifier>(context);
-    _snippetNotifier = Provider.of<SnippetNotifier>(context);
-
+    if(_snippetNotifier.selectedCodeSnippet == null) { 
+      _snippetNotifier.selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.first;
+    }
+    
     return _snippetNotifier.selectedCodeSnippet == null ? _buildEmptyBody() : _buildBody();
   }
 
   Widget _buildEmptyBody(){ 
     return Stack(
       children: <Widget>[
-        SnippetNoteHeader(
-          selectedFolder: _dropdownValueFolder,
-          folders: _folders,
-          onFolderChangedCallback: (FolderEntity folder) {
-            _noteNotifier.note.folder = folder;
-            _noteService.save(_noteNotifier.note);
-          },
-        ),
+        SnippetNoteHeader(),
         Center(
           child: Text(
             AppLocalizations.of(context).translate('add_snippet'),
@@ -88,14 +88,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
   Widget _buildBody(){ 
     return ListView(
       children: <Widget>[
-        SnippetNoteHeader(
-            selectedFolder: _dropdownValueFolder,
-            folders: _folders,
-            onFolderChangedCallback: (FolderEntity folder) {
-              _noteNotifier.note.folder = folder;
-              _noteService.save(_noteNotifier.note);
-            },
-        ),
+        SnippetNoteHeader(),
         Align(
           alignment: Alignment.topLeft,
           child: CodeTab()

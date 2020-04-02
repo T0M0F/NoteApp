@@ -22,7 +22,7 @@ class OverviewPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
   final Function() onNaviagteBackCallback;
   final Function(List<Note>) onSearchCallback;
   final Function onMenuClick;
-
+ 
   String pageTitle;
 
   OverviewPageAppbar({this.pageTitle, this.onNaviagteBackCallback, this.onSelectedActionCallback, this.onSearchCallback, this.onMenuClick});
@@ -52,52 +52,56 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
          ResponsiveChild(
               smallFlex: _noteNotifier.note == null ? 1 : 0, 
               largeFlex: 2, 
-              child: OverviewAppbar(
-                pageTitle: widget.pageTitle,
-                notes: _noteOverviewNotifier.notesCopy,
-                onSearchCallback: widget.onSearchCallback,
-                actions: {
-                  'EXPAND_ACTION': ActionConstants.EXPAND_ACTION, 
-                  'COLLPASE_ACTION': ActionConstants.COLLPASE_ACTION, 
-                  'SHOW_LISTVIEW_ACTION': ActionConstants.SHOW_LISTVIEW_ACTION, 
-                  'SHOW_GRIDVIEW_ACTION' : ActionConstants.SHOW_GRIDVIEW_ACTION},
-                onNaviagteBackCallback: widget.onNaviagteBackCallback, 
-                onSelectedActionCallback: widget.onSelectedActionCallback,
-                onMenuClick: widget.onMenuClick,
-              )
+              child: _buildLeftAppbar(context)
             ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 
           largeFlex: 3, 
-          child: buildChild(context)
+          child: _buildRightAppbar(context)
         )
       ]
     );
   }
 
-  Widget buildChild(BuildContext context) {
+  Widget _buildLeftAppbar(BuildContext context) {
+    return OverviewAppbar(
+      pageTitle: widget.pageTitle,
+      notes: _noteOverviewNotifier.notesCopy,
+      onSearchCallback: widget.onSearchCallback,
+      actions: {
+        'EXPAND_ACTION': ActionConstants.EXPAND_ACTION, 
+        'COLLPASE_ACTION': ActionConstants.COLLPASE_ACTION, 
+        'SHOW_LISTVIEW_ACTION': ActionConstants.SHOW_LISTVIEW_ACTION, 
+        'SHOW_GRIDVIEW_ACTION' : ActionConstants.SHOW_GRIDVIEW_ACTION},
+      onNaviagteBackCallback: widget.onNaviagteBackCallback, 
+      onSelectedActionCallback: widget.onSelectedActionCallback,
+      onMenuClick: widget.onMenuClick,
+    );
+  }
+
+  Widget _buildRightAppbar(BuildContext context) {
     return _noteNotifier.note == null   //Sonst fliegt komische exception, wenn in methode ausgelagert
-          ? EmptyAppbar()
-          : _noteNotifier.note is MarkdownNote
-            ? MarkdownEditorAppBar(
-                isNoteStarred: _noteNotifier.note.isStarred,
-                selectedActionCallback: widget.onSelectedActionCallback,
-            )
-            : _snippetNotifier.isEditMode
-              ? AppBar(
-                  leading: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
-                    onPressed: () {
-                      _noteNotifier.note = null;
-                    }
-                  ),
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.check, color: Theme.of(context).buttonColor), 
-                      onPressed: () => _snippetNotifier.isEditMode = !_snippetNotifier.isEditMode
-                    )
-                  ]
-              )
-              : CodeSnippetAppBar(selectedActionCallback: widget.onSelectedActionCallback);
+      ? EmptyAppbar()
+      : _noteNotifier.note is MarkdownNote
+        ? MarkdownEditorAppBar(
+            isNoteStarred: _noteNotifier.note.isStarred,
+            selectedActionCallback: widget.onSelectedActionCallback,
+        )
+        : _snippetNotifier.isEditMode
+          ? AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
+                onPressed: () {
+                  _noteNotifier.note = null;
+                }
+              ),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.check, color: Theme.of(context).buttonColor), 
+                  onPressed: () => _snippetNotifier.isEditMode = !_snippetNotifier.isEditMode
+                )
+              ]
+          )
+          : CodeSnippetAppBar(selectedActionCallback: widget.onSelectedActionCallback);
   }
 }

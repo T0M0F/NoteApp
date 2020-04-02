@@ -8,7 +8,7 @@ class NoteOverviewNotifier with ChangeNotifier {
   bool _showListView;
   List<Note> _notes;
   List<Note> _notesCopy;
-  List<Note> _selectedNotes;
+  Note _selectedNote; //selectecByLongPress
 
   NoteOverviewNotifier(this._expandedTiles, this._showListView);
 
@@ -16,22 +16,15 @@ class NoteOverviewNotifier with ChangeNotifier {
     _notesCopy = List.from(_notes);
   }
 
-  //GlobalKey<ScaffoldState> get drawerKey => _drawerKey;
-
   bool get showListView => _showListView;
 
   bool get expandedTiles => _expandedTiles;
 
-  List<Note> get notes => _notesCopy;
+  List<Note> get notes => _notes;
 
   List<Note> get notesCopy => _notesCopy;
 
-  List<Note> get selectedNotes => _selectedNotes;
-
- /* set drawerKey(GlobalKey<ScaffoldState> drawerKey) {
-    _drawerKey = drawerKey;
-    notifyListeners();
-  }*/
+  Note get selectedNote => _selectedNote;
 
   set showListView(bool showListVIew) {
     _showListView = showListVIew;
@@ -53,8 +46,8 @@ class NoteOverviewNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  set selectedNotes(List<Note> notes) {
-    _selectedNotes = notes;
+  set selectedNote(Note noten) {
+    _selectedNote = noten;
     notifyListeners();
   }
 }

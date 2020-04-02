@@ -74,20 +74,17 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
 
   void _addSnippet(BuildContext context) {
     List<String> s = controller.text.split('.');
-    CodeSnippet codeSnippet;
-    if(s.length > 1){
-      codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
-                                                name: s[0],
-                                                mode: s[1],
-                                                content: '');
-        (_noteNotifier.note as SnippetNote).codeSnippets.add(codeSnippet);
-    } else {
-      codeSnippet = CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
-                                                name: controller.text,
-                                                mode: '',
-                                                content: '');
-        (_noteNotifier.note as SnippetNote).codeSnippets.add(codeSnippet);
-    }
+    CodeSnippet codeSnippet = s.length > 1 
+      ? CodeSnippetEntity(
+            linesHighlighted: '',  //TODO CodeSnippetEntity...
+            name: s[0],
+            mode: s[1],
+            content: '')
+      : CodeSnippetEntity(
+            linesHighlighted: '',  //TODO CodeSnippetEntity...
+            name: controller.text,
+            mode: '');
+    (_noteNotifier.note as SnippetNote).codeSnippets.add(codeSnippet);
     _snippetNotifier.selectedCodeSnippet = codeSnippet;
     Navigator.of(context).pop();
 }   

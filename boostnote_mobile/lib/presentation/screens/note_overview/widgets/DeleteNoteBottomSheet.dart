@@ -3,6 +3,7 @@ import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
+import 'package:boostnote_mobile/presentation/pages/NoteOverviewUpdater.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,9 +24,10 @@ class DeleteNoteBottomSheet extends StatelessWidget {
               title: Text(AppLocalizations.of(context).translate('restore_note'), style: Theme.of(context).textTheme.display1,),
               onTap: () {
                 Navigator.of(context).pop();
-                Note noteToBeRestored = _noteOverviewNotifier.selectedNotes.first;
+                Note noteToBeRestored = _noteOverviewNotifier.selectedNote;
                 _noteService.restore(noteToBeRestored);
                 _noteOverviewNotifier.notes.remove(noteToBeRestored);
+                NoteOverviewUpdater().update(_noteOverviewNotifier.notes, context);
                 if(_noteNotifier.note == noteToBeRestored) _noteNotifier.note = null;
               }   
             ),
@@ -34,9 +36,10 @@ class DeleteNoteBottomSheet extends StatelessWidget {
               title: Text(AppLocalizations.of(context).translate('delete'), style: TextStyle(color: Colors.redAccent)),
               onTap: () {
                 Navigator.of(context).pop();
-                Note noteToBeDeleted = _noteOverviewNotifier.selectedNotes.first;
+                Note noteToBeDeleted = _noteOverviewNotifier.selectedNote;
                 _noteService.delete(noteToBeDeleted);
                 _noteOverviewNotifier.notes.remove(noteToBeDeleted);
+                NoteOverviewUpdater().update(_noteOverviewNotifier.notes, context);
                 if(_noteNotifier.note == noteToBeDeleted) _noteNotifier.note = null;
               } 
             )

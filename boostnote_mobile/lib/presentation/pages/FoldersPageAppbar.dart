@@ -14,8 +14,9 @@ import 'package:provider/provider.dart';
 class FoldersPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
   final Function(String action) onSelectedActionCallback;
+  final Function() openDrawer;
 
-  FoldersPageAppbar({this.onSelectedActionCallback});
+  FoldersPageAppbar({this.onSelectedActionCallback, this.openDrawer});
 
   @override
   _FoldersPageAppbarState createState() => _FoldersPageAppbarState();
@@ -44,7 +45,7 @@ class _FoldersPageAppbarState extends State<FoldersPageAppbar> {
          ResponsiveChild(
               smallFlex: _noteNotifier.note == null ? 1 : 0, 
               largeFlex: 2, 
-              child: FolderOverviewAppbar()
+              child: FolderOverviewAppbar(openDrawer: widget.openDrawer)
             ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 

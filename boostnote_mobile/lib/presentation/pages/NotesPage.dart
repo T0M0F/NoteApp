@@ -24,9 +24,8 @@ class NotesPage extends StatefulWidget {
 
   String pageTitle;
   String tag;
-  Folder folder;
 
-  NotesPage({@required this.pageTitle, this.tag, this.folder});
+  NotesPage({@required this.pageTitle, this.tag});
 
   @override
   _NotesPageState createState() => _NotesPageState();
@@ -64,14 +63,14 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void update(List<Note> notes, BuildContext context){
-    setState(() {
+    
       if(_noteOverviewNotifier.notes != null){
         _noteOverviewNotifier.notes.replaceRange(0, _noteOverviewNotifier.notes.length, notes);
       } else {
         _noteOverviewNotifier.notes = notes;
       }
       _noteOverviewNotifier.notesCopy = List<Note>.from(_noteOverviewNotifier.notes);
-    });
+    
   }
 
   @override

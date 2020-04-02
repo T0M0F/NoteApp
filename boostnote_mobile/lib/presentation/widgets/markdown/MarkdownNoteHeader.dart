@@ -1,5 +1,5 @@
-import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
+import 'package:boostnote_mobile/presentation/notifiers/MarkdownEditorNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +11,7 @@ class MarkdownNoteHeader extends StatefulWidget {
   final Function() onInfoClickedCallback;
   final Function() onTagClickedCallback;
 
-  List<FolderEntity> folders;
-  FolderEntity selectedFolder;
-
-  MarkdownNoteHeader({this.folders, this.selectedFolder, this.onInfoClickedCallback, this.onTagClickedCallback});
+  MarkdownNoteHeader({this.onInfoClickedCallback, this.onTagClickedCallback});
 
   @override
   State<StatefulWidget> createState() => _MarkdownNoteHeaderState();
@@ -25,6 +22,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
 
   TextEditingController _textEditingController;
   NoteNotifier _noteNotifier;
+  MarkdownEditorNotifier _markdownEditorNotifier;
 
   @override
   void initState() {
@@ -36,6 +34,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
   @override
   Widget build(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
+    _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
     _textEditingController.text = _noteNotifier.note.title; 
     _textEditingController.addListener(() => _noteNotifier.note.title = _textEditingController.text);
 
@@ -72,15 +71,15 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
                   Container(
                     width: 130,
                     child: DropdownButton<FolderEntity> (    //TODO FolderEntity
-                      value: this.widget.selectedFolder, 
+                      value: _markdownEditorNotifier.selectedFolder, 
                       underline: Container(), 
                       iconEnabledColor: Colors.transparent,
                       style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.display3.color),
-                      items: this.widget.folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
+                      items: (_markdownEditorNotifier.folders ?? List()).map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
                         value: folder,
                         child: Text(folder.name)
                       )).toList(),
-                      onChanged: (folder) => _noteNotifier.note.folder = folder,
+                      onChanged: _changeFolder
                     ),
                   )
                 ],
@@ -117,5 +116,10 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
     ),
     );
   }
+
+  void _changeFolder(folder)  {
+                      _noteNotifier.note.folder = folder;
+                      _markdownEditorNotifier.selectedFolder = folder;
+                    }
 
 }

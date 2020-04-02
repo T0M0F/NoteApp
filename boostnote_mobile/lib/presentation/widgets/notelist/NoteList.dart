@@ -37,8 +37,8 @@ class NoteList extends StatefulWidget {
       itemBuilder: (context, index) {
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
-          onTap: _onTap,
-          onLongPress: _onLongPress,
+          onTap: () => _onTap(_noteOverviewNotifier.notes[index]),
+          onLongPress: () => _onLongPress(_noteOverviewNotifier.notes[index]),
           child: _buildTile(_noteOverviewNotifier.notes[index])
         );
       },
@@ -46,8 +46,8 @@ class NoteList extends StatefulWidget {
 
     Widget _buildTile(Note note) => note is MarkdownNote ? MarkdownTile(note: note) : SnippetTile(note: note);
 
-    void _onTap() {
-      _noteNotifier.note = _noteOverviewNotifier.selectedNotes.first;
+    void _onTap(Note note) {
+      _noteNotifier.note = note;
       /*if(_noteNotifier.note is SnippetNote) {
           selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty 
             ? (_noteNotifier.note as SnippetNote).codeSnippets.first
@@ -55,7 +55,8 @@ class NoteList extends StatefulWidget {
         }*/
     }
 
-    void _onLongPress() {
+    void _onLongPress(Note note) {
+      _noteOverviewNotifier.selectedNote = note;
       showModalBottomSheet(     
         context: context,
         builder: (BuildContext buildContext){

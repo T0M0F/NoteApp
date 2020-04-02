@@ -18,6 +18,7 @@ class TagsPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
   Function() onSnippetEditorViewModeSwitched;
   Function() closeNote;
   final Function() onCreateTagCallback;
+  final Function() openDrawer;
 
   bool markdownEditorPreviewMode;
   Note note;
@@ -25,7 +26,7 @@ class TagsPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
   Function(CodeSnippet) onSelectedCodeSnippetChanged;
   bool snippetEditorEditMode;
 
-  TagsPageAppbar({this.note, this.selectedCodeSnippet , this.snippetEditorEditMode, this.markdownEditorPreviewMode, this.onSelectedActionCallback, this.onMarkdownEditorViewModeSwitchedCallback, this.onSelectedCodeSnippetChanged, this.onSnippetEditorViewModeSwitched, this.closeNote, this.onCreateTagCallback});
+  TagsPageAppbar({this.note, this.selectedCodeSnippet , this.snippetEditorEditMode, this.markdownEditorPreviewMode, this.onSelectedActionCallback, this.onMarkdownEditorViewModeSwitchedCallback, this.onSelectedCodeSnippetChanged, this.onSnippetEditorViewModeSwitched, this.closeNote, this.onCreateTagCallback, this.openDrawer});
 
   @override
   _TagsPageAppbarState createState() => _TagsPageAppbarState();
@@ -46,6 +47,7 @@ class _TagsPageAppbarState extends State<TagsPageAppbar> {
               largeFlex: 2, 
               child: TagOverviewAppbar(
                 onCreateTagCallback: widget.onCreateTagCallback,
+                openDrawer: widget.openDrawer,
               )
             ),
         ResponsiveChild(

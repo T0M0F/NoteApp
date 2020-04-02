@@ -2,6 +2,7 @@ import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/not_in_use/SnippetDescriptionDialog.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,13 +11,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 
 class SnippetNoteHeader extends StatefulWidget {
- 
-  final Function(FolderEntity) onFolderChangedCallback;
-
-  List<FolderEntity> folders;
-  FolderEntity selectedFolder;
-
-  SnippetNoteHeader({this.folders, this.selectedFolder, this.onFolderChangedCallback});
 
   @override
   State<StatefulWidget> createState() => _SnippetNoteHeaderState();
@@ -27,6 +21,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
 
   TextEditingController _textEditingController;
   NoteNotifier _noteNotifier;
+  SnippetNotifier _snippetNotifier;
 
   @override
   void initState() {
@@ -38,7 +33,9 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
   @override
   Widget build(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
+    _snippetNotifier = Provider.of<SnippetNotifier>(context);
     _textEditingController.text = _noteNotifier.note.title; 
+
     _textEditingController.addListener((){
       _noteNotifier.note.title = _textEditingController.text;
     });
@@ -76,20 +73,15 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
                   Container(
                     width: 130,
                     child: DropdownButton<FolderEntity> (    //TODO FolderEntity
-                      value: this.widget.selectedFolder, 
+                      value: _snippetNotifier.selectedFolder, 
                       underline: Container(), 
                       iconEnabledColor: Colors.transparent,
                       style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.display3.color),
-                      items: this.widget.folders.map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
+                      items: (_snippetNotifier.folders ?? List()).map<DropdownMenuItem<FolderEntity>>((folder) => DropdownMenuItem<FolderEntity>(
                         value: folder,
                         child: Text(folder.name)
                       )).toList(),
-                      onChanged: (folder) {
-                          setState(() {
-                            this.widget.selectedFolder = folder;
-                          });
-                          this.widget.onFolderChangedCallback(folder);
-                        }
+                      onChanged: _changeFolder
                     ),
                   )
                 ],
@@ -131,6 +123,11 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
       ],
     ),
     );
+  }
+
+  void _changeFolder(folder) {
+    _noteNotifier.note.folder = folder;
+    _snippetNotifier.selectedFolder = folder;
   }
 
   Future<List<String>> _showNoteInfoDialog() => showDialog(

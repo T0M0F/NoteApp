@@ -58,7 +58,6 @@ class PageNavigator {
       Route route = PageRouteBuilder( 
         pageBuilder: (c, a1, a2) => NotesPage(
           pageTitle: folder.name,
-          folder: folder
         ),
         transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
         transitionDuration: Duration(milliseconds: 0),

@@ -1,6 +1,7 @@
 import 'package:boostnote_mobile/data/internationalization%20%20%20%20/Translation.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/NotesPage.dart';
 import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
@@ -76,7 +77,7 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
           print(locale.languageCode + ' not supported. Load default: ' + supportedLocales.first.languageCode);
           return supportedLocales.first;
         },
-        initialRoute: 'abc',
+        initialRoute: '/',
         routes: {
           'abc': (context) => Scaffold(
             body: Padding(
@@ -100,7 +101,16 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
             return WillPopScope(
               child: NotesPage(pageTitle: AppLocalizations.of(context).translate('all_notes')),
               onWillPop: () {
-                return Future.value(true);
+               // return Future.value(true);
+                NoteNotifier _noteNotifier = Provider.of<NoteNotifier>(context);
+                if(_noteNotifier.note != null){
+                  _noteNotifier.note = null;
+                } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
+                  SystemNavigator.pop();
+                } else {
+                  PageNavigator().navigateBack();
+                  Navigator.of(context).pop();
+                }
                                 /*
                 PageNavigator().navigateBack();
                 if(MediaQuery.of(context).size.width > 1200) {

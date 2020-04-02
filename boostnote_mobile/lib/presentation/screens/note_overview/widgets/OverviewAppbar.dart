@@ -14,7 +14,7 @@ class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
   Function() onNaviagteBackCallback;
   Function(List<Note>) onSearchCallback;
   final Function() onMenuClick;
-
+ 
   String pageTitle;
   Map<String, String> actions;
   List<Note> notes;
@@ -169,7 +169,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
         )
       : IconButton(
           icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
-          onPressed: () => widget.onMenuClick
+          onPressed: widget.onMenuClick
         );
   }
 

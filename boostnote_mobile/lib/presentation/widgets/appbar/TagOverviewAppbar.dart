@@ -9,8 +9,9 @@ import 'package:provider/provider.dart';
 class TagOverviewAppbar extends StatelessWidget implements PreferredSizeWidget{
 
   final Function() onCreateTagCallback;
+  final Function() openDrawer;
 
-  TagOverviewAppbar({this.onCreateTagCallback});
+  TagOverviewAppbar({this.onCreateTagCallback, this.openDrawer});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class TagOverviewAppbar extends StatelessWidget implements PreferredSizeWidget{
       title: Text(AppLocalizations.of(context).translate('tags'), style: Theme.of(context).accentTextTheme.title),
       leading: IconButton(
         icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
-        onPressed: () => GlobalKey<ScaffoldState>().currentState.openDrawer(),
+        onPressed: openDrawer,
       ),
       actions: <Widget>[
         IconButton(

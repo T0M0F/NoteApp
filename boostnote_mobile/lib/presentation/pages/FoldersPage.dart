@@ -79,7 +79,10 @@ class _FoldersPageState extends State<FoldersPage> {
 
     return Scaffold(
       key: _drawerKey,
-      appBar: FoldersPageAppbar(onSelectedActionCallback: (String action) => _selectedAction(action)),
+      appBar: FoldersPageAppbar(
+        onSelectedActionCallback: (String action) => _selectedAction(action),
+        openDrawer: () => _drawerKey.currentState.openDrawer()
+      ),
       drawer: NavigationDrawer(),
       body: _buildBody(context),
       floatingActionButton: ResponsiveFloatingActionButton()
@@ -142,6 +145,21 @@ class _FoldersPageState extends State<FoldersPage> {
       builder: (context){
         return EditSnippetNameDialog();
   });                                  
+
+}
+
+class FoldersUpdater {
+
+    void update(List<Folder> folders, BuildContext context){
+      FolderNotifier _folderNotifier = Provider.of<FolderNotifier>(context);
+    
+      if(_folderNotifier.folders != null){
+        _folderNotifier.folders.replaceRange(0, _folderNotifier.folders.length, folders);
+      } else {
+        _folderNotifier.folders = folders;
+      }
+    
+  }
 
 }
 

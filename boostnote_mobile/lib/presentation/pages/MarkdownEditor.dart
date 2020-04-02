@@ -22,8 +22,7 @@ class MarkdownEditor extends StatefulWidget {
 
 class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObserver{
 
-  List<FolderEntity> _folders;
-  FolderEntity _dropdownValueFolder;
+  FolderService _folderService;
 
   NoteNotifier _noteNotifier;
   MarkdownEditorNotifier _markdownEditorNotifier;
@@ -34,15 +33,20 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     WidgetsBinding.instance.addObserver(this);
     super.initState();
     
-    _folders = List();
+    _folderService = FolderService();
    
-   /*
     _folderService.findAllUntrashed().then((folders) { 
-      setState(() { 
-        _folders = folders;
-         _dropdownValueFolder = _folders.firstWhere((folder) => folder.id == this.widget.note.folder.id);
-      });
-    });*/
+      _markdownEditorNotifier.folders = folders;
+      _markdownEditorNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id);
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
   }
 
   @override
@@ -62,8 +66,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
 
   @override
   Widget build(BuildContext context) {
-    _noteNotifier = Provider.of<NoteNotifier>(context);
-    _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
+
     return _markdownEditorNotifier.isPreviewMode ? _buildMarkdownPreview() : _buildMarkdownEditor();
   }
 
@@ -73,8 +76,6 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 5),
           child: MarkdownNoteHeader(
-            selectedFolder: _dropdownValueFolder,
-            folders: _folders,
             onTagClickedCallback: () => _showTagDialog(context),
             onInfoClickedCallback: () => _showNoteInfoDialog(),
           ),
@@ -94,8 +95,6 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 5),
           child: MarkdownNoteHeader(
-            selectedFolder: _dropdownValueFolder,
-            folders: _folders,
             onTagClickedCallback: () => _showTagDialog(context),
             onInfoClickedCallback: () => _showNoteInfoDialog(),
           ),

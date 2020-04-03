@@ -20,8 +20,8 @@ class CodeTabState extends State<CodeTab> {
     TextEditingController textEditingController = TextEditingController();
     textEditingController.text = _snippetNotifier.selectedCodeSnippet.content;
 
-    return _snippetNotifier.isEditMode ? 
-      Container(
+    return _snippetNotifier.isEditMode 
+    ? Container(
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
         child: TextField(
           autofocus: true,
@@ -36,8 +36,8 @@ class CodeTabState extends State<CodeTab> {
             border: InputBorder.none),
           onChanged: (String text) => _snippetNotifier.selectedCodeSnippet.content = text,
         ),
-      ) :
-      Stack(
+      ) 
+    : Stack(
         children: <Widget>[
           GestureDetector(
             behavior: HitTestBehavior.translucent,
@@ -56,7 +56,7 @@ class CodeTabState extends State<CodeTab> {
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
               child: HighlightView(
                 _snippetNotifier.selectedCodeSnippet.content,
-                language: _snippetNotifier.selectedCodeSnippet.content,
+                language: _snippetNotifier.selectedCodeSnippet.mode,
                 theme: ThemeService().getEditorTheme(context),
                 textStyle: TextStyle(
                             fontFamily: 'My awesome monospace font',

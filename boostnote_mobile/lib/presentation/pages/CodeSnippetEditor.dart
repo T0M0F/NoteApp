@@ -52,20 +52,26 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
 
-    _noteService.save(_noteNotifier.note);
+    if(_noteNotifier.note != null) {
+      _noteService.save(_noteNotifier.note);
+    }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      _noteService.save(_noteNotifier.note);    //TODO double save?
+      if(_noteNotifier.note != null) {  
+        _noteService.save(_noteNotifier.note);   //TODO double save?
+      }  
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if(_snippetNotifier.selectedCodeSnippet == null) { 
-      _snippetNotifier.selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.first;
+      if((_noteNotifier.note as SnippetNote).codeSnippets != null && (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty) {
+        _snippetNotifier.selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.first;
+      }
     }
     
     return _snippetNotifier.selectedCodeSnippet == null ? _buildEmptyBody() : _buildBody();

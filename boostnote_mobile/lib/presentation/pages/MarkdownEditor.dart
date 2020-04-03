@@ -54,13 +54,13 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
 
-    NoteService().save(_noteNotifier.note);
+    //NoteService().save(_noteNotifier.note);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      NoteService().save(_noteNotifier.note);    //mit bool überprüfen ob schon gesaved?
+    //  NoteService().save(_noteNotifier.note);    //mit bool überprüfen ob schon gesaved?
     }
   }
 

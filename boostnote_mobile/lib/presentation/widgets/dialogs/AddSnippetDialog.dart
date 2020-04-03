@@ -83,10 +83,11 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
       : CodeSnippetEntity(
             linesHighlighted: '',  //TODO CodeSnippetEntity...
             name: controller.text,
-            mode: '');
+            mode: '',
+            content: '');
     (_noteNotifier.note as SnippetNote).codeSnippets.add(codeSnippet);
     _snippetNotifier.selectedCodeSnippet = codeSnippet;
     Navigator.of(context).pop();
-}   
+  }   
 
 }

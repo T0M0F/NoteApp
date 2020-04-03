@@ -93,6 +93,7 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
                 icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
                 onPressed: () {
                   _noteNotifier.note = null;
+                  _snippetNotifier.selectedCodeSnippet = null;
                 }
               ),
               actions: <Widget>[

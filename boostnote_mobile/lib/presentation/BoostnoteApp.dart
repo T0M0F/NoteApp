@@ -2,6 +2,7 @@ import 'package:boostnote_mobile/data/internationalization%20%20%20%20/Translati
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/NotesPage.dart';
 import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/screens/note_overview/Overview.dart';
@@ -103,8 +104,10 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
               onWillPop: () {
                // return Future.value(true);
                 NoteNotifier _noteNotifier = Provider.of<NoteNotifier>(context);
+                SnippetNotifier snippetNotifier = Provider.of<SnippetNotifier>(context);
                 if(_noteNotifier.note != null){
                   _noteNotifier.note = null;
+                  snippetNotifier.selectedCodeSnippet = null;
                 } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
                   SystemNavigator.pop();
                 } else {

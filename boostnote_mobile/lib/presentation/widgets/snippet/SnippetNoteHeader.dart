@@ -1,10 +1,9 @@
-import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
-import 'package:boostnote_mobile/not_in_use/SnippetDescriptionDialog.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/SnippetDescription.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';

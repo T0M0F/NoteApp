@@ -34,6 +34,7 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
         icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
         onPressed: () {
           _noteNotifier.note = null;
+          _snippetNotifier.selectedCodeSnippet = null;
         }
       ),
       actions: _buildActions()

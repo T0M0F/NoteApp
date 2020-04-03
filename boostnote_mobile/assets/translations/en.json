@@ -18,6 +18,7 @@
     "expand":"Expanf",
     "collapse":"Collapse",
     "change":"Change",
+    "mode":"Mode",
     "gridview":"Grid",
     "listview":"List",
     "search":"Search",

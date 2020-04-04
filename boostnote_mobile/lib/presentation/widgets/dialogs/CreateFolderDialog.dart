@@ -59,16 +59,12 @@ class _CreateNoteDialogState extends State<CreateFolderDialog> {
      Navigator.of(context).pop();
       _folderService
         .createFolderIfNotExisting(Folder(name: _textEditingController.text))
-        .whenComplete(() => _refresh);
+        .whenComplete(_refresh);
   }
 
   void _refresh() {
     _folderService.findAllUntrashed().then((folders) {
-      if(_folderNotifier.folders != null){
-          _folderNotifier.folders.replaceRange(0, _folderNotifier.folders.length, folders);
-      } else {
-        _folderNotifier.folders = folders;
-      }
+       _folderNotifier.folders = folders;
     });
   }
 }

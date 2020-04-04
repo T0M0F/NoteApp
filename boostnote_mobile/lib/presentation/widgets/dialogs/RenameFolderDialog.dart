@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
@@ -61,12 +62,8 @@ class _CreateNoteDialogState extends State<RenameFolderDialog> {
   }
 
   void refresh() {
-    _folderService.findAllUntrashed().then((folders) {
-      if(_folderNotifier.folders != null){
-          _folderNotifier.folders.replaceRange(0, _folderNotifier.folders.length, folders);
-      } else {
-        _folderNotifier.folders = folders;
-      }
-    });
+    Folder folder = _folderNotifier.selectedFolder;
+    folder.name = _textEditingController.text;
+    _folderNotifier.selectedFolder = folder;
   }
 }

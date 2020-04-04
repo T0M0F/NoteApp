@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
@@ -47,8 +48,9 @@ class FolderOverviewBottomSheet extends StatelessWidget {
   }
 
   void refresh(BuildContext context) {
-    _folderNotifier.folders.remove(_folderNotifier.selectedFolder);
-    FoldersUpdater().update(_folderNotifier.folders, context);
+    List<Folder> folders = _folderNotifier.folders;
+    folders.remove(_folderNotifier.selectedFolder);
+    _folderNotifier.folders = folders;
   }
 
   void _renameFolderDialog(BuildContext context) {

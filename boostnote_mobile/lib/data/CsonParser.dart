@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:core';
+import 'dart:core';
 
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
@@ -23,6 +25,47 @@ class CsonParser {
   //Check for multiple escapes like \\ or \\\ in multiline strings
   //testen ob [] oder {} probleme macht
   
+  String cson2 = '''
+  snippets: [
+      {
+      name: "example.html"
+      content: \'''
+        <html>
+              <body>
+              <h1 id='hello'>Enjoy Boostnote!</h1>
+              </body>
+              </html>
+      \'''
+      mode: "HTML"
+    }
+    {
+      name: "example.js"
+      mode: "JavaScript"
+      content: \'''
+        var boostnote = document.getElementById('hello').innerHTML
+              createdAt:
+              
+              console.log(boostnote)
+      \'''
+    }
+  ]
+  createdAt: "2020-04-01T19:14:14.273Z"
+
+  updatedAt: "2020-04-04T10:52:23.733Z"
+  type: "SNIPPET_NOTE"
+  folder: "f6b3ec63a3b965e19713"
+  title: "Tester"
+  description: \'''
+    Tester
+    sdfsfsdfsdfsdfdsfds
+    sdfdsfdsfdsdsfdfsfdsfs
+  \'''
+  isStarred: false
+  isTrashed: false
+
+  ''';
+
+
 
   String cson = '''
   updatedAt: "2020-01-10T08:53:46.162Z"
@@ -78,6 +121,110 @@ tags: ["[Gu[cci"
 "jK]"
   "A]bcd]" ] 
 ''';
+
+  //TODO:
+  //clean
+  //parse string and num list
+  // special characters in string } ] ''' \
+  Map<String, dynamic> parse2(String cson) {
+
+    Map<String, dynamic> resultMap = Map();
+    List<String> splittedByLine = LineSplitter.split(cson).toList();
+
+    for(int i = 0; i < splittedByLine.length; i++) {
+      List<String> keyValuePair = splittedByLine[i].split(':');
+      if(keyValuePair.length < 2) continue; //blank line
+      String key = keyValuePair[0].trim();
+      dynamic value = keyValuePair[1];
+
+      switch (_mode(key, value)) {
+
+        case Mode.SINGLELINE:
+          resultMap[key] = _clean(value);
+          break;
+
+        case Mode.MULTILINE:
+          for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
+            value = value + '\n' + splittedByLine[i2];
+            if(splittedByLine[i2].trimRight().endsWith('\'\'\'')) {
+              resultMap[key] = _clean(value);
+              i = i2;
+              break;
+            }
+          }
+          break;
+
+        case Mode.OBJECT_LIST:
+          List<Map<String, dynamic>> list = List();
+          String temp = '';
+          for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
+            if(splittedByLine[i2].trimRight().endsWith(']')) {
+              String tempWithoutSquareBrackets = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].trimRight().length-2).trimRight();
+              if(tempWithoutSquareBrackets.endsWith('}')){
+                temp = temp + '\n' + splittedByLine[i2];
+                temp = _clean(temp);
+                list.add(parse2(temp));
+                temp = '';
+              }
+              value = list;
+              resultMap[key] = value;
+              i = i2;
+              break;
+            } else {
+              temp = temp + '\n' + splittedByLine[i2];
+              if(splittedByLine[i2].trimRight().endsWith('}')) {
+                temp = _clean(temp);
+                list.add(parse2(temp));
+                temp = '';
+              }
+            }
+          }
+          break;
+
+        case Mode.NUM_LIST:
+          
+          break;
+
+        case Mode.UNKNOWN:
+          continue;
+          break;
+      }
+
+    }
+
+    return resultMap;
+  }
+
+  Mode _mode(String key, String value) {
+    String trimmedValue = value.trimLeft();
+    if(trimmedValue.startsWith('\'\'\'')) {
+      return Mode.MULTILINE;
+    } else if(trimmedValue.startsWith('"')) {
+      return Mode.SINGLELINE;
+    } else if(key == 'snippets') {
+      return Mode.OBJECT_LIST;
+    } else if(key == 'linesHighlighted'){
+      return Mode.NUM_LIST;
+    } else {
+      return Mode.UNKNOWN;
+    }
+  }
+
+  String _clean(String input) {
+    String cleandedInput = input.trim();
+    if(cleandedInput.startsWith('\'\'\'')) {
+      cleandedInput.replaceFirst('\'\'\'', '');
+    } else if(cleandedInput.startsWith('"')) {
+      cleandedInput.replaceFirst('"', '');
+    }
+    if(cleandedInput.endsWith('\'\'\'')) {
+      cleandedInput.substring(0, cleandedInput.length-4);
+    } else if(cleandedInput.endsWith('"')) {
+      cleandedInput.substring(0, cleandedInput.length-2);
+    }
+    return cleandedInput;
+  }
+
 
 
   Map<String, dynamic> parse(String cson) {
@@ -381,4 +528,12 @@ tags: ["[Gu[cci"
     isTrashed: ''' + note.isTrashed.toString() + '''\n
     ''';
   }
+}
+
+enum Mode {
+  SINGLELINE,
+  MULTILINE,
+  OBJECT_LIST,
+  NUM_LIST,
+  UNKNOWN
 }

@@ -1,3 +1,5 @@
+import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/data/CsonParser.dart';
 import 'package:boostnote_mobile/data/internationalization%20%20%20%20/Translation.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
@@ -27,33 +29,17 @@ class BoostnoteApp extends StatefulWidget {
 
 class _BoostnoteAppState extends State<BoostnoteApp> {
 
-  @override
-  void initState() {
-    super.initState();
-
-    
+ 
+  _test() {
+    CsonParser csonParser = CsonParser();
+    Note note = csonParser.convertToNote(csonParser.parse2(CsonParser().cson2));
   }
 
   @override
   Widget build(BuildContext context) {
 
-    String text = '''
-  sdsd
-  '
-  affsa
-  \'''
-  sadfsdf
-  \''' sdaf \'''
-  
-  \\
-  \\\\
-''';
-  String text2 = text.replaceAll("\\\\", '');
-
-
-
-    String s = 'kfljsk\\asidfjksdlf';
-    String b;
+    _test();
+    return null;
     
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
@@ -80,24 +66,6 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         },
         initialRoute: '/',
         routes: {
-          'abc': (context) => Scaffold(
-            body: Padding(
-              padding: EdgeInsets.only(top: 100),
-              child: Column(children: <Widget>[
-              MarkdownBody(data:text),
-              MarkdownBody(data:text2),
-              TextField(
-                
-               maxLines: null,
-                onChanged: (a) {
-                  setState(() {
-                    s = escape(a);
-                    b = toPrintable(s);
-                  });
-                })
-            ],)
-            )
-          ),
           '/': (context) {
             return WillPopScope(
               child: NotesPage(pageTitle: AppLocalizations.of(context).translate('all_notes')),
@@ -114,77 +82,10 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
                   PageNavigator().navigateBack();
                   Navigator.of(context).pop();
                 }
-                                /*
-                PageNavigator().navigateBack();
-                if(MediaQuery.of(context).size.width > 1200) {
-                  if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES) {
-                    //Kill app
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                } else {
-                  if(NoteIsOpen){
-                    note == null
-                  } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
-                    //Kill app
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                }
-                */
               },
             );
           },
         },
     );
   }
-
-  Widget _buildBody2() {
-    return WillPopScope(
-      child: Scaffold(
-        appBar: CustomAppbar(),
-        body: ResponsiveWidget(widgets: <ResponsiveChild> [
-            ResponsiveChild(
-              smallFlex: 1, 
-              largeFlex: 1, 
-              child: Container(color: Colors.red)
-            ),
-            ResponsiveChild(
-              smallFlex: 0, 
-              largeFlex: 1, 
-              child: Container(color: Colors.green)
-            )
-          ]
-        ), 
-      ),
-      onWillPop: () { //TODO fix
-       
-      }
-    );
-  }
-
-  Widget _buildBody() {
-    return WillPopScope(
-      child: ResponsiveWidget(widgets: <ResponsiveChild> [
-        ResponsiveChild(
-          smallFlex: 1, 
-          largeFlex: 2, 
-          child: Overview()
-        ),
-        ResponsiveChild(
-          smallFlex: 0, 
-          largeFlex: 3, 
-          child: Scaffold(
-            appBar: AppBar(),
-            body: Container()
-            )
-        )
-      ]
-      ), 
-      onWillPop: () { //TODO fix
-        NavigationService().navigateBack(context);
-      }
-    );
-  }
-
 }

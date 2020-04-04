@@ -148,20 +148,6 @@ class _FoldersPageState extends State<FoldersPage> {
 
 }
 
-class FoldersUpdater {
-
-    void update(List<Folder> folders, BuildContext context){
-      FolderNotifier _folderNotifier = Provider.of<FolderNotifier>(context);
-    
-      if(_folderNotifier.folders != null){
-        _folderNotifier.folders.replaceRange(0, _folderNotifier.folders.length, folders);
-      } else {
-        _folderNotifier.folders = folders;
-      }
-    
-  }
-
-}
 
 
 

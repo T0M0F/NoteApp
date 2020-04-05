@@ -279,10 +279,10 @@ class NavigationService {
   } 
 
   void openNoteResponsive(List<Note> notes, Note note,  BuildContext context) { //TODO isTablet remove?
-    noteIsOpen = true;
+   /* noteIsOpen = true;
     Widget editor = note is MarkdownNote
-        ? MarkdownEditor(note)
-        : CodeSnippetEditor(note);
+        ? MarkdownEditor()
+        : CodeSnippetEditor();
 
     Widget responisveWidget = ResponsiveWidget(widgets: <ResponsiveChild> [
      ResponsiveChild(
@@ -303,7 +303,7 @@ class NavigationService {
             transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
             transitionDuration: Duration(milliseconds: 0),
           );
-   Navigator.of(context).push(route);
+   Navigator.of(context).push(route);*/
   }
 
   void openNote(Note note,  BuildContext context) {

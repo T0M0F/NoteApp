@@ -56,7 +56,7 @@ class SnippetNoteEntity extends SnippetNote {
 
 class CodeSnippetEntity extends CodeSnippet {
 
-  CodeSnippetEntity({String linesHighlighted, String name, String mode, String content}):
+  CodeSnippetEntity({List<int> linesHighlighted, String name, String mode, String content}):
   super(linesHighlighted: linesHighlighted, name: name, mode: mode, content: content);
 
   factory CodeSnippetEntity.fromJson(Map<String, dynamic> json) {

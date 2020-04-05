@@ -76,12 +76,12 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
     List<String> s = controller.text.split('.');
     CodeSnippet codeSnippet = s.length > 1 
       ? CodeSnippetEntity(
-            linesHighlighted: '',  //TODO CodeSnippetEntity...
+            linesHighlighted: List(),  //TODO CodeSnippetEntity...
             name: s[0],
             mode: s[1],
             content: '')
       : CodeSnippetEntity(
-            linesHighlighted: '',  //TODO CodeSnippetEntity...
+            linesHighlighted: List(),  //TODO CodeSnippetEntity...
             name: controller.text,
             mode: '',
             content: '');

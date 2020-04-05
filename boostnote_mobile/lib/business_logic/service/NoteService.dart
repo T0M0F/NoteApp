@@ -167,25 +167,25 @@ class NoteService {
   SnippetNote generateSnippetNote(){
 
     String content1 = 'public static void main(String[] args) throws Exception{ \n System.out.println( "" ); \n try{ \n if ( args == null || args.length != 4 ) \n }}';
-    CodeSnippet codeSnippet1 = CodeSnippet(linesHighlighted: '',
+    CodeSnippet codeSnippet1 = CodeSnippet(linesHighlighted: List(),
                                               name: 'Code',
                                               mode: 'java',
                                               content: content1);
 
     String content2 = 'x = 1 \n y = 35656222554887711 \n z = -3255522 \n print(type(x)) \n print(type(y)) \n print(type(z))';
-    CodeSnippet codeSnippet2 = CodeSnippet(linesHighlighted:'',
+    CodeSnippet codeSnippet2 = CodeSnippet(linesHighlighted: List(),
                                               name: 'Code',
                                               mode: 'python',
                                               content: content2);
 
     String content3 = 'function whatIsToday(){ \n echo "Today is " . date('', mktime()); \n }';
-    CodeSnippet codeSnippet3 = CodeSnippet(linesHighlighted: '',
+    CodeSnippet codeSnippet3 = CodeSnippet(linesHighlighted: List(),
                                               name: 'Code',
                                               mode: 'php',
                                               content: content3);
 
     String content4 = 'var name = \'Voyager I\'; \n var year = 1977; \n var antennaDiameter = 3.7; \n var flybyObjects = [\'Jupiter\', \'Saturn\', \'Uranus\', \'Neptune\']; ';
-    CodeSnippet codeSnippet4 = CodeSnippet(linesHighlighted: '',
+    CodeSnippet codeSnippet4 = CodeSnippet(linesHighlighted: List(),
                                               name: 'Code',
                                               mode: 'dart',
                                               content: content4);

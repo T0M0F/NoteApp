@@ -28,6 +28,11 @@ class CsonParser {
   String cson2 = '''
   snippets: [
       {
+      linesHighlighted: [
+        1
+        2
+        3
+      ]
       name: "example.html"
       content: \'''
         <html>
@@ -39,10 +44,11 @@ class CsonParser {
       mode: "HTML"
     }
     {
+      linesHighlighted: []
       name: "example.js"
       mode: "JavaScript"
       content: \'''
-        var boostnote = document.getElementById('hello').innerHTML
+        var boostnote = document.getElementById('hello').innerHTML 
               createdAt:
               
               console.log(boostnote)
@@ -50,11 +56,17 @@ class CsonParser {
     }
   ]
   createdAt: "2020-04-01T19:14:14.273Z"
+  tags: [
+    "Tag1"
+    "Tag2"
+    "Tag3"
+  ]
 
   updatedAt: "2020-04-04T10:52:23.733Z"
   type: "SNIPPET_NOTE"
   folder: "f6b3ec63a3b965e19713"
   title: "Tester"
+
   description: \'''
     Tester
     sdfsfsdfsdfsdfdsfds
@@ -132,7 +144,7 @@ tags: ["[Gu[cci"
     List<String> splittedByLine = LineSplitter.split(cson).toList();
 
     for(int i = 0; i < splittedByLine.length; i++) {
-      List<String> keyValuePair = splittedByLine[i].split(':');
+      List<String> keyValuePair = splitFirst(splittedByLine[i], ':');
       if(keyValuePair.length < 2) continue; //blank line
       String key = keyValuePair[0].trim();
       dynamic value = keyValuePair[1];
@@ -144,6 +156,7 @@ tags: ["[Gu[cci"
           break;
 
         case Mode.MULTILINE:
+        //Annahme, dass sowas '''abc''' nicht geht, bzw in solch einem fall immer "abc" benutzt wird
           for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
             value = value + '\n' + splittedByLine[i2];
             if(splittedByLine[i2].trimRight().endsWith('\'\'\'')) {
@@ -157,15 +170,20 @@ tags: ["[Gu[cci"
         case Mode.OBJECT_LIST:
           List<Map<String, dynamic>> list = List();
           String temp = '';
+          bool inObject = true;
           for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
-            if(splittedByLine[i2].trimRight().endsWith(']')) {
+            if(splittedByLine[i2].trimLeft().startsWith('{')) {
+              inObject = true;
+            }
+            if(splittedByLine[i2].trimRight().endsWith(']') && inObject == false) {
+              /*  Assuming that something like ]} is not legal. Instead end of object ] and end of list } must be in seperate lines.
               String tempWithoutSquareBrackets = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].trimRight().length-2).trimRight();
               if(tempWithoutSquareBrackets.endsWith('}')){
                 temp = temp + '\n' + splittedByLine[i2];
                 temp = _clean(temp);
                 list.add(parse2(temp));
                 temp = '';
-              }
+              }*/
               value = list;
               resultMap[key] = value;
               i = i2;
@@ -173,6 +191,7 @@ tags: ["[Gu[cci"
             } else {
               temp = temp + '\n' + splittedByLine[i2];
               if(splittedByLine[i2].trimRight().endsWith('}')) {
+                inObject = false;
                 temp = _clean(temp);
                 list.add(parse2(temp));
                 temp = '';
@@ -181,8 +200,28 @@ tags: ["[Gu[cci"
           }
           break;
 
-        case Mode.NUM_LIST:
-          
+        case Mode.SIMPLE_LIST:
+          List<dynamic> list = List();
+          list.add(_removeBrackets(value));
+          if(value.trimRight().endsWith(']')) {
+             list.removeWhere((item) => (item as String).isEmpty);
+              value = list;
+              resultMap[key] = value;
+              break;
+          }
+          for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
+            String cleanString = _clean(_removeBrackets(splittedByLine[i2]));
+            if(cleanString.length > 0) {
+               list.add(cleanString);
+            }
+            if(splittedByLine[i2].trimRight().endsWith(']')) {
+              list.removeWhere((item) => (item as String).isEmpty);
+              value = list;
+              resultMap[key] = value;
+              i = i2;
+              break;
+            }
+          }
           break;
 
         case Mode.UNKNOWN:
@@ -195,6 +234,17 @@ tags: ["[Gu[cci"
     return resultMap;
   }
 
+  List<String> splitFirst(String input, String pattern) {
+      List<String> splitted = List();
+      if(input.split(pattern).length > 1){
+        int index = input.indexOf(pattern);
+        splitted =  [input.substring(0,index).trim(), input.substring(index+1).trim()];
+      } else {
+        splitted = input.split(pattern);
+      }
+      return splitted;
+  }
+
   Mode _mode(String key, String value) {
     String trimmedValue = value.trimLeft();
     if(trimmedValue.startsWith('\'\'\'')) {
@@ -203,24 +253,50 @@ tags: ["[Gu[cci"
       return Mode.SINGLELINE;
     } else if(key == 'snippets') {
       return Mode.OBJECT_LIST;
-    } else if(key == 'linesHighlighted'){
-      return Mode.NUM_LIST;
+    } else if(key == 'linesHighlighted' || key == 'tags'){
+      return Mode.SIMPLE_LIST;
     } else {
       return Mode.UNKNOWN;
     }
   }
 
+  String _removeBrackets(String input) {
+    String trimmedInput = input.trim();
+    //Annahme, dass sowas {[ nicht gültig ist, d.h. list start { und object start [ müssen in zwei zeilen sein
+    if(trimmedInput.startsWith('[')) {
+      trimmedInput = trimmedInput.replaceFirst('[', '');
+    }
+    //Annahme, dass sowas }] nicht gültig ist, d.h. list end } und object end } müssen in zwei zeilen sein
+    if(trimmedInput.endsWith(']')) {
+       if(trimmedInput.length > 1) { 
+        trimmedInput = trimmedInput.substring(0, trimmedInput.length-1);
+      } else {
+        trimmedInput = '';
+      }
+    }
+
+    return trimmedInput;
+  }
+
   String _clean(String input) {
     String cleandedInput = input.trim();
     if(cleandedInput.startsWith('\'\'\'')) {
-      cleandedInput.replaceFirst('\'\'\'', '');
+      cleandedInput = cleandedInput.replaceFirst('\'\'\'', '');
     } else if(cleandedInput.startsWith('"')) {
-      cleandedInput.replaceFirst('"', '');
+      cleandedInput = cleandedInput.replaceFirst('"', '');
     }
     if(cleandedInput.endsWith('\'\'\'')) {
-      cleandedInput.substring(0, cleandedInput.length-4);
+      if(cleandedInput.length > 3) {
+        cleandedInput = cleandedInput.substring(0, cleandedInput.length-4);
+      } else {
+        cleandedInput = '';
+      }
     } else if(cleandedInput.endsWith('"')) {
-      cleandedInput.substring(0, cleandedInput.length-2);
+      if(cleandedInput.length > 1) {
+        cleandedInput = cleandedInput.substring(0, cleandedInput.length-1);
+      } else {
+        cleandedInput = '';
+      }
     }
     return cleandedInput;
   }
@@ -238,14 +314,13 @@ tags: ["[Gu[cci"
     int skipUntilIndex;
   
     for(int i = 0; i < splittedByLine.length; i++) {
-      print(skipUntilIndex);
-      print(splittedByLine[i]);
+   
       if(skipLine && i <= skipUntilIndex){    //Problem manchmal null
         continue;
       } else if (skipLine && i > skipUntilIndex) {
         skipLine = false;
         skipUntilIndex = -1;
-      }print(('after'));
+      }
       //RegExp('[createdAt|updatedAt|type|folder|title|description|snippets|linesHighlighted|name|mode|content|tags|isStarred|isTrashed]( )*:'));  //Außer wenn : in ' ' (oder " " ? )
       //List<String> splittedByDoublePoint = splittedByLine[i].split(':');
       int index = splittedByLine[i].indexOf(":");
@@ -275,7 +350,7 @@ tags: ["[Gu[cci"
       /*Check for linesHighlighted, Tags and Snippets*/
       if(key.contains('linesHighlighted')) {  
 
-        print('contains linesHighlighted');
+ 
         String linesHighlighted = '';
         skipLine = true;
          String s = '';
@@ -283,7 +358,7 @@ tags: ["[Gu[cci"
           linesHighlighted = linesHighlighted + '\n' + splittedByLine[i2];
          s= splittedByLine[i2];
           if(splittedByLine[i2].trim().endsWith(']')){   //Außer wenn escaped
-            print(']');
+        
             skipUntilIndex = i2;
             break;
           } 
@@ -312,7 +387,7 @@ tags: ["[Gu[cci"
           } 
           // splittedByLine[i2] = splittedByLine[i2].trimLeft().substring(1);
           //  splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].length-1);
-          print('tag: ' + splittedByLine[i2].trim() + splittedByLine[i2].trim().length.toString());
+        
           if(splittedByLine[i2].trim().length > 2){
             splittedByLine[i2] = splittedByLine[i2].trimLeft().substring(1);
             splittedByLine[i2] = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].length-1);
@@ -326,21 +401,19 @@ tags: ["[Gu[cci"
 
       } else if(key.contains('snippets')) {
 
-        print('contains snnippets');
+     
         List<Map<String,dynamic>> snippets = List();
         String currentSnippet = '';
         for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
           if(splittedByLine[i2].contains('{')) {
-            print('{');
+        
             skipLine = true;
             currentSnippet = currentSnippet + '\n' + splittedByLine[i2];
           } else if(splittedByLine[i2].contains('}')){   //Außer wenn escaped
-            print('}');
+         
             skipUntilIndex = i2;
             currentSnippet = currentSnippet + '\n' + splittedByLine[i2];
-            print('----------------------------current Snippet--------------------------------');
-            print(currentSnippet);
-            print('---------------------------------------------------------------------------');
+          
             snippets.add(parse(currentSnippet));
             currentSnippet = '';
           } else {
@@ -348,7 +421,7 @@ tags: ["[Gu[cci"
           }
           
           if(splittedByLine[i2].contains(']') && splittedByLine[i2-1].contains('}')){   //Außer wenn im objekt drinne         
-            print(']');     //TODO so geht das nicht es kann }] vorkommen
+             //TODO so geht das nicht es kann }] vorkommen
             break;
           }
         } 
@@ -424,7 +497,8 @@ tags: ["[Gu[cci"
         codeSnippets: List<Map<String,dynamic>>.from(map['snippets']).map((snippetMap) => CodeSnippet(
             content: snippetMap['content'],
             mode: snippetMap['mode'],
-            name: snippetMap['name']
+            name: snippetMap['name'],
+            linesHighlighted: List<String>.from(snippetMap['linesHighlighted']).map((string) => int.parse(string)).toList()
         )).toList()
       );
     } else {
@@ -534,6 +608,6 @@ enum Mode {
   SINGLELINE,
   MULTILINE,
   OBJECT_LIST,
-  NUM_LIST,
+  SIMPLE_LIST,
   UNKNOWN
 }

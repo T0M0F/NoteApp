@@ -81,7 +81,7 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
     _tabs = List();
    
     List<CodeSnippet> codeSnippets = this.widget._note.codeSnippets;
-    for(CodeSnippet snippet in codeSnippets){
+   /* for(CodeSnippet snippet in codeSnippets){
       _tabs.add(CodeTab(snippet, _editMode, (text){
         print(text);
         _currentSnippet.content = text;
@@ -92,7 +92,7 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
                 _currentSnippet.content = _currentSnippet.content;
               });
       }));
-    }
+    }*/
     return _tabs;
   }
 
@@ -161,16 +161,7 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
            }
            _noteService.save(this.widget._note);
 
-          _tabs[_currentIndex] = CodeTab(_currentSnippet, _editMode, (text){
-              print(text);
-              _currentSnippet.content = text;
-            },
-            (){
-              setState(() {
-                      _editMode = !_editMode;
-                      _currentSnippet.content = _currentSnippet.content;
-                    });
-            });
+          _tabs[_currentIndex] = CodeTab();
             _tabNames[_currentIndex] =  Tab( text: _currentSnippet.name+'.'+_currentSnippet.mode);
           });
           Navigator.of(context).pop();
@@ -575,12 +566,12 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
       setState(() {
         List<String> s = text.split('.');
         if(s.length > 1){
-            this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: '',  //TODO CodeSnippetEntity...
+            this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: List(),  //TODO CodeSnippetEntity...
                                                       name: s[0],
                                                       mode: s[1],
                                                       content: ''));
         } else {
-            this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: '',
+            this.widget._note.codeSnippets.add(new CodeSnippetEntity(linesHighlighted: List(),
                                                       name: text,
                                                       mode: '',
                                                       content: ''));
@@ -613,14 +604,14 @@ class _SnippetTestEditorState extends State<SnippetTestEditor> with TickerProvid
   Future<String> _showEditNameDialog(BuildContext context, String currentName, Function(String) callback) =>
     showDialog(context: context, 
       builder: (context){
-        return EditSnippetNameDialog(textEditingController: TextEditingController(), noteTitle: currentName, onNameChanged: callback,);
+        return EditSnippetNameDialog();
   });
     
 
   Future<String> _showAddSnippetDialog(BuildContext context, Function(String) callback) =>
     showDialog(context: context, 
       builder: (context){
-        return AddSnippetDialog(controller: TextEditingController(), onSnippetAdded: callback);
+        return AddSnippetDialog();
   });
     
 

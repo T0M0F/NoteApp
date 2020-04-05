@@ -1,16 +1,12 @@
 
+import 'package:boostnote_mobile/presentation/notifiers/TagsNotifier.dart';
+import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/widgets/taglist/TagListTile.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TagList extends StatefulWidget {   //TODO make generic
 
-  final List<String> tags;
-  final Function(String) onRowTap;
-  final Function(String) onRowLongPress;
-
-  TagList({@required this.tags, @required this.onRowTap, this.onRowLongPress}); //TODO: constructor
-  
   @override
   State<StatefulWidget> createState() => _TagListState();
 
@@ -18,20 +14,24 @@ class TagList extends StatefulWidget {   //TODO make generic
 
 class _TagListState extends State<TagList> {
 
+  TagsNotifier _tagsNotifier;
+
   @override
   Widget build(BuildContext context) {
+    _tagsNotifier = Provider.of<TagsNotifier>(context);
+
     return ListView.builder(
-    itemCount: this.widget.tags.length,
+    itemCount: _tagsNotifier.tags.length,
     itemBuilder: (context, index) {
       return GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: () => this.widget.onRowTap(this.widget.tags[index]),
-        onLongPress: () => this.widget.onRowLongPress(this.widget.tags[index]),
-        child: TagListTile(tag: this.widget.tags[index])
+        onTap: () => _onRowTap(_tagsNotifier.tags[index]),
+        child: TagListTile(tag: _tagsNotifier.tags[index])
       );
     },
   );
   }
-  
+
+  void _onRowTap(String tag) => PageNavigator().navigateToNotesWithTag(context, tag);
 
 }

@@ -60,10 +60,7 @@ class _FoldersPageAppbarState extends State<FoldersPageAppbar> {
     return _noteNotifier.note == null   //Sonst fliegt komische exception, wenn in methode ausgelagert
       ? EmptyAppbar()
       : _noteNotifier.note is MarkdownNote
-        ? MarkdownEditorAppBar(
-            isNoteStarred: _noteNotifier.note.isStarred,
-            selectedActionCallback: widget.onSelectedActionCallback,
-        )
+        ? MarkdownEditorAppBar(selectedActionCallback: widget.onSelectedActionCallback)
         : _snippetNotifier.isEditMode
           ? AppBar(
               leading: IconButton(

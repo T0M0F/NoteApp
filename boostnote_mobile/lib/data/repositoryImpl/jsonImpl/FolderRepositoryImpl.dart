@@ -88,6 +88,7 @@ class FolderRepositoryImpl extends FolderRepository {
   @override
   Future<void> save(Folder folder) async { 
     print('saveFolder');
+    folder.id = folder.name.hashCode;
     if(folder.id == 'Trash'.hashCode && folder.name.hashCode != 'Trash'.hashCode) {
       throw Exception('Illegal Operation: Not allowed to rename Trash folder');
     } 

@@ -1,9 +1,11 @@
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/TagsNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/FoldersPage.dart';
 import 'package:boostnote_mobile/presentation/pages/NotesPage.dart';
 import 'package:boostnote_mobile/presentation/pages/TagsPage.dart';
@@ -15,10 +17,12 @@ class PageNavigator {
 
   NoteService _noteService = NoteService();
   FolderService _folderService = FolderService();
+  TagService _tagService = TagService();
   PageNavigatorState pageNavigatorState;
   List<PageNavigatorState> history;
   NoteOverviewNotifier _noteOverviewNotifier;
   FolderNotifier _folderNotifier;
+  TagsNotifier _tagsNotifier;
 
   static final PageNavigator navigationService = new PageNavigator._internal();
 
@@ -51,6 +55,8 @@ class PageNavigator {
 
   void navigateToNotesInFolder(BuildContext context, Folder folder){
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
+    _folderNotifier = Provider.of<FolderNotifier>(context);
+    _folderNotifier.selectedFolder = folder;
     pageNavigatorState = PageNavigatorState.NOTES_IN_FOLDER;
     history.add(pageNavigatorState);
     _noteService.findNotesIn(folder).then((notes){
@@ -70,6 +76,8 @@ class PageNavigator {
 
   void navigateToNotesWithTag(BuildContext context, String tag){
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
+    _tagsNotifier = Provider.of<TagsNotifier>(context);
+    _tagsNotifier.selectedTag = tag;
     pageNavigatorState = PageNavigatorState.NOTES_WITH_TAG;
     history.add(pageNavigatorState);
     _noteService.findNotesByTag(tag).then((notes){
@@ -140,16 +148,20 @@ class PageNavigator {
   }
 
   void navigateToTags(BuildContext context){
+    _tagsNotifier =  Provider.of<TagsNotifier>(context);
     pageNavigatorState = PageNavigatorState.TAGS;
     history.add(pageNavigatorState);
-    Route route = PageRouteBuilder( 
-      pageBuilder: (c, a1, a2) => TagsPage(),
-      transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
-      transitionDuration: Duration(milliseconds: 0),
-    );
-    Navigator.of(context).push(
-      route
-    );
+    _tagService.findAll().then((tags) {
+      _tagsNotifier.tags = tags;
+      Route route = PageRouteBuilder( 
+        pageBuilder: (c, a1, a2) => TagsPage(),
+        transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+        transitionDuration: Duration(milliseconds: 0),
+      );
+      Navigator.of(context).push(
+        route
+      );
+    });
   }
 
   void navigateToSettings(BuildContext context) {

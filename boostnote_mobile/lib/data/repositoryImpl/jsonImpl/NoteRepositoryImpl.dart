@@ -127,6 +127,8 @@ class NoteRepositoryImpl extends NoteRepository {
   @override
   void save(Note note) async {
 
+  note.id = note.createdAt.hashCode;
+
 //TODO: Convertion is ugly -> cast
     if(note is MarkdownNote) {
       MarkdownNote markdownNote = note;

@@ -19,13 +19,13 @@ import 'package:provider/provider.dart';
 class OverviewPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
   final Function(String action) onSelectedActionCallback;
-  final Function() onNaviagteBackCallback;
+
   final Function(List<Note>) onSearchCallback;
   final Function onMenuClick;
  
   String pageTitle;
 
-  OverviewPageAppbar({this.pageTitle, this.onNaviagteBackCallback, this.onSelectedActionCallback, this.onSearchCallback, this.onMenuClick});
+  OverviewPageAppbar({this.pageTitle, this.onSelectedActionCallback, this.onSearchCallback, this.onMenuClick});
 
   @override
   _OverviewPageAppbarState createState() => _OverviewPageAppbarState();
@@ -73,7 +73,6 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
         'COLLPASE_ACTION': ActionConstants.COLLPASE_ACTION, 
         'SHOW_LISTVIEW_ACTION': ActionConstants.SHOW_LISTVIEW_ACTION, 
         'SHOW_GRIDVIEW_ACTION' : ActionConstants.SHOW_GRIDVIEW_ACTION},
-      onNaviagteBackCallback: widget.onNaviagteBackCallback, 
       onSelectedActionCallback: widget.onSelectedActionCallback,
       onMenuClick: widget.onMenuClick,
     );
@@ -83,10 +82,7 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
     return _noteNotifier.note == null   //Sonst fliegt komische exception, wenn in methode ausgelagert
       ? EmptyAppbar()
       : _noteNotifier.note is MarkdownNote
-        ? MarkdownEditorAppBar(
-            isNoteStarred: _noteNotifier.note.isStarred,
-            selectedActionCallback: widget.onSelectedActionCallback,
-        )
+        ? MarkdownEditorAppBar(selectedActionCallback: widget.onSelectedActionCallback,)
         : _snippetNotifier.isEditMode
           ? AppBar(
               leading: IconButton(

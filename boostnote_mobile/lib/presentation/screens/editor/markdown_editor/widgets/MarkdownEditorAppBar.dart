@@ -10,9 +10,7 @@ class MarkdownEditorAppBar extends StatefulWidget implements PreferredSizeWidget
 
   final Function(String) selectedActionCallback;
 
-  bool isNoteStarred;
-
-  MarkdownEditorAppBar({this.isNoteStarred, this.selectedActionCallback});
+  MarkdownEditorAppBar({this.selectedActionCallback});
 
   @override
   _MarkdownEditorAppBarState createState() => _MarkdownEditorAppBarState();
@@ -46,7 +44,7 @@ class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
           onChanged: (bool isPreviewMode) => _markdownEditorNotifier.isPreviewMode = isPreviewMode,
         ),
         OverflowButton(
-          noteIsStarred: widget.isNoteStarred,
+          noteIsStarred: _noteNotifier.note.isStarred,
           selectedActionCallback: widget.selectedActionCallback
         )
       ],

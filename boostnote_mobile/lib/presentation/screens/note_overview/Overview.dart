@@ -136,7 +136,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
           'COLLPASE_ACTION': ActionConstants.COLLPASE_ACTION, 
           'SHOW_LISTVIEW_ACTION': ActionConstants.SHOW_LISTVIEW_ACTION, 
           'SHOW_GRIDVIEW_ACTION' : ActionConstants.SHOW_GRIDVIEW_ACTION},
-        onNaviagteBackCallback: () => _newNavigationService.navigateBack(context), 
+       
         onSelectedActionCallback: (String action) => _selectedAction(action),
         onSearchCallback: (filteredNotes) {
           update(filteredNotes);

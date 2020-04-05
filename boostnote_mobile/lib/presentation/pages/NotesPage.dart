@@ -95,7 +95,6 @@ class _NotesPageState extends State<NotesPage> {
   PreferredSizeWidget _buildAppBar() { 
      return OverviewPageAppbar(
         pageTitle: widget.pageTitle,
-        onNaviagteBackCallback: () {}, 
         onSelectedActionCallback: (String action) => _selectedAction(action),
         onSearchCallback: (filteredNotes) {
           update(filteredNotes, context);

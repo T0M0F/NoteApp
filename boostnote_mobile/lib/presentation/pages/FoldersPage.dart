@@ -44,8 +44,6 @@ class FoldersPage extends StatefulWidget {
 class _FoldersPageState extends State<FoldersPage> {
 
   NoteService _noteService;
-  FolderService _folderService;
-  PageNavigator _pageNavigator;
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
@@ -59,9 +57,6 @@ class _FoldersPageState extends State<FoldersPage> {
     super.initState();
 
     _noteService = NoteService();
-    _pageNavigator = PageNavigator();
-    _folderService = FolderService();
-
 /*
     if(widget.note is SnippetNote) {
       selectedCodeSnippet = (widget.note as SnippetNote).codeSnippets.isNotEmpty 
@@ -105,11 +100,6 @@ class _FoldersPageState extends State<FoldersPage> {
         break;
       case ActionConstants.RENAME_CURRENT_SNIPPET:
        _showRenameSnippetDialog(context);
-        break;
-      case ActionConstants.DELETE_CURRENT_SNIPPET:
-        (_noteNotifier.note as SnippetNote).codeSnippets.remove(_snippetNotifier.selectedCodeSnippet);
-        _snippetNotifier.selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty ? (_noteNotifier.note as SnippetNote).codeSnippets.last : null;
-        _noteService.save(_noteNotifier.note);
         break;
       case ActionConstants.DELETE_CURRENT_SNIPPET:
         (_noteNotifier.note as SnippetNote).codeSnippets.remove(_snippetNotifier.selectedCodeSnippet);

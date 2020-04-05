@@ -72,7 +72,7 @@ class MarkdownPreviewState extends State<MarkdownPreview>{
           },
           extensionSet: ExtensionSet.gitHubFlavored,
          
-          selectable: true,
+          
           
         )
       )

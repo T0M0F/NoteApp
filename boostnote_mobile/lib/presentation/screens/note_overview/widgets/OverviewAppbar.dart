@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
 
   Function(String action) onSelectedActionCallback;
-  Function() onNaviagteBackCallback;
   Function(List<Note>) onSearchCallback;
   final Function() onMenuClick;
  
@@ -19,7 +18,7 @@ class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
   Map<String, String> actions;
   List<Note> notes;
 
-  OverviewAppbar({this.pageTitle, this.notes, this.actions, this.onNaviagteBackCallback, this.onSelectedActionCallback, this.onSearchCallback, this.onMenuClick});
+  OverviewAppbar({this.pageTitle, this.notes, this.actions, this.onSelectedActionCallback, this.onSearchCallback, this.onMenuClick});
 
   @override
   _OverviewAppbarState createState() => _OverviewAppbarState();

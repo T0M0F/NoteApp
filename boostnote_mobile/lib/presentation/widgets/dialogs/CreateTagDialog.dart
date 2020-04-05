@@ -6,11 +6,6 @@ import 'package:flutter/material.dart';
 
 class CreateTagDialog extends StatefulWidget {
 
-  final Function(String tag) saveCallback;
-  final Function() cancelCallback;
-
-  const CreateTagDialog({Key key, @required this.saveCallback, @required this.cancelCallback}) : super(key: key); //TODO: Constructor
-
   @override
   _CreateTagDialogState createState() => _CreateTagDialogState();
 }
@@ -48,7 +43,7 @@ class _CreateTagDialogState extends State<CreateTagDialog> {
       actions: <Widget>[
         CancelButton(),
         SaveButton(save: () {
-          this.widget.saveCallback(_textEditingController.text);
+          //save tag
         })
       ],
     );

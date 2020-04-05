@@ -65,7 +65,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   Widget build(BuildContext context) => Scaffold(
     key: _drawerKey,
     appBar: TagOverviewAppbar(
-      onCreateTagCallback: _createTagDialog,
+    
     ),
     drawer: NavigationDrawer(),
     body: _buildBody(context),
@@ -75,9 +75,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   Widget _buildBody(BuildContext context) {
     return Container(
       child: TagList(
-        tags: _tags, 
-        onRowTap: _onRowTap, 
-        onRowLongPress: _onRowLongPress
+       
       )
     );
   }
@@ -94,13 +92,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
    showDialog(context: context, 
     builder: (context){
       return CreateTagDialog(
-        cancelCallback: () {
-          Navigator.of(context).pop();
-        }, 
-        saveCallback: (String tag) {
-          Navigator.of(context).pop();
-          _createTag(tag);
-        },
+    
       );
     });
   }
@@ -130,14 +122,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
       context: context,
       builder: (BuildContext buildContext){
         return TagOverviewBottomSheet(
-          removeTagCallback: () {
-            Navigator.of(context).pop();
-            _removeTag(tag);
-          } ,
-          renameTagCallback: () {
-            Navigator.of(context).pop();
-            _renameTagDialog(tag);
-          } 
+       
         );
       }
     );

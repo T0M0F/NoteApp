@@ -1,6 +1,7 @@
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/TagsNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,6 +25,7 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
   TagService _tagService;
 
   NoteNotifier _noteNotifier;
+  TagsNotifier _tagsNotifier;
 
   @override
   void initState() {
@@ -42,6 +44,7 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
   @override
   Widget build(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
+    _tagsNotifier = Provider.of<TagsNotifier>(context);
 
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -220,6 +223,7 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
               setState(() {
                 _allTags.add(_textEditingController.text);
               });
+              _tagsNotifier.tags = _allTags;
               TagService().createTagIfNotExisting(_textEditingController.text);
               _textEditingController.clear();
             },

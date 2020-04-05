@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 
 class TagsNotifier with ChangeNotifier {
 
-  String _currentTag;
+  String _selectedTag;  //selected by long press or by tap
   List<String> _tags;
 
-  String get currentTag => _currentTag;
+  String get selectedTag => _selectedTag;
 
   List<String> get tags => _tags;
 
-  set currentTag(String currentTag) {
-    _currentTag = currentTag;
+  set selectedTag(String currentTag) {
+    _selectedTag = currentTag;
     notifyListeners();
   }
 
-  set isEditMode(List<String> tags) {
+  set tags(List<String> tags) {
     _tags = tags;
     notifyListeners();
   }

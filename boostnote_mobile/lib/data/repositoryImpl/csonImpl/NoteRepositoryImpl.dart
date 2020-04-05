@@ -6,6 +6,7 @@ import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
 import 'package:boostnote_mobile/data/CsonParser.dart';
+import 'package:boostnote_mobile/data/IdGenerator.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/FolderRepositoryImpl.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -99,7 +100,7 @@ class NoteRepositoryImpl extends NoteRepository {
   @override
   Future<void> save(Note note) async {
     String path = await localPath;
-    print('id: ' + note.id.toString());
+    note.id = note.createdAt.hashCode;
     File file = File(path + '/' + note.id.toString() + '.cson');
     bool fileExists = await file.exists();
     if(!fileExists) {

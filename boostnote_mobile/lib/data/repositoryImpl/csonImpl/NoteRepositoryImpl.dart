@@ -45,7 +45,7 @@ class NoteRepositoryImpl extends NoteRepository {
   }
 
   @override
-  Future<void> deleteById(int id) async {
+  Future<void> deleteById(String id) async {
     print('deleteById');
     final List<Note> notes = await findAll();
     Note noteToBeRemoved = notes.firstWhere((note) => note.id == id, orElse: () => null);
@@ -78,10 +78,11 @@ class NoteRepositoryImpl extends NoteRepository {
 
   Future<List<Note>> _extractNotes(List<File> _files) async {
     List<Note> notes = List();
-    _files.forEach((file) {
+    _files.forEach((file) async {
       String content = file.readAsStringSync();
       try {
-         notes.add(csonParser.convertToNote(csonParser.parse(content)));
+        print('Reading');
+         notes.add(await csonParser.convertToNote(csonParser.parseCson(content, file.path.split('/').last)));
       } catch(e) {
         print(e);
       }
@@ -91,7 +92,7 @@ class NoteRepositoryImpl extends NoteRepository {
   }
 
   @override
-  Future<Note> findById(int id) async {
+  Future<Note> findById(String id) async {
     print('findById');
     final List<Note> notes = await findAll();
     return Future.value(notes.firstWhere((note) => note.id == id));
@@ -100,8 +101,10 @@ class NoteRepositoryImpl extends NoteRepository {
   @override
   Future<void> save(Note note) async {
     String path = await localPath;
-    note.id = note.createdAt.hashCode;
-    File file = File(path + '/' + note.id.toString() + '.cson');
+    if(note.id == null) {
+      note.id =  IdGenerator().generateId();
+    }
+    File file = File(path + '/' + note.id + '.cson');
     bool fileExists = await file.exists();
     if(!fileExists) {
       print('File does not yet exist');

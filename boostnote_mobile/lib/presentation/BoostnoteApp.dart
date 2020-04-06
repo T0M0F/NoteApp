@@ -22,18 +22,8 @@ class BoostnoteApp extends StatefulWidget {
 
 class _BoostnoteAppState extends State<BoostnoteApp> {
 
- 
-  _test() {
-    CsonParser csonParser = CsonParser();
-    Map<String,dynamic> map = csonParser.parse2(CsonParser().cson2);
-    Note note = csonParser.convertToNote(map);
-    print(note);
-  }
-
   @override
   Widget build(BuildContext context) {
-
-    _test();
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 

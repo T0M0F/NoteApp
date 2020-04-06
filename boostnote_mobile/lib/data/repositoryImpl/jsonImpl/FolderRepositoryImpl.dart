@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
+import 'package:boostnote_mobile/data/IdGenerator.dart';
 import 'package:boostnote_mobile/data/entity/BoostnoteEntity.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:path_provider/path_provider.dart';
@@ -24,8 +25,8 @@ class FolderRepositoryImpl extends FolderRepository {
       BoostnoteEntity boostnoteEntity = BoostnoteEntity(folders: List());
       boostnoteEntity.tags = List();
       file.writeAsStringSync(jsonEncode(boostnoteEntity));
-      await save(Folder(name: 'Default', id: 'Default'.hashCode));  //Endlos Schleife?????
-      await save(Folder(name: 'Trash', id: 'Trash'.hashCode));
+      await save(Folder(name: 'Default'));  //Endlos Schleife?????
+      await save(Folder(name: 'Trash'));
       file = await localFile;
     }
     return file;
@@ -46,24 +47,24 @@ class FolderRepositoryImpl extends FolderRepository {
 
   @override    
   Future<void> delete(Folder folder) {
+    if(folder.name == 'Trash') {       //TODO Trash und default als konstante
+      throw Exception('Illegal Operation: Not allowed to delete Trash folder');
+    } 
+    if(folder.name == 'Default') {
+      throw Exception('Illegal Operation: Not allowed to delete Default folder');
+    }  
     return deleteById(folder.id);
   }
 
   @override
   Future<void> deleteAll(List<Folder> folders) async {      
    // Future.forEach(folders, (folder) => deleteById(folder.id));  //TODO return
-   folders.forEach((folder) => deleteById(folder.id));
+   folders.forEach((folder) => delete(folder));
   }
 
   @override
-  Future<void> deleteById(int id) async {
-    print('deleteFolderById');
-    if(id == 'Trash'.hashCode) {
-      throw Exception('Illegal Operation: Not allowed to delete Trash folder');
-    } 
-    if(id == 'Default'.hashCode) {
-      throw Exception('Illegal Operation: Not allowed to delete Default folder');
-    }                                 //TODO Trash und default als konstante
+  Future<void> deleteById(String id) async {
+    print('deleteFolderById');       
     final File file = await localFile;
     final BoostnoteEntity bnEntity = await boostnoteEntity;
     bnEntity.folders.removeWhere((folder) => folder.id == id);
@@ -79,7 +80,7 @@ class FolderRepositoryImpl extends FolderRepository {
   }
 
   @override
-  Future<Folder> findById(int id) async {
+  Future<Folder> findById(String id) async {
     print('findFolderById');
     final List<Folder> folders = await findAll();
     return Future.value(folders.firstWhere((folder) => folder.id == id));
@@ -88,13 +89,7 @@ class FolderRepositoryImpl extends FolderRepository {
   @override
   Future<void> save(Folder folder) async { 
     print('saveFolder');
-    folder.id = folder.name.hashCode;
-    if(folder.id == 'Trash'.hashCode && folder.name.hashCode != 'Trash'.hashCode) {
-      throw Exception('Illegal Operation: Not allowed to rename Trash folder');
-    } 
-    if(folder.id == 'Default'.hashCode && folder.name.hashCode != 'Default'.hashCode) {
-      throw Exception('Illegal Operation: Not allowed to rename Default folder');
-    }    
+    folder.id = IdGenerator().generateId();  
     final File file = await localFile;
     final BoostnoteEntity bnEntity = await boostnoteEntity;
     for(Folder currentFolder in bnEntity.folders) {

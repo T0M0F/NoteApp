@@ -6,6 +6,7 @@ import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
+import 'package:boostnote_mobile/data/IdGenerator.dart';
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/data/entity/MarkdownNoteEntity.dart';
 import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
@@ -72,7 +73,7 @@ class NoteRepositoryImpl extends NoteRepository {
   }
 
   @override
-  void deleteById(int id) async {
+  void deleteById(String id) async {
     print('deleteById');
     final List<Note> notes = await findAll();
     Note noteToBeRemoved = notes.firstWhere((note) => note.id == id, orElse: () => null);
@@ -118,7 +119,7 @@ class NoteRepositoryImpl extends NoteRepository {
   }
 
   @override
-  Future<Note> findById (int id) async {
+  Future<Note> findById (String id) async {
     print('findById');
     final List<Note> notes = await findAll();
     return Future.value(notes.firstWhere((note) => note.id == id));
@@ -127,7 +128,7 @@ class NoteRepositoryImpl extends NoteRepository {
   @override
   void save(Note note) async {
 
-  note.id = note.createdAt.hashCode;
+  note.id = IdGenerator().generateId();
 
 //TODO: Convertion is ugly -> cast
     if(note is MarkdownNote) {

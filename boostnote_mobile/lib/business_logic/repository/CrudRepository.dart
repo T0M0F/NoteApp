@@ -1,7 +1,7 @@
 
 abstract class CrudRepository<T> {
 
-  Future<T> findById(int id);
+  Future<T> findById(String id);
 
   Future<List<T>> findAll();
 
@@ -13,6 +13,6 @@ abstract class CrudRepository<T> {
 
   void deleteAll(List<T> entities);
 
-  void deleteById(int id);
+  void deleteById(String id);
   
 }

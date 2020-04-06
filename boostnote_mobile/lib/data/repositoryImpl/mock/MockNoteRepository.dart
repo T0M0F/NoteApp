@@ -29,7 +29,7 @@ class MockNoteRepository implements NoteRepository{
   }
 
   @override
-  void deleteById(int id) {
+  void deleteById(String id) {
     List<Note> removeNotes = new List();
 
     for(Note note in _notes){
@@ -47,7 +47,7 @@ class MockNoteRepository implements NoteRepository{
   }
 
   @override
-  Future<Note> findById(int id) async {
+  Future<Note> findById(String id) async {
     for(Note note in _notes){
       if(note.id == id){
         return note;

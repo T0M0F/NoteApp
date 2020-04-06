@@ -8,7 +8,7 @@ import 'FolderEntity.dart';
 
 class SnippetNoteEntity extends SnippetNote {
 
-    SnippetNoteEntity({int id,
+    SnippetNoteEntity({String id,
       DateTime createdAt, 
       DateTime updatedAt, 
       Folder folder, 

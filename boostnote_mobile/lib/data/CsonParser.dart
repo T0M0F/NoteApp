@@ -6,6 +6,9 @@ import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
+import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
+import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/FolderRepositoryImpl.dart';
 import 'package:strings/strings.dart';
 
 //IN Parser und Mapper unterteilen
@@ -24,6 +27,8 @@ class CsonParser {
 
   //Check for multiple escapes like \\ or \\\ in multiline strings
   //testen ob [] oder {} probleme macht
+
+  FolderRepository _folderRepository = FolderRepositoryImpl();
   
   String cson2 = '''
   snippets: [
@@ -134,11 +139,17 @@ tags: ["[Gu[cci"
   "A]bcd]" ] 
 ''';
 
+  Map<String, dynamic> parseCson(String cson, String filename) {
+    Map<String, dynamic> result = _parse2(cson);
+    result['id'] = filename.split('.').first;
+    return result;
+  }
+
   //TODO:
   //clean
   //parse string and num list
   // special characters in string } ] ''' \
-  Map<String, dynamic> parse2(String cson) {
+  Map<String, dynamic> _parse2(String cson) {
 
     Map<String, dynamic> resultMap = Map();
     List<String> splittedByLine = LineSplitter.split(cson).toList();
@@ -157,6 +168,10 @@ tags: ["[Gu[cci"
 
         case Mode.MULTILINE:
         //Annahme, dass sowas '''abc''' nicht geht, bzw in solch einem fall immer "abc" benutzt wird
+          if((value as String).replaceFirst('\'\'\'', '').endsWith('\'\'\'')) {
+            resultMap[key] = _clean(value);
+            break;
+          }
           for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
             value = value + '\n' + splittedByLine[i2];
             if(splittedByLine[i2].trimRight().endsWith('\'\'\'')) {
@@ -193,7 +208,7 @@ tags: ["[Gu[cci"
               if(splittedByLine[i2].trimRight().endsWith('}')) {
                 inObject = false;
                 temp = _clean(temp);
-                list.add(parse2(temp));
+                list.add(_parse2(temp));
                 temp = '';
               }
             }
@@ -287,7 +302,7 @@ tags: ["[Gu[cci"
     }
     if(cleandedInput.endsWith('\'\'\'')) {
       if(cleandedInput.length > 3) {
-        cleandedInput = cleandedInput.substring(0, cleandedInput.length-4);
+        cleandedInput = cleandedInput.substring(0, cleandedInput.length-3);
       } else {
         cleandedInput = '';
       }
@@ -303,7 +318,7 @@ tags: ["[Gu[cci"
 
 
 
-  Map<String, dynamic> parse(String cson) {
+  Map<String, dynamic> _parse(String cson) {
 
     Map<String, dynamic> resutlMap = Map();
     List<String> splittedByLine = LineSplitter.split(cson).toList();
@@ -414,7 +429,7 @@ tags: ["[Gu[cci"
             skipUntilIndex = i2;
             currentSnippet = currentSnippet + '\n' + splittedByLine[i2];
           
-            snippets.add(parse(currentSnippet));
+            snippets.add(_parse(currentSnippet));
             currentSnippet = '';
           } else {
             currentSnippet = currentSnippet + '\n' + splittedByLine[i2];
@@ -478,7 +493,7 @@ tags: ["[Gu[cci"
     return resutlMap;
   }
 
-  Note convertToNote(Map<String, dynamic> map) {
+  Future<Note> convertToNote(Map<String, dynamic> map) async {
     Note note;
 
     //replace ecscape chars with nothing
@@ -487,10 +502,10 @@ tags: ["[Gu[cci"
       note = SnippetNote(
         createdAt:  DateTime.parse(map['createdAt']),
         updatedAt:   DateTime.parse(map['updatedAt']),
-        id: DateTime.parse(map['createdAt']).hashCode,
+        id: map['id'],
         title: map['title'],
         description: map['description'],
-        folder: Folder(name: map['folder'], id: map['folder'].hashCode),
+        folder: await FolderRepositoryImpl().findById(map['folder']),  
         isStarred: 'true' == map['isStarred'],
         isTrashed: 'true' == map['isTrashed'],
         tags:  List<String>.from(map['tags']), 
@@ -505,10 +520,10 @@ tags: ["[Gu[cci"
       note = MarkdownNote(
         createdAt:  DateTime.parse(map['createdAt']),
         updatedAt:   DateTime.parse(map['updatedAt']),
-        id: DateTime.parse(map['createdAt']).hashCode,
+        id: map['id'],
         title: map['title'],
         content: map['content'],
-        folder: Folder(name: map['folder'], id: map['folder'].hashCode),
+        folder: await FolderRepositoryImpl().findById(map['folder']), 
         isStarred: 'true' == map['isStarred'],
         isTrashed: 'true' == map['isTrashed'],
         tags:  List<String>.from(map['tags'])
@@ -529,7 +544,7 @@ tags: ["[Gu[cci"
   String convertMarkdownNoteToCson(MarkdownNote note){
 
     // note.content = note.content.replaceAll(new RegExp(r'\\'), '\\\\');
-    note.content = note.content.replaceAll('\'\'\'', '\\\'\'\'');
+    //note.content = note.content.replaceAll('\'\'\'', '\\\'\'\'');
 
 
     String tagString;
@@ -546,7 +561,7 @@ tags: ["[Gu[cci"
     createdAt: "''' + note.createdAt.toString() + '''"
     updatedAt: "''' + note.updatedAt.toString() + '''"
     type: "''' + (note is SnippetNote ? 'SNIPPET_NOTE' : 'MARKDOWN_NOTE') + '''"
-    folder: "''' + note.folder.name + '''"
+    folder: "''' + note.folder.id + '''"
     content: \'\'\'''' + note.content + '''\'\'\'
     title: "''' + note.title + '''"
     tags: ''' + tagString + '''
@@ -558,8 +573,8 @@ tags: ["[Gu[cci"
 
   String convertSnippetNoteToCson(SnippetNote note){
 
-    note.description = note.description.replaceAll(new RegExp(r'\\'), '\\\\');
-    note.description = note.description.replaceAll('\'\'\'', '\\\'\'\'');
+    //note.description = note.description.replaceAll(new RegExp(r'\\'), '\\\\');
+    //note.description = note.description.replaceAll('\'\'\'', '\\\'\'\'');
     
     String tagString;
     if(note.tags.isEmpty){
@@ -591,7 +606,7 @@ tags: ["[Gu[cci"
     createdAt: "''' + note.createdAt.toString() + '''"
     updatedAt: "''' + note.updatedAt.toString() + '''"
     type: "''' + (note is SnippetNote ? 'SNIPPET_NOTE' : 'MARKDOWN_NOTE') + '''"
-    folder: \'\'\'''' + note.folder.name + '''\'\'\'
+    folder: "''' + note.folder.id + '''"
     description: \'\'\'''' + note.description + '''\'\'\'
     snippets: [
       ''' + snippets + '''

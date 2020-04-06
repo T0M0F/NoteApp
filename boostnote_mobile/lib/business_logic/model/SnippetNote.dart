@@ -7,7 +7,7 @@ class SnippetNote extends Note {
   String description;
   List<CodeSnippet> codeSnippets;
     
-  SnippetNote({int id,
+  SnippetNote({String id,
       DateTime createdAt, 
       DateTime updatedAt, 
       Folder folder, 

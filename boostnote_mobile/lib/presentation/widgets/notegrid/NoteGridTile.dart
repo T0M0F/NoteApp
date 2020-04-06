@@ -81,18 +81,32 @@ class NoteGridTile extends StatelessWidget {
 
     if(note is SnippetNote) {
       SnippetNote snippetNote = note;
-      if(snippetNote.description.trim().isNotEmpty) {
+      if(snippetNote.description != null && snippetNote.description.trim().isNotEmpty) {
          widget = Text(
             snippetNote.description,
             maxLines: 3,
             style: Theme.of(context).textTheme.display1,
           );
-      } else if(snippetNote.codeSnippets.isNotEmpty) {
-        widget = Text(
-            snippetNote.codeSnippets.first.content,
-            maxLines: 3,
-              style: Theme.of(context).textTheme.display1,
-          );
+      } else if(snippetNote.codeSnippets != null && snippetNote.codeSnippets.isNotEmpty) {
+        bool contentNullorEmpyty = true;
+        for(CodeSnippet snippet in snippetNote.codeSnippets) {
+          if(snippet.content != null) {
+            widget = Text(
+              snippetNote.codeSnippets.first.content,
+              maxLines: 3,
+                style: Theme.of(context).textTheme.display1,
+            );
+            contentNullorEmpyty = false;
+            break;
+          }
+        }
+        if(contentNullorEmpyty) {
+          widget = Text(
+            '\n' + AppLocalizations.of(context).translate('no_data') + '\n', 
+            style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.display1.color)
+          );  
+        }
+        
       } else {
         widget = Text(
           '\n' + AppLocalizations.of(context).translate('no_data') + '\n', 
@@ -102,7 +116,7 @@ class NoteGridTile extends StatelessWidget {
 
     } else {
       MarkdownNote markdownNote = note;
-      if(markdownNote.content.trim().isEmpty) {
+      if(markdownNote.content == null || markdownNote.content.trim().isEmpty) {
         widget = Text(
           '\n' + AppLocalizations.of(context).translate('no_data') + '\n', 
           style:  TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.display1.color)

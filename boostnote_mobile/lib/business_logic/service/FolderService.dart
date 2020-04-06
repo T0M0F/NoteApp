@@ -24,7 +24,7 @@ class FolderService {
   }
 
   Future<void> renameFolder(Folder oldFolder, String newName) async {
-    Folder newFolder = Folder(id: newName.hashCode, name: newName);
+    Folder newFolder = Folder(name: newName);
     createFolderIfNotExisting(newFolder);
     List<Note> notesToBeMoved = await _noteService.findNotesIn(oldFolder);
     notesToBeMoved.forEach((note) => note.folder = newFolder);

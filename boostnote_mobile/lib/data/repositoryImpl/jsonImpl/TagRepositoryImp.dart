@@ -43,19 +43,19 @@ class TagRepositoryImpl implements TagRepository{
   
   @override
   Future<void> delete(String tag) {
-     return deleteById(tag.hashCode);
+     return deleteById(tag);
   }
 
   @override
   Future<void> deleteAll(List<String> tags) {  //TODO return
-    tags.forEach((tag) => deleteById(tag.hashCode));
+    tags.forEach((tag) => deleteById(tag));
   }
 
   @override
-  Future<void> deleteById(int hashCode) async {
+  Future<void> deleteById(String name) async {
     final File file = await localFile;
     final BoostnoteEntity bnEntity = await boostnoteEntity;
-    bnEntity.tags.removeWhere((tag) => tag.hashCode == hashCode);
+    bnEntity.tags.removeWhere((tag) => tag == name);
     file.writeAsString(jsonEncode(bnEntity));
   }
 
@@ -66,10 +66,10 @@ class TagRepositoryImpl implements TagRepository{
     return Future.value(bnEntity.tags); 
   }
 
-  @override
-  Future<String> findById(int hashCode) async {
+  @override //currently findByName
+  Future<String> findById(String name) async {
     final List<String> tags = await findAll();
-    return Future.value(tags.firstWhere((tag) => tag.hashCode == hashCode));
+    return Future.value(tags.firstWhere((tag) => tag == name));
   }
 
   @override

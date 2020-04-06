@@ -6,6 +6,7 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
+import 'package:boostnote_mobile/data/IdGenerator.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/csonImpl/NoteRepositoryImpl.dart';
 
 class NoteService {
@@ -94,9 +95,7 @@ class NoteService {
     return filteredNotes;
   }
 
-  Future<void> createNote(Note note) async{  //TODO Validation + kein note objekt als param sondern nur einzelne werte und created at selber genrieren
-    note.id = note.createdAt.hashCode;   //TODO CHECK if folder / tag exists
-    note.folder.id = note.folder.name.hashCode;
+  Future<void> createNote(Note note) async{  //TODO Validation + kein note objekt als param sondern nur einzelne werte und created at selber genrieren  //TODO CHECK if folder / tag exists
     save(note);
   }
 
@@ -113,7 +112,6 @@ class NoteService {
   void restore(Note note) {
     note.isTrashed = false;
     note.folder.name = 'Default';
-    note.folder.id = 'Default'.hashCode;
     save(note);
   }
 
@@ -122,7 +120,6 @@ class NoteService {
     note.isTrashed = true;
     note.isStarred = false;
     note.folder.name = 'Trash';
-    note.folder.id = 'Trash'.hashCode;
     save(note);
   }
 
@@ -193,7 +190,7 @@ class NoteService {
 
     String description = 'lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
-    return SnippetNote(id: DateTime.now().hashCode,
+    return SnippetNote(id: IdGenerator().generateId(),
                       createdAt: DateTime.now(),
                       updatedAt: DateTime.now(),
                       folder: Folder(name: 'Folder2'),
@@ -272,7 +269,7 @@ Enjoy!
 [Google]: https://www.google.com/
 """;
     
-    return MarkdownNote(id: DateTime.now().hashCode,
+    return MarkdownNote(id: IdGenerator().generateId(),
                         createdAt: DateTime.now(),
                         updatedAt: DateTime(2017,02,28),
                         folder: Folder(name: 'Folder1'),

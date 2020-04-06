@@ -5,7 +5,7 @@ import 'FolderEntity.dart';
 
 class MarkdownNoteEntity extends MarkdownNote {
 
-  MarkdownNoteEntity({int id,
+  MarkdownNoteEntity({String id,
       DateTime createdAt, 
       DateTime updatedAt, 
       Folder folder, 

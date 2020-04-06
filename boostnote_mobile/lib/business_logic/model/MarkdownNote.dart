@@ -6,7 +6,7 @@ class MarkdownNote extends Note{
 
   String content;
 
-  MarkdownNote({int id,
+  MarkdownNote({String id,
       DateTime createdAt, 
       DateTime updatedAt, 
       Folder folder, 

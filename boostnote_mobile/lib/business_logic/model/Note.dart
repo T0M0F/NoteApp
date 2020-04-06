@@ -2,7 +2,7 @@ import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 
 abstract class Note {
 
-  int id;
+  String id;
   final DateTime createdAt;
   DateTime updatedAt;
   Folder folder; //im wiki nach gucken, wie wert generiert wird + evtl extra Klasse

@@ -1,4 +1,5 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
@@ -11,14 +12,12 @@ import 'package:provider/provider.dart';
 class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
 
   Function(String action) onSelectedActionCallback;
-  Function(List<Note>) onSearchCallback;
   final Function() onMenuClick;
  
-  String pageTitle;
   Map<String, String> actions;
   List<Note> notes;
 
-  OverviewAppbar({this.pageTitle, this.notes, this.actions, this.onSelectedActionCallback, this.onSearchCallback, this.onMenuClick});
+  OverviewAppbar({this.notes, this.actions, this.onSelectedActionCallback, this.onMenuClick});
 
   @override
   _OverviewAppbarState createState() => _OverviewAppbarState();
@@ -54,10 +53,10 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
     _filter = TextEditingController();
     filteredNotes = List();
     _searchIcon = Icon(Icons.search, color: Theme.of(context).buttonColor);
-    _appbarTitle = Text(this.widget.pageTitle, style: Theme.of(context).accentTextTheme.title);
+    _appbarTitle = Text(_noteOverviewNotifier.pageTitle ?? AppLocalizations.of(context).translate('all_notes'), style: Theme.of(context).accentTextTheme.title);
     _searchText = "";
     _firstLoad = false;
-
+ 
     _filter.addListener(() {
       if (_filter.text.isEmpty) {
         setState(() {
@@ -67,7 +66,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
             tempList.add(this.widget.notes[i]);
           }
           filteredNotes = tempList;
-          this.widget.onSearchCallback(tempList);
+          _noteOverviewNotifier.notes = tempList;
         });
       } else {
         setState(() {
@@ -79,7 +78,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
             }
           }
           filteredNotes = tempList;
-          this.widget.onSearchCallback(tempList);
+          _noteOverviewNotifier.notes = tempList;
         });
       }
     });
@@ -152,7 +151,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
         );
       } else {
         this._searchIcon = Icon(Icons.search, color: Theme.of(context).buttonColor);
-        this._appbarTitle = Text(this.widget.pageTitle, style: Theme.of(context).accentTextTheme.title);
+        this._appbarTitle = Text(_noteOverviewNotifier.pageTitle ?? AppLocalizations.of(context).translate('all_notes'), style: Theme.of(context).accentTextTheme.title);
         filteredNotes = this.widget.notes;
         _filter.clear();
       }
@@ -164,7 +163,10 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
             ||  PageNavigator().pageNavigatorState == PageNavigatorState.NOTES_WITH_TAG 
       ? IconButton(
           icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor),
-          onPressed: ()  => Navigator.of(context).pop(),
+          onPressed: ()  {
+            PageNavigator().navigateBack(context);
+            Navigator.of(context).pop();
+          },
         )
       : IconButton(
           icon: Icon(Icons.menu, color: Theme.of(context).accentColor),

@@ -1,5 +1,6 @@
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
+import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/theme/BoostnoteTheme.dart';
 import 'package:boostnote_mobile/presentation/theme/ThemeNotifier.dart';
 import 'package:boostnote_mobile/presentation/theme/ThemeService.dart';
@@ -39,9 +40,15 @@ class SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: _buildBody(),
+    return WillPopScope(
+      child: Scaffold(
+        appBar: _buildAppBar(),
+        body: _buildBody(),
+      ),
+      onWillPop: () {
+        PageNavigator().navigateBack(context);
+        Navigator.of(context).pop();
+      },
     );
   }
 
@@ -51,6 +58,7 @@ class SettingsState extends State<Settings> {
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor), 
         onPressed: () {
+          PageNavigator().navigateBack(context);
           Navigator.of(context).pop();
         }
       )

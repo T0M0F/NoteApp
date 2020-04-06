@@ -14,7 +14,7 @@ class CustomAppbar extends StatelessWidget  implements PreferredSizeWidget{
               smallFlex: 1, 
               largeFlex: 1, 
               child: OverviewAppbar(
-                pageTitle: 'Test',
+              
                 notes: List(),
                 actions: {
                   'EXPAND_ACTION': ActionConstants.EXPAND_ACTION, 
@@ -27,7 +27,7 @@ class CustomAppbar extends StatelessWidget  implements PreferredSizeWidget{
               smallFlex: 0, 
               largeFlex: 1, 
               child: OverviewAppbar(
-                pageTitle: 'Test2',   
+              
                 notes: List(),
                 actions: {
                   'EXPAND_ACTION': ActionConstants.EXPAND_ACTION, 

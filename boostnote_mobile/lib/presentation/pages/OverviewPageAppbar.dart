@@ -20,12 +20,9 @@ class OverviewPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
   final Function(String action) onSelectedActionCallback;
 
-  final Function(List<Note>) onSearchCallback;
   final Function onMenuClick;
- 
-  String pageTitle;
 
-  OverviewPageAppbar({this.pageTitle, this.onSelectedActionCallback, this.onSearchCallback, this.onMenuClick});
+  OverviewPageAppbar({this.onSelectedActionCallback, this.onMenuClick});
 
   @override
   _OverviewPageAppbarState createState() => _OverviewPageAppbarState();
@@ -62,12 +59,10 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
       ]
     );
   }
-
+ 
   Widget _buildLeftAppbar(BuildContext context) {
     return OverviewAppbar(
-      pageTitle: widget.pageTitle,
       notes: _noteOverviewNotifier.notesCopy,
-      onSearchCallback: widget.onSearchCallback,
       actions: {
         'EXPAND_ACTION': ActionConstants.EXPAND_ACTION, 
         'COLLPASE_ACTION': ActionConstants.COLLPASE_ACTION, 

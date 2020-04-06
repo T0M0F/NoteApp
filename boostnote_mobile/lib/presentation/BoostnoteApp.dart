@@ -2,6 +2,7 @@ import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/data/CsonParser.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/NotesPage.dart';
 import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
@@ -60,23 +61,9 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         initialRoute: '/',
         routes: {
           '/': (context) {
-            return WillPopScope(
-              child: NotesPage(pageTitle: AppLocalizations.of(context).translate('all_notes')),
-              onWillPop: () {
-               // return Future.value(true);
-                NoteNotifier _noteNotifier = Provider.of<NoteNotifier>(context);
-                SnippetNotifier snippetNotifier = Provider.of<SnippetNotifier>(context);
-                if(_noteNotifier.note != null){
-                  _noteNotifier.note = null;
-                  snippetNotifier.selectedCodeSnippet = null;
-                } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
-                  SystemNavigator.pop();
-                } else {
-                  PageNavigator().navigateBack();
-                  Navigator.of(context).pop();
-                }
-              },
-            );
+           
+            return NotesPage();
+            //Todo Die andederen Routes hier ergänzen
           },
         },
     );

@@ -67,6 +67,7 @@ class _FoldersPageAppbarState extends State<FoldersPageAppbar> {
                 icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
                 onPressed: () {
                   _noteNotifier.note = null;
+                  _snippetNotifier.selectedCodeSnippet = null;
                 }
               ),
               actions: <Widget>[

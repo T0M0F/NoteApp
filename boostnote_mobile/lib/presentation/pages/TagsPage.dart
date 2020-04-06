@@ -19,6 +19,7 @@ import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:boostnote_mobile/presentation/widgets/taglist/TagList.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'TagsPageAppbar.dart';
@@ -67,13 +68,34 @@ class _TagsPageState extends State<TagsPage> {
     _noteNotifier = Provider.of<NoteNotifier>(context);
     _snippetNotifier = Provider.of<SnippetNotifier>(context);
     
-    return Scaffold(
-      key: _drawerKey,
-      appBar: _buildAppBar(context),
-      drawer: NavigationDrawer(),
-      body: _buildBody(context),
-      floatingActionButton: ResponsiveFloatingActionButton()
-    );
+    return _buildScaffold(context);
+  }
+
+  Widget _buildScaffold(BuildContext context) {
+    return WillPopScope(
+      child: Scaffold(
+        key: _drawerKey,
+        appBar: _buildAppBar(context),
+        drawer: NavigationDrawer(),
+        body: _buildBody(context),
+        floatingActionButton: ResponsiveFloatingActionButton()
+      ), 
+      onWillPop: () {
+        NoteNotifier _noteNotifier = Provider.of<NoteNotifier>(context);
+        SnippetNotifier snippetNotifier = Provider.of<SnippetNotifier>(context);
+        if(_drawerKey.currentState.isDrawerOpen) {
+          _drawerKey.currentState.openEndDrawer();
+        } else if(_noteNotifier.note != null){
+          _noteNotifier.note = null;
+          snippetNotifier.selectedCodeSnippet = null;
+        } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
+          SystemNavigator.pop();
+        } else {
+          PageNavigator().navigateBack(context);
+          Navigator.of(context).pop();
+        }
+      },
+    );  
   }
 
   Widget _buildAppBar(BuildContext context) {

@@ -129,7 +129,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
 
   PreferredSizeWidget _buildAppBar() { 
      return OverviewAppbar(
-        pageTitle: _pageTitle,
+      
         notes: _notesCopy,
         actions: {
           'EXPAND_ACTION': ActionConstants.EXPAND_ACTION, 
@@ -138,9 +138,7 @@ class _OverviewState extends State<Overview> implements OverviewView, Refreshabl
           'SHOW_GRIDVIEW_ACTION' : ActionConstants.SHOW_GRIDVIEW_ACTION},
        
         onSelectedActionCallback: (String action) => _selectedAction(action),
-        onSearchCallback: (filteredNotes) {
-          update(filteredNotes);
-        },
+    
       );
   }
 

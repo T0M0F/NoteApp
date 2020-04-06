@@ -32,6 +32,7 @@ import 'package:boostnote_mobile/presentation/widgets/folderlist/FolderList.dart
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 
@@ -72,16 +73,37 @@ class _FoldersPageState extends State<FoldersPage> {
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
     _folderNotifier = Provider.of<FolderNotifier>(context);
 
-    return Scaffold(
-      key: _drawerKey,
-      appBar: FoldersPageAppbar(
-        onSelectedActionCallback: (String action) => _selectedAction(action),
-        openDrawer: () => _drawerKey.currentState.openDrawer()
-      ),
-      drawer: NavigationDrawer(),
-      body: _buildBody(context),
-      floatingActionButton: ResponsiveFloatingActionButton()
-    );
+    return _buildScaffold(context);
+  }
+
+  Widget _buildScaffold(BuildContext context) {
+    return WillPopScope(
+      child: Scaffold(
+        key: _drawerKey,
+        appBar: FoldersPageAppbar(
+          onSelectedActionCallback: (String action) => _selectedAction(action),
+          openDrawer: () => _drawerKey.currentState.openDrawer()
+        ),
+        drawer: NavigationDrawer(),
+        body: _buildBody(context),
+        floatingActionButton: ResponsiveFloatingActionButton()
+      ), 
+      onWillPop: () {
+        NoteNotifier _noteNotifier = Provider.of<NoteNotifier>(context);
+        SnippetNotifier snippetNotifier = Provider.of<SnippetNotifier>(context);
+        if(_drawerKey.currentState.isDrawerOpen) {
+          _drawerKey.currentState.openEndDrawer();
+        } else if(_noteNotifier.note != null){
+          _noteNotifier.note = null;
+          snippetNotifier.selectedCodeSnippet = null;
+        } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
+          SystemNavigator.pop();
+        } else {
+          PageNavigator().navigateBack(context);
+          Navigator.of(context).pop();
+        }
+      },
+    );  
   }
 
   void _selectedAction(String action){

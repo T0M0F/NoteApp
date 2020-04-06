@@ -1,5 +1,6 @@
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/BoostnoteApp.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/MarkdownEditorNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';

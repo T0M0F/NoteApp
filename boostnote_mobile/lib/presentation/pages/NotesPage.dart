@@ -11,6 +11,7 @@ import 'package:boostnote_mobile/presentation/pages/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/Overview.dart';
 import 'package:boostnote_mobile/presentation/pages/OverviewPageAppbar.dart';
+import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/pages/ResponsiveFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
@@ -18,14 +19,10 @@ import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDia
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class NotesPage extends StatefulWidget {
-
-  String pageTitle;
-  String tag;
-
-  NotesPage({@required this.pageTitle, this.tag});
 
   @override
   _NotesPageState createState() => _NotesPageState();
@@ -62,17 +59,6 @@ class _NotesPageState extends State<NotesPage> {
     notesCopy = List<Note>.from(widget.notes);*/
   }
 
-  void update(List<Note> notes, BuildContext context){
-    
-      if(_noteOverviewNotifier.notes != null){
-        _noteOverviewNotifier.notes.replaceRange(0, _noteOverviewNotifier.notes.length, notes);
-      } else {
-        _noteOverviewNotifier.notes = notes;
-      }
-      _noteOverviewNotifier.notesCopy = List<Note>.from(_noteOverviewNotifier.notes);
-    
-  }
-
   @override
   Widget build(BuildContext context) {
     noteNotifier = Provider.of<NoteNotifier>(context);
@@ -82,23 +68,36 @@ class _NotesPageState extends State<NotesPage> {
     return _buildScaffold(context);
   }
 
-  Scaffold _buildScaffold(BuildContext context) {
-    return  Scaffold(
-      key: _drawerKey,
-      appBar: _buildAppBar(),
-      drawer: NavigationDrawer(), 
-      body: _buildBody(), 
-      floatingActionButton: ResponsiveFloatingActionButton()
+  Widget _buildScaffold(BuildContext context) {
+    return WillPopScope(
+      child: Scaffold(
+        key: _drawerKey,
+        appBar: _buildAppBar(),
+        drawer: NavigationDrawer(), 
+        body: _buildBody(), 
+        floatingActionButton: ResponsiveFloatingActionButton()
+      ), 
+      onWillPop: () {
+        NoteNotifier _noteNotifier = Provider.of<NoteNotifier>(context);
+        SnippetNotifier snippetNotifier = Provider.of<SnippetNotifier>(context);
+        if(_drawerKey.currentState.isDrawerOpen) {
+          _drawerKey.currentState.openEndDrawer();
+        } else if(_noteNotifier.note != null){
+          _noteNotifier.note = null;
+          snippetNotifier.selectedCodeSnippet = null;
+        } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
+          SystemNavigator.pop();
+        } else {
+          PageNavigator().navigateBack(context);
+          Navigator.of(context).pop();
+        }
+      },
     );  
   }
 
   PreferredSizeWidget _buildAppBar() { 
      return OverviewPageAppbar(
-        pageTitle: widget.pageTitle,
         onSelectedActionCallback: (String action) => _selectedAction(action),
-        onSearchCallback: (filteredNotes) {
-          update(filteredNotes, context);
-        },
         onMenuClick: () => _drawerKey.currentState.openDrawer(),
       );
   }

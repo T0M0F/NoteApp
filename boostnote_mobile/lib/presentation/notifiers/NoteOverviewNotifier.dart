@@ -9,6 +9,7 @@ class NoteOverviewNotifier with ChangeNotifier {
   List<Note> _notes;
   List<Note> _notesCopy;
   Note _selectedNote; //selectecByLongPress
+  String _pageTitle;
 
   NoteOverviewNotifier(this._expandedTiles, this._showListView);
 
@@ -25,6 +26,8 @@ class NoteOverviewNotifier with ChangeNotifier {
   List<Note> get notesCopy => _notesCopy;
 
   Note get selectedNote => _selectedNote;
+
+  String get pageTitle => _pageTitle;
 
   set showListView(bool showListVIew) {
     _showListView = showListVIew;
@@ -46,8 +49,13 @@ class NoteOverviewNotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  set selectedNote(Note noten) {
-    _selectedNote = noten;
+  set selectedNote(Note notes) {
+    _selectedNote = notes;
+    notifyListeners();
+  }
+
+  set pageTitle(String pageTitle) {
+    _pageTitle = pageTitle;
     notifyListeners();
   }
 }

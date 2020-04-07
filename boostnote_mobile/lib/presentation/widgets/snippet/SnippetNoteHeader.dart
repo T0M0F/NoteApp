@@ -138,9 +138,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
   Future<List<String>> _showTagDialog() => showDialog(
     context: context, 
     builder: (context){
-      return EditTagsDialog(
-        tags: _noteNotifier.note.tags, 
-      );
+      return EditTagsDialog();
   });
   
   Future<String> _showDescriptionDialog() =>

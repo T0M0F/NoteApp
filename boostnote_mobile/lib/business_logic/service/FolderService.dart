@@ -9,6 +9,12 @@ class FolderService {
   FolderRepository _folderRepository = FolderRepositoryImpl();
   NoteService _noteService = NoteService();
 
+  Future<Folder> findDefaultFolder() async {
+    List<Folder> folders = await findAll();
+    Folder defaultFolder = folders.firstWhere((folder) => folder.name == 'Default');
+    return Future.value(defaultFolder);
+  }
+
   Future<List<Folder>> findAll() {
     return _folderRepository.findAll();
   }
@@ -19,6 +25,7 @@ class FolderService {
     return Future.value(filteredFolders);
   }
 
+//T
   Future<void> createFolderIfNotExisting(Folder folder) async {
     return _folderRepository.save(folder);
   }

@@ -78,16 +78,19 @@ class NoteRepositoryImpl extends NoteRepository {
 
   Future<List<Note>> _extractNotes(List<File> _files) async {
     List<Note> notes = List();
-    _files.forEach((file) async {
+    
+    await Future.forEach(_files, (file) async {
       String content = file.readAsStringSync();
       try {
         print('Reading');
-         notes.add(await csonParser.convertToNote(csonParser.parseCson(content, file.path.split('/').last)));
+        Note note = await csonParser.convertToNote(csonParser.parseCson(content, file.path.split('/').last));
+        notes.add(note);
       } catch(e) {
         print(e);
       }
      
     });
+
     return Future.value(notes);
   }
 
@@ -102,7 +105,7 @@ class NoteRepositoryImpl extends NoteRepository {
   Future<void> save(Note note) async {
     String path = await localPath;
     if(note.id == null) {
-      note.id =  IdGenerator().generateId();
+      note.id =  IdGenerator().generateNoteId();
     }
     File file = File(path + '/' + note.id + '.cson');
     bool fileExists = await file.exists();
@@ -111,10 +114,10 @@ class NoteRepositoryImpl extends NoteRepository {
       print(note.createdAt);
       file.create();
     } 
+    _folderRepository.save(note.folder);
+
     print('cson: ' + csonParser.convertToCson(note));
     file.writeAsString(csonParser.convertToCson(note));
-
-    _folderRepository.save(note.folder);
   }
 
   @override

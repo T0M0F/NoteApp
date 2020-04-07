@@ -128,7 +128,7 @@ class NoteRepositoryImpl extends NoteRepository {
   @override
   void save(Note note) async {
 
-  note.id = IdGenerator().generateId();
+  note.id = IdGenerator().generateNoteId();
 
 //TODO: Convertion is ugly -> cast
     if(note is MarkdownNote) {

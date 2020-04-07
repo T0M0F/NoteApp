@@ -17,7 +17,7 @@ class PageNavigator {
 
   NoteService _noteService = NoteService();
   FolderService _folderService = FolderService();
-  TagService _tagService = TagService();
+  TagServiceV2 _tagService = TagServiceV2();
   PageNavigatorState pageNavigatorState;
   List<PageNavigatorState> history;
   NoteOverviewNotifier _noteOverviewNotifier;

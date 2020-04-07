@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 
 class TagOverviewBottomSheet extends StatelessWidget {
 
-  TagService _tagService;
+  TagServiceV2 _tagService;
 
   @override
   Widget build(BuildContext context) {
-    _tagService = TagService();
+    _tagService = TagServiceV2();
     
     return Container(
       child: Wrap(

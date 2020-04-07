@@ -2,7 +2,9 @@ import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/FolderRepositoryImpl.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
@@ -88,38 +90,40 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
 
   void _save(){
     if(controller.text.trim().length > 0){
-      Note note;
-      if(groupvalue == CreateNoteDialog._MARKDOWNNOTE){
-        note = MarkdownNote(
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          folder: Folder(),
-          title: controller.text.trim(),
-          tags: [],
-          isStarred: false,
-          isTrashed: false,
-          content: ''
-        );
-      } else {
-        note = SnippetNote(
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          folder: Folder(),
-          title: controller.text.trim(),
-          tags: [],
-          isStarred: false,
-          isTrashed: false,
-          description: '',
-          codeSnippets: []
-        );
-      }
-      //if(widget.tag != null) note.tags.add(widget.tag); //TODO
-      // if(widget.folder != null) note.folder = widget.folder;  //TODO
-      _noteService.save(note);
-      _noteOverviewNotifier.notes.add(note);
-      _noteOverviewNotifier.notesCopy.add(note);
-      _noteNotifier.note = note;
-      Navigator.of(context).pop();
+      FolderService().findDefaultFolder().then((folder) {
+        Note note;
+        if(groupvalue == CreateNoteDialog._MARKDOWNNOTE){
+          note = MarkdownNote(
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            folder: folder,
+            title: controller.text.trim(),
+            tags: [],
+            isStarred: false,
+            isTrashed: false,
+            content: ''
+          );
+        } else {
+          note = SnippetNote(
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            folder: folder,
+            title: controller.text.trim(),
+            tags: [],
+            isStarred: false,
+            isTrashed: false,
+            description: '',
+            codeSnippets: []
+          );
+        }
+        //if(widget.tag != null) note.tags.add(widget.tag); //TODO
+        // if(widget.folder != null) note.folder = widget.folder;  //TODO
+        _noteService.save(note);
+        _noteOverviewNotifier.notes.add(note);
+        _noteOverviewNotifier.notesCopy.add(note);
+        _noteNotifier.note = note;
+        Navigator.of(context).pop();
+      });
     }
   }
 }

@@ -190,7 +190,7 @@ class NoteService {
 
     String description = 'lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
-    return SnippetNote(id: IdGenerator().generateId(),
+    return SnippetNote(id: IdGenerator().generateNoteId(),
                       createdAt: DateTime.now(),
                       updatedAt: DateTime.now(),
                       folder: Folder(name: 'Folder2'),
@@ -269,7 +269,7 @@ Enjoy!
 [Google]: https://www.google.com/
 """;
     
-    return MarkdownNote(id: IdGenerator().generateId(),
+    return MarkdownNote(id: IdGenerator().generateNoteId(),
                         createdAt: DateTime.now(),
                         updatedAt: DateTime(2017,02,28),
                         folder: Folder(name: 'Folder1'),

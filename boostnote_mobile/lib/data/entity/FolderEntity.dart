@@ -7,7 +7,7 @@ class FolderEntity extends Folder {
   
   factory FolderEntity.fromJson(Map<String, dynamic> json) {
     return FolderEntity(
-      id: json['id'],
+      id: json['key'],
       name: json['name'],
       color: json['color']
     );

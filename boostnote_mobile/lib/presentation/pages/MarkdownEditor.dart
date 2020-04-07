@@ -75,10 +75,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 5),
-          child: MarkdownNoteHeader(
-            onTagClickedCallback: () => _showTagDialog(context),
-            onInfoClickedCallback: () => _showNoteInfoDialog(),
-          ),
+          child: MarkdownNoteHeader(),
         ),
         Align(
           alignment: Alignment.topLeft,
@@ -94,10 +91,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 5),
-          child: MarkdownNoteHeader(
-            onTagClickedCallback: () => _showTagDialog(context),
-            onInfoClickedCallback: () => _showNoteInfoDialog(),
-          ),
+          child: MarkdownNoteHeader(),
         ),
         Align(
           alignment: Alignment.topLeft,
@@ -106,17 +100,5 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
       ],
     );
   }
-
-  Future<List<String>> _showTagDialog(BuildContext context) => showDialog(
-    context: context, 
-    builder: (context){
-      return EditTagsDialog(tags: _noteNotifier.note.tags);
-  });
-
-  Future<List<String>> _showNoteInfoDialog() => showDialog(
-    context: context, 
-    builder: (context){
-      return NoteInfoDialog();
-  });
 
 }

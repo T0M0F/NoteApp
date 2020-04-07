@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
@@ -10,19 +11,14 @@ import 'package:provider/provider.dart';
 
 class EditTagsDialog extends StatefulWidget {
 
-  final List<String> tags;
-
-  EditTagsDialog({@required this.tags});
-
   @override
   State<StatefulWidget> createState() => _EditTagsDialogState();
 }
 
 class _EditTagsDialogState extends State<EditTagsDialog> {
   TextEditingController _textEditingController;
-  List<String> _selectedTags;
   List<String> _allTags;
-  TagService _tagService;
+  TagServiceV2 _tagService;
 
   NoteNotifier _noteNotifier;
   TagsNotifier _tagsNotifier;
@@ -30,10 +26,9 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
   @override
   void initState() {
     super.initState();
-    _tagService = TagService();
+    _tagService = TagServiceV2();
     _textEditingController = TextEditingController();
-    _selectedTags = this.widget.tags;
-    _allTags = _selectedTags;
+    _allTags = List();
     _tagService.findAll().then((tags) {
       setState(() {
         _allTags = tags;
@@ -54,7 +49,6 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
             style: TextStyle(
                 color: Theme.of(context).textTheme.display1.color))),
       content: ListView.builder(
-        
         itemCount: _allTags.length +1,
         itemBuilder: (context, index) {
           return GestureDetector(
@@ -70,7 +64,6 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
       actions: <Widget>[
         CancelButton(),
         SaveButton(save: () {
-          _noteNotifier.note.tags = _selectedTags;
           Navigator.of(context).pop();
         })
       ],
@@ -170,28 +163,30 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
 */
 
   void _onRowTap(String tag) {
-    setState(() {
-      _selectedTags.contains(tag)
-          ? _selectedTags.remove(tag)
-          : _selectedTags.add(tag);
-    });
+    _noteNotifier.note.tags.contains(tag)
+        ? _noteNotifier.note.tags.remove(tag)
+        : _noteNotifier.note.tags.add(tag);
   }
 
   Widget _buildRow(int index) {
+    var selectedTags = _noteNotifier.note.tags;
     if(index > 0) {
       return Row(
         children: <Widget>[
           Flexible(
             flex: 1,
             child: Checkbox(
-                value: _selectedTags.contains(_allTags[index-1]),
-                onChanged: (bool selected) {
-                  setState(() {
-                    selected
-                        ? _selectedTags.add(_allTags[index-1])
-                        : _selectedTags.remove(_allTags[index-1]);
-                  });
-                }),
+              value: selectedTags.contains(_allTags[index-1]),
+              onChanged: (bool selected) {
+                List<String> selectedTags;
+                if(selected) {
+                  selectedTags.add(_allTags[index-1]);
+                  _noteNotifier.note.tags = selectedTags;
+                } else {
+                  selectedTags.remove(_allTags[index-1]);
+                  _noteNotifier.note.tags = selectedTags;
+                }
+              }),
           ),
           Flexible(
             flex: 3,
@@ -224,7 +219,11 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
                 _allTags.add(_textEditingController.text);
               });
               _tagsNotifier.tags = _allTags;
-              TagService().createTagIfNotExisting(_textEditingController.text);
+              List<String> selectedTags = _noteNotifier.note.tags;
+              selectedTags.add(_textEditingController.text);
+              _noteNotifier.note.tags = selectedTags;
+              NoteService().save(_noteNotifier.note);
+             // TagService().createTagIfNotExisting(_textEditingController.text);
               _textEditingController.clear();
             },
           )

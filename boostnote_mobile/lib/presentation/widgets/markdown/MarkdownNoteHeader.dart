@@ -1,17 +1,14 @@
 import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/notifiers/MarkdownEditorNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 class MarkdownNoteHeader extends StatefulWidget {
-
-  final Function() onInfoClickedCallback;
-  final Function() onTagClickedCallback;
-
-  MarkdownNoteHeader({this.onInfoClickedCallback, this.onTagClickedCallback});
 
   @override
   State<StatefulWidget> createState() => _MarkdownNoteHeaderState();
@@ -92,14 +89,14 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
                     MdiIcons.tagOutline, 
                     color: Theme.of(context).iconTheme.color
                   ), 
-                  onPressed: this.widget.onTagClickedCallback
+                  onPressed: () => _showTagDialog(context)
                 ),
                 IconButton(
                   icon: Icon(
                     Icons.info_outline, 
                     color: Theme.of(context).iconTheme.color
                   ), 
-                  onPressed: this.widget.onInfoClickedCallback
+                  onPressed: () => _showNoteInfoDialog()
                 )
               ],
             ),
@@ -118,8 +115,20 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
   }
 
   void _changeFolder(folder)  {
-                      _noteNotifier.note.folder = folder;
-                      _markdownEditorNotifier.selectedFolder = folder;
-                    }
+    _noteNotifier.note.folder = folder;
+    _markdownEditorNotifier.selectedFolder = folder;
+  }
+
+  Future<List<String>> _showTagDialog(BuildContext context) => showDialog(
+    context: context, 
+    builder: (context){
+      return EditTagsDialog();
+  });
+
+  Future<List<String>> _showNoteInfoDialog() => showDialog(
+    context: context, 
+    builder: (context){
+      return NoteInfoDialog();
+  });
 
 }

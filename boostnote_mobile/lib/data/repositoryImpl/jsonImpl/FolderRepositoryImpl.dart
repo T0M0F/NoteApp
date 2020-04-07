@@ -89,7 +89,9 @@ class FolderRepositoryImpl extends FolderRepository {
   @override
   Future<void> save(Folder folder) async { 
     print('saveFolder');
-    folder.id = IdGenerator().generateId();  
+    if(folder.id == null) {
+      folder.id = IdGenerator().generateFolderId();  
+    }
     final File file = await localFile;
     final BoostnoteEntity bnEntity = await boostnoteEntity;
     for(Folder currentFolder in bnEntity.folders) {

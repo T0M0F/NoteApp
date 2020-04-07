@@ -27,7 +27,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
 
   NavigationService _newNavigationService;
   NoteService _noteService;
-  TagService _tagService;
+  TagServiceV2 _tagService;
   List<String> _tags;
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
@@ -39,7 +39,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     _tags = List();
     _newNavigationService = NavigationService();
     _noteService = NoteService();
-    _tagService = TagService();
+    _tagService = TagServiceV2();
 
     _tagService.findAll().then((tags) {
       setState((){ 
@@ -88,6 +88,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     });
   }
 
+/*
   void _createTagDialog() {
    showDialog(context: context, 
     builder: (context){
@@ -113,6 +114,7 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     });
   }
 
+  
   void _onRowTap(String tag) => _newNavigationService
                                       .navigateTo(destinationMode: NavigationMode2.NOTES_WITH_TAG_MODE, tag: tag);
 
@@ -128,9 +130,6 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
     );
   }
 
-  void _createTag(String tag) => _tagService
-                                    .createTagIfNotExisting(tag)
-                                    .whenComplete(() => refresh());
                               
   void _renameTag(String oldTag, String newTag) => _tagService
                                                       .renameTag(oldTag, newTag)
@@ -143,4 +142,5 @@ class _TagOverviewState extends State<TagOverview> implements Refreshable{
   void _createNote(Note note) => _noteService
                                       .createNote(note)
                                       .whenComplete(() => refresh());
+                                      */
 }

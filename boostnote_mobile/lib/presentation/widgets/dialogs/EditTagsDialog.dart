@@ -169,8 +169,9 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
   }
 
   Widget _buildRow(int index) {
-    var selectedTags = _noteNotifier.note.tags;
     if(index > 0) {
+      List<String> selectedTags = _noteNotifier.note.tags;
+      bool isSelected = selectedTags.contains(_allTags[index-1]);
       return Row(
         children: <Widget>[
           Flexible(
@@ -178,24 +179,25 @@ class _EditTagsDialogState extends State<EditTagsDialog> {
             child: Checkbox(
               value: selectedTags.contains(_allTags[index-1]),
               onChanged: (bool selected) {
-                List<String> selectedTags;
-                if(selected) {
-                  selectedTags.add(_allTags[index-1]);
-                  _noteNotifier.note.tags = selectedTags;
-                } else {
-                  selectedTags.remove(_allTags[index-1]);
-                  _noteNotifier.note.tags = selectedTags;
-                }
+                setState(() {   //setState is neccessary
+                  if(selected) {
+                    selectedTags.add(_allTags[index-1]);
+                    _noteNotifier.note.tags = selectedTags;
+                  } else {
+                    selectedTags.remove(_allTags[index-1]);
+                    _noteNotifier.note.tags = selectedTags;
+                  }
+                });
               }),
           ),
           Flexible(
             flex: 3,
             child: Text(_allTags[index-1],
               style: TextStyle(
-                  color: Theme.of(context)
-                      .textTheme
-                      .display1
-                      .color)
+                color: Theme.of(context)
+                  .textTheme
+                  .display1
+                  .color)
               )
           )
         ],

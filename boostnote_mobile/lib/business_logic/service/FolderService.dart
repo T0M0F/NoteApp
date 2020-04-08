@@ -15,6 +15,12 @@ class FolderService {
     return Future.value(defaultFolder);
   }
 
+  Future<Folder> findTrashFolder() async {
+    List<Folder> folders = await findAll();
+    Folder defaultFolder = folders.firstWhere((folder) => folder.name == 'Trash');
+    return Future.value(defaultFolder);
+  }
+
   Future<List<Folder>> findAll() {
     return _folderRepository.findAll();
   }

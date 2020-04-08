@@ -238,10 +238,6 @@ tags: ["[Gu[cci"
             }
           }
           break;
-
-        case Mode.UNKNOWN:
-          continue;
-          break;
       }
 
     }
@@ -264,14 +260,12 @@ tags: ["[Gu[cci"
     String trimmedValue = value.trimLeft();
     if(trimmedValue.startsWith('\'\'\'')) {
       return Mode.MULTILINE;
-    } else if(trimmedValue.startsWith('"')) {
-      return Mode.SINGLELINE;
     } else if(key == 'snippets') {
       return Mode.OBJECT_LIST;
     } else if(key == 'linesHighlighted' || key == 'tags'){
       return Mode.SIMPLE_LIST;
     } else {
-      return Mode.UNKNOWN;
+       return Mode.SINGLELINE;
     }
   }
 
@@ -623,6 +617,5 @@ enum Mode {
   SINGLELINE,
   MULTILINE,
   OBJECT_LIST,
-  SIMPLE_LIST,
-  UNKNOWN
+  SIMPLE_LIST
 }

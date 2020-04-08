@@ -40,9 +40,9 @@ class PageNavigator {
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
     pageNavigatorState = PageNavigatorState.ALL_NOTES;
     history.add(pageNavigatorState);
+    _noteOverviewNotifier.pageTitle = AppLocalizations.of(context).translate('all_notes');
     _noteService.findNotTrashed().then((notes){
       _noteOverviewNotifier.notes = notes;
-      _noteOverviewNotifier.pageTitle = AppLocalizations.of(context).translate('all_notes');
       Route route = PageRouteBuilder( 
         pageBuilder: (c, a1, a2) => NotesPage(),
         transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
@@ -60,9 +60,9 @@ class PageNavigator {
     _folderNotifier.selectedFolder = folder;
     pageNavigatorState = PageNavigatorState.NOTES_IN_FOLDER;
     history.add(pageNavigatorState);
+    _noteOverviewNotifier.pageTitle = folder.name;
     _noteService.findNotesIn(folder).then((notes){
       _noteOverviewNotifier.notes = notes;
-      _noteOverviewNotifier.pageTitle = folder.name;
       Route route = PageRouteBuilder( 
         pageBuilder: (c, a1, a2) => NotesPage(),
         transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
@@ -77,12 +77,12 @@ class PageNavigator {
   void navigateToNotesWithTag(BuildContext context, String tag){
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
     _tagsNotifier = Provider.of<TagsNotifier>(context);
-    _tagsNotifier.selectedTag = tag;
     pageNavigatorState = PageNavigatorState.NOTES_WITH_TAG;
     history.add(pageNavigatorState);
+    _noteOverviewNotifier.pageTitle = tag;
+    _tagsNotifier.selectedTag = tag;
     _noteService.findNotesByTag(tag).then((notes){
       _noteOverviewNotifier.notes = notes;
-      _noteOverviewNotifier.pageTitle = tag;
       Route route = PageRouteBuilder( 
         pageBuilder: (c, a1, a2) => NotesPage(),
         transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
@@ -98,9 +98,9 @@ class PageNavigator {
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
     pageNavigatorState = PageNavigatorState.STARRED;
     history.add(pageNavigatorState);
+    _noteOverviewNotifier.pageTitle = AppLocalizations.of(context).translate('starredNotes');
     _noteService.findStarred().then((notes){
       _noteOverviewNotifier.notes = notes;
-      _noteOverviewNotifier.pageTitle = AppLocalizations.of(context).translate('starredNotes');
       Route route = PageRouteBuilder( 
         pageBuilder: (c, a1, a2) => NotesPage(),
         transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
@@ -116,9 +116,9 @@ class PageNavigator {
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
     pageNavigatorState = PageNavigatorState.TRASH;
     history.add(pageNavigatorState);
+    _noteOverviewNotifier.pageTitle = AppLocalizations.of(context).translate('trash');
     _noteService.findTrashed().then((notes){
       _noteOverviewNotifier.notes = notes;
-      _noteOverviewNotifier.pageTitle = AppLocalizations.of(context).translate('trash');
       Route route = PageRouteBuilder( 
         pageBuilder: (c, a1, a2) => NotesPage(),
         transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),

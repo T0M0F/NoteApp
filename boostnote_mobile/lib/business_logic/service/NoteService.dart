@@ -119,7 +119,6 @@ class NoteService {
     print('move to Trash');
     note.isTrashed = true;
     note.isStarred = false;
-    note.folder.name = 'Trash';
     save(note);
   }
 

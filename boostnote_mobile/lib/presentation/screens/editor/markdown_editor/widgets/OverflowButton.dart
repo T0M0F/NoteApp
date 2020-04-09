@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _OverflowButtonState extends State<OverflowButton> {
           PopupMenuItem(
             value: ActionConstants.SAVE_ACTION,
             child: ListTile(
-              title: Text(ActionConstants.SAVE_ACTION, style: Theme.of(context).textTheme.display1)
+              title: Text(AppLocalizations.of(context).translate('save'), style: Theme.of(context).textTheme.display1)
             )
           ),
           /*
@@ -37,7 +38,7 @@ class _OverflowButtonState extends State<OverflowButton> {
           PopupMenuItem(
             value: widget.noteIsStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION,
             child: ListTile(
-              title: Text(widget.noteIsStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION, style: Theme.of(context).textTheme.display1)
+              title: Text(widget.noteIsStarred ?  AppLocalizations.of(context).translate('unmark') : AppLocalizations.of(context).translate('mark'), style: Theme.of(context).textTheme.display1)
             )
           )
         ];

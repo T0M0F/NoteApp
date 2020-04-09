@@ -56,7 +56,7 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
     _appbarTitle = Text(_noteOverviewNotifier.pageTitle ?? AppLocalizations.of(context).translate('all_notes'), style: Theme.of(context).accentTextTheme.title);
     _searchText = "";
     _firstLoad = false;
- 
+  
     _filter.addListener(() {
       if (_filter.text.isEmpty) {
         setState(() {
@@ -112,20 +112,26 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
             PopupMenuItem(
               value: _noteOverviewNotifier.expandedTiles ?  ActionConstants.COLLPASE_ACTION: ActionConstants.EXPAND_ACTION,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Icon(_noteOverviewNotifier.expandedTiles ? MdiIcons.arrowCollapse : MdiIcons.arrowExpand, color: Theme.of(context).iconTheme.color),
-                  Text(_noteOverviewNotifier.expandedTiles ?  ActionConstants.COLLPASE_ACTION : ActionConstants.EXPAND_ACTION , style: Theme.of(context).textTheme.display1)
+                  Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text(_noteOverviewNotifier.expandedTiles ?  AppLocalizations.of(context).translate('collapse') : AppLocalizations.of(context).translate('expand') , style: Theme.of(context).textTheme.display1)
+                  )
                 ]
               )
             ),
             PopupMenuItem(
               value: _noteOverviewNotifier.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION: ActionConstants.SHOW_LISTVIEW_ACTION,
               child:  Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Icon(_noteOverviewNotifier.showListView ? MdiIcons.viewGrid : MdiIcons.viewList, color: Theme.of(context).iconTheme.color),
-                  Text(_noteOverviewNotifier.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION: ActionConstants.SHOW_LISTVIEW_ACTION , style: Theme.of(context).textTheme.display1)
+                  Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child:  Text(_noteOverviewNotifier.showListView ? AppLocalizations.of(context).translate('gridview') : AppLocalizations.of(context).translate('listview') , style: Theme.of(context).textTheme.display1)
+                  )
                 ]
               )
             ),

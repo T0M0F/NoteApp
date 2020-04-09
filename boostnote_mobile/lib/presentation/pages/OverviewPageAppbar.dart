@@ -1,6 +1,7 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
@@ -35,12 +36,14 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
 
   NoteNotifier _noteNotifier;
   SnippetNotifier _snippetNotifier;
+  FolderNotifier _folderNotifier;
   NoteOverviewNotifier _noteOverviewNotifier;
 
   @override
   Widget build(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
     _snippetNotifier = Provider.of<SnippetNotifier>(context);
+    _folderNotifier = Provider.of<FolderNotifier>(context);
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
 
     return ResponsiveWidget(
@@ -84,6 +87,7 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
                 icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
                 onPressed: () {
                   _noteNotifier.note = null;
+                  _folderNotifier.selectedFolder = null;
                   _snippetNotifier.selectedCodeSnippet = null;
                 }
               ),

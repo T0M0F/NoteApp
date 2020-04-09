@@ -180,6 +180,8 @@ class PageNavigator {
   void navigateBack(BuildContext context) {
     history.removeLast();
     pageNavigatorState = history.last;
+    _folderNotifier = Provider.of<FolderNotifier>(context);
+    _folderNotifier.selectedFolder = null;
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
     switch (pageNavigatorState) {
       case PageNavigatorState.ALL_NOTES:

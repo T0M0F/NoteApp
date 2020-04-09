@@ -51,11 +51,15 @@
     "rename_folder":"Rename Folder",
     "remove_folder":"Delete Folder",
     "rename_tag":"Rename Tag",
+    "rename_current_snippet":"Snippet umbennnen",
     "remove_tag":"Delete Tag",
+    "remove_current_snippet":"Delete Snippet",
     "cant_change_foldername":"Folder cant't be changed",
     "yes":"Yes",
     "no":"No",
     "description":"Description",
     "seconds_ago":"Seconds ago",
-    "min_ago":"Minutes ago"
+    "min_ago":"Minutes ago",
+    "mark":"Mark",
+    "unmark":"Unmark"
 }

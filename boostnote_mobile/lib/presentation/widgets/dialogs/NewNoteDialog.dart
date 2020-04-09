@@ -6,6 +6,7 @@ import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/FolderRepositoryImpl.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
@@ -28,12 +29,14 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
   final TextEditingController controller = TextEditingController();
   NoteService _noteService = NoteService();
   NoteNotifier _noteNotifier;
+  FolderNotifier _folderNotifier;
   NoteOverviewNotifier _noteOverviewNotifier;
 
   int groupvalue = CreateNoteDialog._MARKDOWNNOTE;
 
   @override
   Widget build(BuildContext context) {
+    _folderNotifier = Provider.of<FolderNotifier>(context);
     _noteNotifier = Provider.of<NoteNotifier>(context);
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
 
@@ -87,16 +90,16 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
       ],
     );
   }
-
+ 
   void _save(){
     if(controller.text.trim().length > 0){
-      FolderService().findDefaultFolder().then((folder) {
+      if(_folderNotifier.selectedFolder != null) {
         Note note;
         if(groupvalue == CreateNoteDialog._MARKDOWNNOTE){
           note = MarkdownNote(
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
-            folder: folder,
+            folder: _folderNotifier.selectedFolder,
             title: controller.text.trim(),
             tags: [],
             isStarred: false,
@@ -107,7 +110,7 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
           note = SnippetNote(
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
-            folder: folder,
+            folder: _folderNotifier.selectedFolder,
             title: controller.text.trim(),
             tags: [],
             isStarred: false,
@@ -123,7 +126,43 @@ class _CreateNoteDialogState extends State<CreateNoteDialog> {
         _noteOverviewNotifier.notesCopy.add(note);
         _noteNotifier.note = note;
         Navigator.of(context).pop();
-      });
+          
+      } else {
+        FolderService().findDefaultFolder().then((folder) {
+          Note note;
+          if(groupvalue == CreateNoteDialog._MARKDOWNNOTE){
+            note = MarkdownNote(
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+              folder: folder,
+              title: controller.text.trim(),
+              tags: [],
+              isStarred: false,
+              isTrashed: false,
+              content: ''
+            );
+          } else {
+            note = SnippetNote(
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+              folder: folder,
+              title: controller.text.trim(),
+              tags: [],
+              isStarred: false,
+              isTrashed: false,
+              description: '',
+              codeSnippets: []
+            );
+          }
+          //if(widget.tag != null) note.tags.add(widget.tag); //TODO
+          // if(widget.folder != null) note.folder = widget.folder;  //TODO
+          _noteService.save(note);
+          _noteOverviewNotifier.notes.add(note);
+          _noteOverviewNotifier.notesCopy.add(note);
+          _noteNotifier.note = note;
+          Navigator.of(context).pop();
+        });
+      }
     }
   }
 }

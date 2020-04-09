@@ -5,7 +5,7 @@
     "note":"Notiz",
     "notes":"Notizen",
     "folders":"Ordner",
-    "tags":"Tags",
+    "tags":"Tags", 
     "folder":"Ordner",
     "starredNotes":"Favoriten",
     "trash":"Papierkorb",
@@ -51,11 +51,15 @@
     "rename_folder":"Ordner umbennen",
     "remove_folder":"Ordner löschen",
     "rename_tag":"Tag umbennen",
+    "rename_current_snippet":"Snippet umbennnen",
     "remove_tag":"Tag löschen",
+    "remove_current_snippet":"Snippet löschen",
     "cant_change_foldername":"Umbennung nicht möglich",
     "yes":"Ja",
     "no":"Nein",
     "description":"Beschreibung",
     "seconds_ago":"Kürzlich",
-    "min_ago":"Kürzlich"
+    "min_ago":"Kürzlich",
+    "mark":"Markieren",
+    "unmark":"Nicht Markieren"
 }

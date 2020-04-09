@@ -1,3 +1,4 @@
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/screens/ActionConstants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,13 +33,13 @@ class _OverflowButtonState extends State<OverflowButton> {
       PopupMenuItem(
         value: ActionConstants.SAVE_ACTION,
         child: ListTile(
-          title: Text(ActionConstants.SAVE_ACTION, style: Theme.of(context).textTheme.display1)
+          title: Text(AppLocalizations.of(context).translate('save'), style: Theme.of(context).textTheme.display1)
         )
       ),
       PopupMenuItem(
         value: this.widget.noteIsStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION,
         child: ListTile(
-          title: Text(this.widget.noteIsStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION, style: Theme.of(context).textTheme.display1)
+          title: Text(this.widget.noteIsStarred ?  AppLocalizations.of(context).translate('unmark') : AppLocalizations.of(context).translate('mark'), style: Theme.of(context).textTheme.display1)
         )
       )
     ];
@@ -48,17 +49,17 @@ class _OverflowButtonState extends State<OverflowButton> {
         PopupMenuItem(
           value: ActionConstants.DELETE_CURRENT_SNIPPET,
           child: ListTile(
-            title: Text(ActionConstants.DELETE_CURRENT_SNIPPET, style: Theme.of(context).textTheme.display1)
+            title: Text(AppLocalizations.of(context).translate('remove_current_snippet'), style: Theme.of(context).textTheme.display1)
           )
         ),
         PopupMenuItem(
           value: ActionConstants.RENAME_CURRENT_SNIPPET,
           child: ListTile(
-            title: Text(ActionConstants.RENAME_CURRENT_SNIPPET, style: Theme.of(context).textTheme.display1)
+            title: Text(AppLocalizations.of(context).translate('rename_current_snippet'), style: Theme.of(context).textTheme.display1)
           )
         )
       ];
-      widgets.insertAll(1, widgetsToInsert);
+      widgets.insertAll(0, widgetsToInsert);
     }
 
     return widgets;

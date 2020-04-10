@@ -1,6 +1,7 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
+import 'package:boostnote_mobile/presentation/pages/DeviceChecker.dart';
 import 'package:boostnote_mobile/presentation/pages/EmptyAppbar.dart';
 import 'package:boostnote_mobile/presentation/screens/editor/markdown_editor/widgets/MarkdownEditorAppBar.dart';
 import 'package:boostnote_mobile/presentation/screens/editor/snippet_editor/widgets/CodeSnippetAppBar.dart';
@@ -9,6 +10,7 @@ import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 class FoldersPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
@@ -44,12 +46,12 @@ class _FoldersPageAppbarState extends State<FoldersPageAppbar> {
       widgets: <ResponsiveChild> [
          ResponsiveChild(
               smallFlex: _noteNotifier.note == null ? 1 : 0, 
-              largeFlex: 2, 
+              largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2, 
               child: FolderOverviewAppbar(openDrawer: widget.openDrawer)
             ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 
-          largeFlex: 3, 
+          largeFlex:  _noteNotifier.isEditorExpanded ? 1 : 3, 
           child: buildSecondChild(context)
         )
       ]
@@ -63,13 +65,7 @@ class _FoldersPageAppbarState extends State<FoldersPageAppbar> {
         ? MarkdownEditorAppBar(selectedActionCallback: widget.onSelectedActionCallback)
         : _snippetNotifier.isEditMode
           ? AppBar(
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
-                onPressed: () {
-                  _noteNotifier.note = null;
-                  _snippetNotifier.selectedCodeSnippet = null;
-                }
-              ),
+              leading: _buildLeadingIcon(),
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.check, color: Theme.of(context).buttonColor), 
@@ -78,5 +74,26 @@ class _FoldersPageAppbarState extends State<FoldersPageAppbar> {
               ]
           )
           : CodeSnippetAppBar(selectedActionCallback: widget.onSelectedActionCallback);
+  }
+
+
+  Widget _buildLeadingIcon() {
+    if(DeviceChecker(context).isTablet()) {
+      return IconButton(
+        icon: Icon(_noteNotifier.isEditorExpanded ? MdiIcons.chevronRight : MdiIcons.chevronLeft, color:  Theme.of(context).buttonColor), 
+        onPressed:() {
+          _noteNotifier.isEditorExpanded = !_noteNotifier.isEditorExpanded;
+        },
+      );
+    } else {
+      return IconButton(
+        icon: Icon(Icons.arrow_back, color:  Theme.of(context).buttonColor), 
+        onPressed:() {
+          _noteNotifier.isEditorExpanded = false;
+          _snippetNotifier.selectedCodeSnippet = null;
+          _noteNotifier.note = null;
+        },
+      );
+    }
   }
 }

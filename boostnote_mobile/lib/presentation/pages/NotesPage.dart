@@ -84,6 +84,7 @@ class _NotesPageState extends State<NotesPage> {
           _drawerKey.currentState.openEndDrawer();
         } else if(_noteNotifier.note != null){
           _noteNotifier.note = null;
+          _noteNotifier.isEditorExpanded = false;
           snippetNotifier.selectedCodeSnippet = null;
         } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
           SystemNavigator.pop();
@@ -165,12 +166,12 @@ class _NotesPageState extends State<NotesPage> {
       widgets: <ResponsiveChild> [
         ResponsiveChild(
           smallFlex: noteNotifier.note == null ? 1 : 0, 
-          largeFlex: 2, 
+          largeFlex: noteNotifier.isEditorExpanded ? 0 : 2, 
           child: Overview()
         ),
         ResponsiveChild(
           smallFlex: noteNotifier.note == null ? 0 : 1, 
-          largeFlex: 3, 
+          largeFlex: noteNotifier.isEditorExpanded ? 1 : 3, 
           child: noteNotifier.note == null
             ? Container()
             : noteNotifier.note is MarkdownNote

@@ -34,7 +34,7 @@ class _ResponsiveFloatingActionButtonState extends State<ResponsiveFloatingActio
       widgets: <ResponsiveChild> [
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 1 : 0,
-          largeFlex: 2,
+          largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2,
           child: Align(
             alignment: Alignment.bottomRight,
             child: CreateNoteFloatingActionButton(onPressed: _showNoteDialog)
@@ -42,7 +42,7 @@ class _ResponsiveFloatingActionButtonState extends State<ResponsiveFloatingActio
         ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1,
-          largeFlex: 3,
+          largeFlex: _noteNotifier.isEditorExpanded ? 1 : 3,
           child: _noteNotifier.note is SnippetNote 
             ? Align(
               alignment: Alignment.bottomRight,

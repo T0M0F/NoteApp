@@ -94,7 +94,7 @@ class NoteInfoDialog extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 5),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(_noteNotifier.note.folder.name, style: Theme.of(context).textTheme.display1),
+              child: Text(_noteNotifier.note.folder.name == 'Trash' ? AppLocalizations.of(context).translate('trash') : _noteNotifier.note.folder.name, style: Theme.of(context).textTheme.display1),
             ),
           ),
           Align(
@@ -110,7 +110,7 @@ class NoteInfoDialog extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(AppLocalizations.of(context).translate('trashed'), style: TextStyle(color:  Theme.of(context).textTheme.display2.color)),
+            child: Text(AppLocalizations.of(context).translate('trash'), style: TextStyle(color:  Theme.of(context).textTheme.display2.color)),
           ),
           Align(
               alignment: Alignment.centerLeft,

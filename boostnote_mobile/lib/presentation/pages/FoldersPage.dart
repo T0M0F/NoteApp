@@ -95,6 +95,7 @@ class _FoldersPageState extends State<FoldersPage> {
           _drawerKey.currentState.openEndDrawer();
         } else if(_noteNotifier.note != null){
           _noteNotifier.note = null;
+          _noteNotifier.isEditorExpanded = false;
           snippetNotifier.selectedCodeSnippet = null;
         } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
           SystemNavigator.pop();
@@ -136,12 +137,12 @@ class _FoldersPageState extends State<FoldersPage> {
       widgets: <ResponsiveChild> [
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 1 : 0, 
-          largeFlex: 2, 
+          largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2, 
           child: FolderList()
         ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 
-          largeFlex: 3, 
+          largeFlex: _noteNotifier.isEditorExpanded ? 1 : 3, 
           child: _noteNotifier.note == null
             ? Container()
             : _noteNotifier.note is MarkdownNote

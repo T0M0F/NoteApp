@@ -1,7 +1,9 @@
 import 'package:boostnote_mobile/presentation/notifiers/MarkdownEditorNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
+import 'package:boostnote_mobile/presentation/pages/DeviceChecker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'OverflowButton.dart';
@@ -30,12 +32,7 @@ class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
     _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
 
     return AppBar(
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color:  Theme.of(context).buttonColor), 
-        onPressed:() {
-          _noteNotifier.note = null;
-        },
-      ),
+      leading: _buildLeadingIcon(),
       actions: <Widget>[
         Switch(
           inactiveThumbColor: Theme.of(context).accentColor,
@@ -49,6 +46,26 @@ class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
         )
       ],
     );
+  }
+
+
+  Widget _buildLeadingIcon() {
+    if(DeviceChecker(context).isTablet()) {
+      return IconButton(
+        icon: Icon(_noteNotifier.isEditorExpanded ? MdiIcons.chevronRight : MdiIcons.chevronLeft, color:  Theme.of(context).buttonColor), 
+        onPressed:() {
+          _noteNotifier.isEditorExpanded = !_noteNotifier.isEditorExpanded;
+        },
+      );
+    } else {
+      return IconButton(
+        icon: Icon(Icons.arrow_back, color:  Theme.of(context).buttonColor), 
+        onPressed:() {
+          _noteNotifier.note = null;
+          _noteNotifier.isEditorExpanded = false;
+        },
+      );
+    }
   }
 
 }

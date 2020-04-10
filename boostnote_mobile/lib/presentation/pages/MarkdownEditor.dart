@@ -37,7 +37,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
    
     _folderService.findAllUntrashed().then((folders) { 
       _markdownEditorNotifier.folders = folders;
-      _markdownEditorNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id);
+      _markdownEditorNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id, orElse: () => null);
     });
   }
 

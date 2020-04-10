@@ -15,7 +15,10 @@ import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+
+import 'DeviceChecker.dart';
 
 class OverviewPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
@@ -51,12 +54,12 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
       widgets: <ResponsiveChild> [
          ResponsiveChild(
               smallFlex: _noteNotifier.note == null ? 1 : 0, 
-              largeFlex: 2, 
+              largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2, 
               child: _buildLeftAppbar(context)
             ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 
-          largeFlex: 3, 
+          largeFlex: _noteNotifier.isEditorExpanded ? 1 : 3, 
           child: _buildRightAppbar(context)
         )
       ]
@@ -83,14 +86,7 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
         ? MarkdownEditorAppBar(selectedActionCallback: widget.onSelectedActionCallback,)
         : _snippetNotifier.isEditMode
           ? AppBar(
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Theme.of(context).buttonColor), 
-                onPressed: () {
-                  _noteNotifier.note = null;
-                  _folderNotifier.selectedFolder = null;
-                  _snippetNotifier.selectedCodeSnippet = null;
-                }
-              ),
+              leading: _buildLeadingIcon(),
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.check, color: Theme.of(context).buttonColor), 
@@ -99,5 +95,25 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
               ]
           )
           : CodeSnippetAppBar(selectedActionCallback: widget.onSelectedActionCallback);
+  }
+
+  Widget _buildLeadingIcon() {
+    if(DeviceChecker(context).isTablet()) {
+      return IconButton(
+        icon: Icon(_noteNotifier.isEditorExpanded ? MdiIcons.chevronRight : MdiIcons.chevronLeft, color:  Theme.of(context).buttonColor), 
+        onPressed:() {
+          _noteNotifier.isEditorExpanded = !_noteNotifier.isEditorExpanded;
+        },
+      );
+    } else {
+      return IconButton(
+        icon: Icon(Icons.arrow_back, color:  Theme.of(context).buttonColor), 
+        onPressed:() {
+          _noteNotifier.isEditorExpanded = false;
+          _snippetNotifier.selectedCodeSnippet = null;
+          _noteNotifier.note = null;
+        },
+      );
+    }
   }
 }

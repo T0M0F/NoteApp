@@ -35,7 +35,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
 
     _folderService.findAllUntrashed().then((folders) { 
       _snippetNotifier.folders = folders;
-      _snippetNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id);
+      _snippetNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id, orElse: () => null);
     });
   }
 

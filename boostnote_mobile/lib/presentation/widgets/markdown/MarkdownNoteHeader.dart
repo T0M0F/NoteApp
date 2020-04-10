@@ -87,7 +87,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
           color: Theme.of(context).dividerColor
         ),
       )
-    ];
+    ]; 
     Widget widgetToBeInserted;
     if(_pageNavigator.pageNavigatorState == PageNavigatorState.TRASH) {
        widgetToBeInserted = Row( 

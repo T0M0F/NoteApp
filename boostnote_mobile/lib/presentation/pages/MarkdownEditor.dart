@@ -73,10 +73,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
   Widget _buildMarkdownPreview(){
     return ListView(
       children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          child: MarkdownNoteHeader(),
-        ),
+        MarkdownNoteHeader(),
         Align(
           alignment: Alignment.topLeft,
           child: MarkdownPreview(),
@@ -89,10 +86,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
   Widget _buildMarkdownEditor(){ //use minLines for Textfield to make it work
     return ListView(
       children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          child: MarkdownNoteHeader(),
-        ),
+       MarkdownNoteHeader(),
         Align(
           alignment: Alignment.topLeft,
           child: MarkdownBody(),

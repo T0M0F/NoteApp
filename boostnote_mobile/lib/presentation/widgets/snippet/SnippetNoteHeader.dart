@@ -73,7 +73,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
       builder: (context){
         return SnippetDescriptionDialog();
   });
-
+ 
   List<Widget> _getWidgets() {
     List<Widget> widgets = <Widget>[
       Align(

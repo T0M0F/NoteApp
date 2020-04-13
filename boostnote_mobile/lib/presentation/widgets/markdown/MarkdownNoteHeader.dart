@@ -4,6 +4,7 @@ import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/TagsDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -54,7 +55,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
   Future<List<String>> _showTagDialog(BuildContext context) => showDialog(
     context: context, 
     builder: (context){
-      return EditTagsDialog();
+      return TagsDialog();
   });
 
   Future<List<String>> _showNoteInfoDialog() => showDialog(

@@ -5,6 +5,7 @@ import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditTagsDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/SnippetDescription.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/TagsDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -64,7 +65,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
   Future<List<String>> _showTagDialog() => showDialog(
     context: context, 
     builder: (context){
-      return EditTagsDialog();
+      return TagsDialog();
   });
   
   Future<String> _showDescriptionDialog() =>

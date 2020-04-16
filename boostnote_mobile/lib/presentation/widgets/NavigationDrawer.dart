@@ -1,7 +1,6 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
-import 'package:boostnote_mobile/presentation/navigation/NavigationService.dart';
-import 'package:boostnote_mobile/presentation/pages/PageNavigator.dart';
+import 'package:boostnote_mobile/presentation/navigation/PageNavigator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

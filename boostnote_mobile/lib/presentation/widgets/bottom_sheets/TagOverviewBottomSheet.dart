@@ -1,7 +1,5 @@
 import 'package:boostnote_mobile/business_logic/service/TagService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/RenameTagDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

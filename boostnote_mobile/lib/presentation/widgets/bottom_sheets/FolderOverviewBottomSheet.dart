@@ -2,7 +2,6 @@ import 'package:boostnote_mobile/business_logic/model/Folder.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
-import 'package:boostnote_mobile/presentation/pages/FoldersPage.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/RenameFolderDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

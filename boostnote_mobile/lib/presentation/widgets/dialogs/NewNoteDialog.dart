@@ -9,7 +9,7 @@ import 'package:boostnote_mobile/presentation/localization/app_localizations.dar
 import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
-import 'package:boostnote_mobile/presentation/widget/buttons/CancelButton.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

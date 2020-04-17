@@ -8,8 +8,9 @@ import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dar
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/MarkdownEditor.dart';
-import 'package:boostnote_mobile/presentation/pages/notes/Overview.dart';
-import 'package:boostnote_mobile/presentation/pages/notes/widgets/OverviewPageAppbar.dart';
+import 'package:boostnote_mobile/presentation/pages/notes/widgets/CombinedNotesAndEditorAppbar.dart';
+import 'package:boostnote_mobile/presentation/pages/notes/widgets/notesgrid/NoteGrid.dart';
+import 'package:boostnote_mobile/presentation/pages/notes/widgets/noteslist/NoteList.dart';
 import 'package:boostnote_mobile/presentation/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/responsive/ResponsiveWidget.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
@@ -74,7 +75,7 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   PreferredSizeWidget _buildAppBar() { 
-     return OverviewPageAppbar(
+     return CombinedNotesAndEditorAppbar(
         onSelectedActionCallback: (String action) => _selectedAction(action),
         onMenuClick: () => _drawerKey.currentState.openDrawer(),
       );
@@ -144,7 +145,7 @@ class _NotesPageState extends State<NotesPage> {
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 1 : 0, 
           largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2, 
-          child: Overview()
+          child: _noteOverviewNotifier.showListView ? NoteList() : NoteGrid(),
         ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 

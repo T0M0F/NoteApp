@@ -6,30 +6,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MarkdownBody extends StatefulWidget{
-
   @override
   State<StatefulWidget> createState() => _MarkdownBodyState();
-
 }
   
 class _MarkdownBodyState extends State<MarkdownBody>{
 
-  TextEditingController _textEditingController;
-
+  TextEditingController _textEditingController  = TextEditingController();
   String _text;
   NoteNotifier _noteNotifier;
 
   @override
-  void initState() {
-    super.initState();
-    _textEditingController = TextEditingController();
+  Widget build(BuildContext context) {
+    _initNotifier(context);
+    return _buildWidget(context);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _noteNotifier = Provider.of<NoteNotifier>(context);
+  void _initNotifier(BuildContext context) {
+     _noteNotifier = Provider.of<NoteNotifier>(context);
+  }
+
+  Container _buildWidget(BuildContext context) {
     _text = (_noteNotifier.note as MarkdownNote).content;
     _textEditingController.text = _text;
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
       child: TextField(
@@ -38,7 +38,7 @@ class _MarkdownBodyState extends State<MarkdownBody>{
         controller: _textEditingController,
         keyboardType: TextInputType.multiline,
         maxLines: null,
-        minLines: 30, //TODO anpassen an höhe
+        minLines: 30,  //TODO anpassen an höhe oder andere Solution finden
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(0),
             border: InputBorder.none,),
@@ -48,5 +48,4 @@ class _MarkdownBodyState extends State<MarkdownBody>{
       ),
     );
   }
-  
 }

@@ -10,34 +10,32 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 
 class MarkdownNoteHeader extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() => _MarkdownNoteHeaderState();
-
 }
 
 class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
 
-  TextEditingController _textEditingController;
+  TextEditingController _textEditingController = TextEditingController();
+  PageNavigator _pageNavigator  = PageNavigator();
   NoteNotifier _noteNotifier;
   MarkdownEditorNotifier _markdownEditorNotifier;
-  PageNavigator _pageNavigator;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _textEditingController = TextEditingController();
-  }
 
   @override
   Widget build(BuildContext context) {
+    _initNotifiers(context);
+    return _buildWidget();
+  }
+
+  void _initNotifiers(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
     _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
-    _pageNavigator = PageNavigator();
+  }
+
+  Padding _buildWidget() {
     _textEditingController.text = _noteNotifier.note.title; 
     _textEditingController.addListener(() => _noteNotifier.note.title = _textEditingController.text);
-
+    
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16),
         child: Column(
@@ -46,24 +44,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
     );
   }
 
-  void _changeFolder(folder)  {
-    _noteNotifier.note.folder = folder;
-    _markdownEditorNotifier.selectedFolder = folder;
-  }
-
-  Future<List<String>> _showTagDialog(BuildContext context) => showDialog(
-    context: context, 
-    builder: (context){
-      return TagsDialog();
-  });
-
-  Future<List<String>> _showNoteInfoDialog() => showDialog(
-    context: context, 
-    builder: (context){
-      return NoteInfoDialog();
-  });
-
-  List<Widget> _getWidgets() {
+  List<Widget> _getWidgets() {          //TODO way too long
     List<Widget> widgets = <Widget>[
       Align(
         alignment: Alignment.centerLeft,
@@ -167,4 +148,20 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
     return widgets;
   }
 
+  void _changeFolder(folder)  {
+    _noteNotifier.note.folder = folder;
+    _markdownEditorNotifier.selectedFolder = folder;
+  }
+
+  Future<List<String>> _showTagDialog(BuildContext context) => showDialog(
+    context: context, 
+    builder: (context){
+      return TagsDialog();
+  });
+
+  Future<List<String>> _showNoteInfoDialog() => showDialog(
+    context: context, 
+    builder: (context){
+      return NoteInfoDialog();
+  });
 }

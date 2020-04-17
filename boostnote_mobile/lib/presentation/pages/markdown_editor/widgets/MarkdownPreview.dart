@@ -11,10 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MarkdownPreview extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() => MarkdownPreviewState();
-  
 }
   
 class MarkdownPreviewState extends State<MarkdownPreview>{
@@ -24,9 +22,18 @@ class MarkdownPreviewState extends State<MarkdownPreview>{
 
   @override
   Widget build(BuildContext context) {
+    _initNotifier(context);
+    return _buildWidget(context);
+  }
+
+  void _initNotifier(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
+  }
+
+  SingleChildScrollView _buildWidget(BuildContext context) {
     _text = (_noteNotifier.note as MarkdownNote).content;
     List<String> languages = _detectLanguage(_text);
+    
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
@@ -40,44 +47,35 @@ class MarkdownPreviewState extends State<MarkdownPreview>{
             languages: languages,
             context: context
           ),
-          styleSheet: MarkdownStyleSheet(
-            checkbox:  TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 19),
-            p: TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 16),
-            code: TextStyle(color: Theme.of(context).textTheme.display1.color, backgroundColor: Theme.of(context).dialogBackgroundColor),
-            codeblockDecoration: BoxDecoration(color: Theme.of(context).dialogBackgroundColor),
-            blockquoteDecoration: BoxDecoration(color: Theme.of(context).dialogBackgroundColor),
-            blockquote: TextStyle(color: Theme.of(context).textTheme.display1.color),
-            tableCellsDecoration: BoxDecoration(color: Theme.of(context).dialogBackgroundColor),
-            tableBorder: TableBorder(
-              bottom: BorderSide(color: Theme.of(context).textTheme.display3.color),
-              top: BorderSide(color: Theme.of(context).textTheme.display3.color),
-              left: BorderSide(color: Theme.of(context).textTheme.display3.color),
-              right: BorderSide(color: Theme.of(context).textTheme.display3.color),
-              horizontalInside: BorderSide(color: Theme.of(context).textTheme.display3.color),
-              verticalInside: BorderSide(color: Theme.of(context).textTheme.display3.color)
-            )
-
-
-            /*
-            p: TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 16),
-            code: TextStyle(color: Theme.of(context).accentTextTheme.display4.color),
-            codeblockDecoration: BoxDecoration(
-              color: Colors.grey,
-            )*/
-          ),
-          onTapLink: (String url){
-            _launchURL(url);
-          },
-          extensionSet: ExtensionSet.gitHubFlavored,
-         
-          
-          
+          styleSheet: _getStyleSheet(context),
+          onTapLink: (String url) => _launchURL(url),
+          extensionSet: ExtensionSet.gitHubFlavored,  
         )
       )
     );
   }
 
-  List<String> _detectLanguage(String text) {  //TODO Escaping
+  MarkdownStyleSheet _getStyleSheet(BuildContext context) {
+    return MarkdownStyleSheet(
+          checkbox:  TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 19),
+          p: TextStyle(color: Theme.of(context).textTheme.display1.color, fontSize: 16),
+          code: TextStyle(color: Theme.of(context).textTheme.display1.color, backgroundColor: Theme.of(context).dialogBackgroundColor),
+          codeblockDecoration: BoxDecoration(color: Theme.of(context).dialogBackgroundColor),
+          blockquoteDecoration: BoxDecoration(color: Theme.of(context).dialogBackgroundColor),
+          blockquote: TextStyle(color: Theme.of(context).textTheme.display1.color),
+          tableCellsDecoration: BoxDecoration(color: Theme.of(context).dialogBackgroundColor),
+          tableBorder: TableBorder(
+            bottom: BorderSide(color: Theme.of(context).textTheme.display3.color),
+            top: BorderSide(color: Theme.of(context).textTheme.display3.color),
+            left: BorderSide(color: Theme.of(context).textTheme.display3.color),
+            right: BorderSide(color: Theme.of(context).textTheme.display3.color),
+            horizontalInside: BorderSide(color: Theme.of(context).textTheme.display3.color),
+            verticalInside: BorderSide(color: Theme.of(context).textTheme.display3.color)
+          )
+        );
+  }
+
+  List<String> _detectLanguage(String text) {  
     List<String> languages = List();
     List<String> splittedByLine = LineSplitter.split(text).toList();
     bool nextIsStartOfCodeBlock = true;  //start of codeblock
@@ -94,7 +92,7 @@ class MarkdownPreviewState extends State<MarkdownPreview>{
     return languages;
   }
 
-   void _launchURL(String url) async {
+  void _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {

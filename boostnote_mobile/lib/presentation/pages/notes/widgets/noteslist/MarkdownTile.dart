@@ -14,7 +14,7 @@ class MarkdownTile extends StatelessWidget{
   final DateTimeConverter dateTimeConverter = DateTimeConverter();
   final TagListConverter tagListConverter = TagListConverter();
 
-  final MarkdownNote note;  //This is neccesary
+  final MarkdownNote note;  
 
   bool expandedAndNotEmpty;
   

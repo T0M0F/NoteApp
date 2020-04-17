@@ -1,8 +1,5 @@
 
-import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
-import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/notifiers/MarkdownEditorNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/widgets/MarkdownBody.dart';
@@ -17,11 +14,9 @@ class MarkdownEditor extends StatefulWidget {
   State<StatefulWidget> createState() => MarkdownEditorState();
 }
   
-
 class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObserver{
 
-  FolderService _folderService;
-
+  FolderService _folderService = FolderService();
   NoteNotifier _noteNotifier;
   MarkdownEditorNotifier _markdownEditorNotifier;
 
@@ -30,10 +25,8 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-    
-    _folderService = FolderService();
    
-    _folderService.findAllUntrashed().then((folders) { 
+    _folderService.findAllUntrashed().then((folders) {      //TODO this solution sucks
       _markdownEditorNotifier.folders = folders;
       _markdownEditorNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id, orElse: () => null);
     });
@@ -48,7 +41,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
   }
 
   @override
-  void dispose() {
+  void dispose() {                                        //TODO Was geht denn hier ab
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
 
@@ -64,7 +57,6 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
 
   @override
   Widget build(BuildContext context) {
-
     return _markdownEditorNotifier.isPreviewMode ? _buildMarkdownPreview() : _buildMarkdownEditor();
   }
 
@@ -80,8 +72,7 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
     );
   }
 
- 
-  Widget _buildMarkdownEditor(){ //use minLines for Textfield to make it work
+  Widget _buildMarkdownEditor() { 
     return ListView(
       children: <Widget>[
        MarkdownNoteHeader(),

@@ -7,9 +7,7 @@ import 'package:flutter/services.dart';
 
 class AppLocalizations {
 
-  //https://resocoder.com/2019/06/01/flutter-localization-the-easy-way-internationalization-with-json/
-
-  static const LocalizationsDelegate<AppLocalizations> delegate = AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> localizationDelegate = AppLocalizationsDelegate();
 
   static const List<Locale> supportedLocales =  [
     const Locale("en", "EN"),

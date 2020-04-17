@@ -6,7 +6,7 @@ import 'package:boostnote_mobile/presentation/navigation/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/CodeSnippetEditor.dart';
-import 'package:boostnote_mobile/presentation/pages/folders/widgets/FoldersPageAppbar.dart';
+import 'package:boostnote_mobile/presentation/pages/folders/widgets/CombinedFoldersAndEditorAppbar.dart';
 import 'package:boostnote_mobile/presentation/pages/folders/widgets/folderlist/FolderList.dart';
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/responsive/ResponsiveChild.dart';
@@ -70,8 +70,8 @@ class _FoldersPageState extends State<FoldersPage> {
     );  
   }
 
-  FoldersPageAppbar _buildAppbar() {
-    return FoldersPageAppbar(
+  CombinedFoldersAndEditorAppbar _buildAppbar() {
+    return CombinedFoldersAndEditorAppbar(
       onSelectedActionCallback: (String action) => _selectedAction(action),
       openDrawer: () => _drawerKey.currentState.openDrawer()
     );

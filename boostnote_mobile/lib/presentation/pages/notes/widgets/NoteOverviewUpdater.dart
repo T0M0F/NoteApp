@@ -3,7 +3,7 @@ import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dar
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-class NoteOverviewUpdater {
+class NoteOverviewUpdater {   //TODO this sucks
 
     void update(List<Note> notes, BuildContext context){
       NoteOverviewNotifier _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
@@ -16,5 +16,4 @@ class NoteOverviewUpdater {
       _noteOverviewNotifier.notesCopy = List<Note>.from(_noteOverviewNotifier.notes);
     
   }
-
 }

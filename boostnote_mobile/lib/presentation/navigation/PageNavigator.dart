@@ -41,6 +41,7 @@ class PageNavigator {
     pageNavigatorState = PageNavigatorState.ALL_NOTES;
     history.add(pageNavigatorState);
     _noteOverviewNotifier.pageTitle = AppLocalizations.of(context).translate('all_notes');
+
     _noteService.findNotTrashed().then((notes){
       _noteOverviewNotifier.notes = notes;
       Route route = PageRouteBuilder( 
@@ -61,6 +62,7 @@ class PageNavigator {
     pageNavigatorState = PageNavigatorState.NOTES_IN_FOLDER;
     history.add(pageNavigatorState);
     _noteOverviewNotifier.pageTitle = folder.name;
+
     _noteService.findNotesIn(folder).then((notes){
       _noteOverviewNotifier.notes = notes;
       Route route = PageRouteBuilder( 
@@ -81,6 +83,7 @@ class PageNavigator {
     history.add(pageNavigatorState);
     _noteOverviewNotifier.pageTitle = tag;
     _tagsNotifier.selectedTag = tag;
+
     _noteService.findNotesByTag(tag).then((notes){
       _noteOverviewNotifier.notes = notes;
       Route route = PageRouteBuilder( 
@@ -99,6 +102,7 @@ class PageNavigator {
     pageNavigatorState = PageNavigatorState.STARRED;
     history.add(pageNavigatorState);
     _noteOverviewNotifier.pageTitle = AppLocalizations.of(context).translate('starredNotes');
+
     _noteService.findStarred().then((notes){
       _noteOverviewNotifier.notes = notes;
       Route route = PageRouteBuilder( 
@@ -117,6 +121,7 @@ class PageNavigator {
     pageNavigatorState = PageNavigatorState.TRASH;
     history.add(pageNavigatorState);
     _noteOverviewNotifier.pageTitle = AppLocalizations.of(context).translate('trash');
+
     _noteService.findTrashed().then((notes){
       _noteOverviewNotifier.notes = notes;
       Route route = PageRouteBuilder( 
@@ -134,6 +139,7 @@ class PageNavigator {
     _folderNotifier =  Provider.of<FolderNotifier>(context);
     pageNavigatorState = PageNavigatorState.FOLDERS;
     history.add(pageNavigatorState);
+
     _folderService.findAllUntrashed().then((folders) {
       _folderNotifier.folders = folders;
       Route route = PageRouteBuilder( 
@@ -151,6 +157,7 @@ class PageNavigator {
     _tagsNotifier =  Provider.of<TagsNotifier>(context);
     pageNavigatorState = PageNavigatorState.TAGS;
     history.add(pageNavigatorState);
+    
     _tagService.findAll().then((tags) {
       _tagsNotifier.tags = tags;
       Route route = PageRouteBuilder( 

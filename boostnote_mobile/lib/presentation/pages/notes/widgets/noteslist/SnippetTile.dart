@@ -15,7 +15,7 @@ class SnippetTile extends StatelessWidget{
   final DateTimeConverter _dateTimeConverter = DateTimeConverter(); 
   final TagListConverter tagListConverter = TagListConverter();
    
-  final SnippetNote note;  //This is neccesary
+  final SnippetNote note; 
 
   bool expandedAndNotEmpty;
 

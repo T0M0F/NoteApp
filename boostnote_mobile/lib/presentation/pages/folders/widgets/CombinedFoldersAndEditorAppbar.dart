@@ -1,12 +1,9 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
-import 'package:boostnote_mobile/presentation/ActionConstants.dart';
-import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
-import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/CodeSnippetAppBar.dart';
+import 'package:boostnote_mobile/presentation/pages/folders/widgets/FoldersPageAppbar.dart';
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/widgets/MarkdownEditorAppBar.dart';
-import 'package:boostnote_mobile/presentation/pages/notes/widgets/OverviewAppbar.dart';
 import 'package:boostnote_mobile/presentation/responsive/DeviceWidthService.dart';
 import 'package:boostnote_mobile/presentation/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/responsive/ResponsiveWidget.dart';
@@ -16,71 +13,63 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-
-class OverviewPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
+/*
+* This class combines the FoldersPage Appbar and the Code or MarkdownEditor Appbar 
+* into one responsive row.
+*/
+class CombinedFoldersAndEditorAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
   final Function(String action) onSelectedActionCallback;
+  final Function() openDrawer;
 
-  final Function onMenuClick;
-
-  OverviewPageAppbar({this.onSelectedActionCallback, this.onMenuClick});
+  CombinedFoldersAndEditorAppbar({this.onSelectedActionCallback, this.openDrawer});
 
   @override
-  _OverviewPageAppbarState createState() => _OverviewPageAppbarState();
+  _CombinedFoldersAndEditorAppbarState createState() => _CombinedFoldersAndEditorAppbarState();
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
-class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
+class _CombinedFoldersAndEditorAppbarState extends State<CombinedFoldersAndEditorAppbar> {
 
   NoteNotifier _noteNotifier;
   SnippetNotifier _snippetNotifier;
-  FolderNotifier _folderNotifier;
-  NoteOverviewNotifier _noteOverviewNotifier;
 
   @override
   Widget build(BuildContext context) {
+    _initNotifiers();
+    return _buildWiget(context);
+  }
+
+  void _initNotifiers() {
     _noteNotifier = Provider.of<NoteNotifier>(context);
     _snippetNotifier = Provider.of<SnippetNotifier>(context);
-    _folderNotifier = Provider.of<FolderNotifier>(context);
-    _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
+  }
 
+  ResponsiveWidget _buildWiget(BuildContext context) {
     return ResponsiveWidget(
       showDivider: true,
       widgets: <ResponsiveChild> [
          ResponsiveChild(
               smallFlex: _noteNotifier.note == null ? 1 : 0, 
               largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2, 
-              child: _buildLeftAppbar(context)
+              child: FoldersPageAppbar(openDrawer: widget.openDrawer)
             ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 
-          largeFlex: _noteNotifier.isEditorExpanded ? 1 : 3, 
-          child: _buildRightAppbar(context)
+          largeFlex:  _noteNotifier.isEditorExpanded ? 1 : 3, 
+          child: buildSecondChild(context)
         )
       ]
     );
   }
- 
-  Widget _buildLeftAppbar(BuildContext context) {
-    return OverviewAppbar(
-      notes: _noteOverviewNotifier.notesCopy,
-      actions: {
-        'EXPAND_ACTION': ActionConstants.EXPAND_ACTION, 
-        'COLLPASE_ACTION': ActionConstants.COLLPASE_ACTION, 
-        'SHOW_LISTVIEW_ACTION': ActionConstants.SHOW_LISTVIEW_ACTION, 
-        'SHOW_GRIDVIEW_ACTION' : ActionConstants.SHOW_GRIDVIEW_ACTION},
-      onSelectedActionCallback: widget.onSelectedActionCallback,
-      onMenuClick: widget.onMenuClick,
-    );
-  }
 
-  Widget _buildRightAppbar(BuildContext context) {
-    return _noteNotifier.note == null   //Sonst fliegt komische exception, wenn in methode ausgelagert
+  Widget buildSecondChild(BuildContext context) {
+    return _noteNotifier.note == null   //Throws for some reason an exception when extracting into seperate methods
       ? EmptyAppbar()
       : _noteNotifier.note is MarkdownNote
-        ? MarkdownEditorAppBar(selectedActionCallback: widget.onSelectedActionCallback,)
+        ? MarkdownEditorAppBar(selectedActionCallback: widget.onSelectedActionCallback)
         : _snippetNotifier.isEditMode
           ? AppBar(
               leading: _buildLeadingIcon(),
@@ -93,6 +82,7 @@ class _OverviewPageAppbarState extends State<OverviewPageAppbar> {
           )
           : CodeSnippetAppBar(selectedActionCallback: widget.onSelectedActionCallback);
   }
+
 
   Widget _buildLeadingIcon() {
     if(DeviceWidthService(context).isTablet()) {

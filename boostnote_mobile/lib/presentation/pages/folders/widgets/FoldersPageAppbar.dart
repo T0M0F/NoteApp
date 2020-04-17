@@ -1,99 +1,37 @@
-import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
-import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
-import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
-import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/CodeSnippetAppBar.dart';
-import 'package:boostnote_mobile/presentation/pages/folders/widgets/FolderOverviewAppbar.dart';
-import 'package:boostnote_mobile/presentation/pages/markdown_editor/widgets/MarkdownEditorAppBar.dart';
-import 'package:boostnote_mobile/presentation/responsive/DeviceWidthService.dart';
-import 'package:boostnote_mobile/presentation/responsive/ResponsiveChild.dart';
-import 'package:boostnote_mobile/presentation/responsive/ResponsiveWidget.dart';
-import 'package:boostnote_mobile/presentation/widgets/EmptyAppbar.dart';
+import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/pages/folders/widgets/CreateFolderDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:provider/provider.dart';
 
-class FoldersPageAppbar extends StatefulWidget  implements PreferredSizeWidget{
+class FoldersPageAppbar extends StatelessWidget implements PreferredSizeWidget{
 
-  final Function(String action) onSelectedActionCallback;
   final Function() openDrawer;
 
-  FoldersPageAppbar({this.onSelectedActionCallback, this.openDrawer});
-
-  @override
-  _FoldersPageAppbarState createState() => _FoldersPageAppbarState();
-
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
-}
-
-class _FoldersPageAppbarState extends State<FoldersPageAppbar> {
-
-  NoteNotifier _noteNotifier;
-  SnippetNotifier _snippetNotifier;
+  FoldersPageAppbar({this.openDrawer});
 
   @override
   Widget build(BuildContext context) {
-    _noteNotifier = Provider.of<NoteNotifier>(context);
-    _snippetNotifier = Provider.of<SnippetNotifier>(context);
-
-    return _buildWiget(context);
-  }
-
-  ResponsiveWidget _buildWiget(BuildContext context) {
-    return ResponsiveWidget(
-      showDivider: true,
-      widgets: <ResponsiveChild> [
-         ResponsiveChild(
-              smallFlex: _noteNotifier.note == null ? 1 : 0, 
-              largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2, 
-              child: FolderOverviewAppbar(openDrawer: widget.openDrawer)
-            ),
-        ResponsiveChild(
-          smallFlex: _noteNotifier.note == null ? 0 : 1, 
-          largeFlex:  _noteNotifier.isEditorExpanded ? 1 : 3, 
-          child: buildSecondChild(context)
+    return AppBar(
+      title: Text(AppLocalizations.of(context).translate('folders'), style: Theme.of(context).accentTextTheme.title),
+      leading: IconButton(
+        icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
+        onPressed: openDrawer,
+      ),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.create_new_folder, color: Theme.of(context).buttonColor),
+          onPressed: () => _createFolderDialog(context),
         )
-      ]
+      ],
     );
   }
 
-  Widget buildSecondChild(BuildContext context) {
-    return _noteNotifier.note == null   //Sonst fliegt komische exception, wenn in methode ausgelagert
-      ? EmptyAppbar()
-      : _noteNotifier.note is MarkdownNote
-        ? MarkdownEditorAppBar(selectedActionCallback: widget.onSelectedActionCallback)
-        : _snippetNotifier.isEditMode
-          ? AppBar(
-              leading: _buildLeadingIcon(),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.check, color: Theme.of(context).buttonColor), 
-                  onPressed: () => _snippetNotifier.isEditMode = !_snippetNotifier.isEditMode
-                )
-              ]
-          )
-          : CodeSnippetAppBar(selectedActionCallback: widget.onSelectedActionCallback);
-  }
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
-
-  Widget _buildLeadingIcon() {
-    if(DeviceWidthService(context).isTablet()) {
-      return IconButton(
-        icon: Icon(_noteNotifier.isEditorExpanded ? MdiIcons.chevronRight : MdiIcons.chevronLeft, color:  Theme.of(context).buttonColor), 
-        onPressed:() {
-          _noteNotifier.isEditorExpanded = !_noteNotifier.isEditorExpanded;
-        },
-      );
-    } else {
-      return IconButton(
-        icon: Icon(Icons.arrow_back, color:  Theme.of(context).buttonColor), 
-        onPressed:() {
-          _noteNotifier.isEditorExpanded = false;
-          _snippetNotifier.selectedCodeSnippet = null;
-          _noteNotifier.note = null;
-        },
-      );
-    }
-  }
+  void _createFolderDialog(BuildContext context) => showDialog(
+    context: context,
+    builder: (context) {
+      return CreateFolderDialog();
+  });
 }

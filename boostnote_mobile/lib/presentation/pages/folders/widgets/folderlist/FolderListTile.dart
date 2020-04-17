@@ -11,19 +11,16 @@ class FolderListTile extends StatefulWidget {
 
   @override
   _FolderListTileState createState() => _FolderListTileState();
-
 }
 
 class _FolderListTileState extends State<FolderListTile> {
 
   int _numberOfNotesInFolder = 0;
-
-  NoteService _noteService;
+  NoteService _noteService  = NoteService();
 
   @override
   void initState(){
     super.initState();
-    _noteService = NoteService();
     _noteService.findUntrashedNotesIn(widget.folder).then((notes) {
       setState(() {
         _numberOfNotesInFolder = notes.length;

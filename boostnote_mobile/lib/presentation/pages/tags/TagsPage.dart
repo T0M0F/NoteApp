@@ -7,7 +7,7 @@ import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/MarkdownEditor.dart';
-import 'package:boostnote_mobile/presentation/pages/tags/widgets/TagsPageAppbar.dart';
+import 'package:boostnote_mobile/presentation/pages/tags/widgets/CombinedTagsAndEditorAppbar.dart';
 import 'package:boostnote_mobile/presentation/pages/tags/widgets/taglist/TagList.dart';
 import 'package:boostnote_mobile/presentation/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/responsive/ResponsiveWidget.dart';
@@ -17,7 +17,6 @@ import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDia
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
 
 class TagsPage extends StatefulWidget {  
   @override
@@ -71,7 +70,7 @@ class _TagsPageState extends State<TagsPage> {
   }
 
   Widget _buildAppBar(BuildContext context) {
-    return TagsPageAppbar(
+    return CombinedTagsAndEditorAppbar(
       onSelectedActionCallback: (String action) => _selectedAction(action),
       openDrawer: () => _drawerKey.currentState.openDrawer(),
     );

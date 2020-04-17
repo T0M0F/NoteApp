@@ -16,23 +16,30 @@ class NewSyntaxHighlighter extends SyntaxHighlighter{
 
   @override
   TextSpan format(String source) {
-    String language = 'Dart';
     theme = ThemeService().getEditorTheme(context);
 
+    String language = _getLanguage();
+
+    List<Node> nodes = highlight.parse(source, language: language).nodes;
+    return TextSpan(
+      style: textStyle,
+      children: _convertToTextSpan(nodes),
+    );
+  }
+
+  String _getLanguage() {
+    String language = 'Dart';
     if(languages != null && languages.isNotEmpty && languages.first.trim().isNotEmpty){
       language = languages.first;
     } 
     if(languages != null && languages.isNotEmpty) {
       languages.removeAt(0);
     }
-    return TextSpan(
-      style: textStyle,
-      children: _convert(highlight.parse(source, language: language).nodes),
-    );
+    return language;
   }
 
-  
- List<TextSpan> _convert(List<Node> nodes) {
+  List<TextSpan> _convertToTextSpan(List<Node> nodes) {   //TODO split method to reduce complexity
+
     List<TextSpan> spans = [];
     var currentSpans = spans;
     List<List<TextSpan>> stack = [];
@@ -43,6 +50,7 @@ class NewSyntaxHighlighter extends SyntaxHighlighter{
             ? TextSpan(text: node.value)
             : TextSpan(text: node.value, style: theme[node.className]));
       } else if (node.children != null) {
+
         List<TextSpan> tmp = [];
         currentSpans.add(TextSpan(children: tmp, style: theme[node.className]));
         stack.add(currentSpans);

@@ -26,7 +26,7 @@ class _BoostnoteAppState extends State<BoostnoteApp> {
         debugShowCheckedModeBanner: false,
         theme: themeNotifier.getTheme(),
         localizationsDelegates: [
-            AppLocalizations.delegate,
+            AppLocalizations.localizationDelegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate
         ],

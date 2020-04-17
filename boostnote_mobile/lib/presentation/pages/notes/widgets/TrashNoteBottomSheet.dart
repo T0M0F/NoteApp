@@ -8,15 +8,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TrashNoteBottomSheet extends StatelessWidget {
+class TrashNoteBottomSheet extends StatefulWidget {
+  @override
+  _TrashNoteBottomSheetState createState() => _TrashNoteBottomSheetState();
+}
+
+class _TrashNoteBottomSheetState extends State<TrashNoteBottomSheet> {
+
+  final NoteService _noteService = NoteService();
+  NoteOverviewNotifier _noteOverviewNotifier;
+  NoteNotifier _noteNotifier;
 
   @override
   Widget build(BuildContext context) {
-    NoteOverviewNotifier _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
-    NoteNotifier _noteNotifier = Provider.of<NoteNotifier>(context);
-    NoteService _noteService = NoteService();
+    _initNotifiers(context);
+    return _buildWidget(context);
+  }
 
-    return Container(
+  void _initNotifiers(BuildContext context) {
+    _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+  }
+
+  Container _buildWidget(BuildContext context) {
+     return Container(
       child: Wrap(
         children: <Widget>[
             new ListTile(

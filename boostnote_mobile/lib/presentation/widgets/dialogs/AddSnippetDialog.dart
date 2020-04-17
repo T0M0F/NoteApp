@@ -3,7 +3,7 @@ import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
-import 'package:boostnote_mobile/presentation/widget/buttons/CancelButton.dart';
+import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/SaveButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

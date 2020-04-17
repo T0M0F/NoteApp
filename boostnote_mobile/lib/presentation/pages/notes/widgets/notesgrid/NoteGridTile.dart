@@ -7,7 +7,7 @@ import 'package:boostnote_mobile/presentation/localization/app_localizations.dar
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class NoteGridTile extends StatelessWidget {
+class NoteGridTile extends StatelessWidget {    //TODO convert to stateful widget
 
   final TagListConverter _tagListConverter = TagListConverter();
   final DateTimeConverter _dateTimeConverter = DateTimeConverter();

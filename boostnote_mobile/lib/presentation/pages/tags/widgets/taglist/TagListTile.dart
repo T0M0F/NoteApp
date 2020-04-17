@@ -2,7 +2,6 @@
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class TagListTile extends StatefulWidget {
@@ -13,19 +12,17 @@ class TagListTile extends StatefulWidget {
 
   @override
   _TagListTileState createState() => _TagListTileState();
-
 }
 
 class _TagListTileState extends State<TagListTile> {
 
   int _numberOfNotesWithTag = 0;
-
-  NoteService _noteService;
+  NoteService _noteService  = NoteService();
 
   @override
   void initState(){
     super.initState();
-    _noteService = NoteService();
+
     _noteService.findNotesByTag(widget.tag).then((notes) {
       setState(() {
         _numberOfNotesWithTag = notes.length;

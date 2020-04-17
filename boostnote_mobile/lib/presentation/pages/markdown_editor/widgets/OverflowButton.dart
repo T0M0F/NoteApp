@@ -3,7 +3,7 @@ import 'package:boostnote_mobile/presentation/localization/app_localizations.dar
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class OverflowButton extends StatefulWidget {
+class OverflowButton extends StatefulWidget {       //TODO notifier for state mangement 
 
   final Function(String) selectedActionCallback;
   bool noteIsStarred;

@@ -28,9 +28,16 @@ class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
   
   @override
   Widget build(BuildContext context) {
-    _noteNotifier = Provider.of<NoteNotifier>(context);
-    _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
+    _initNotifiers(context);
+    return _buildWidget(context);
+  }
 
+  void _initNotifiers(BuildContext context) {
+     _noteNotifier = Provider.of<NoteNotifier>(context);
+    _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
+  }
+
+  AppBar _buildWidget(BuildContext context) {
     return AppBar(
       leading: _buildLeadingIcon(),
       actions: <Widget>[
@@ -47,7 +54,6 @@ class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
       ],
     );
   }
-
 
   Widget _buildLeadingIcon() {
     if(DeviceWidthService(context).isTablet()) {

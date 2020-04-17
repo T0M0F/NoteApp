@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class SaveButton extends StatelessWidget {
 
-  Function() save;
+  final Function() save;
 
   SaveButton({@required this.save});
   

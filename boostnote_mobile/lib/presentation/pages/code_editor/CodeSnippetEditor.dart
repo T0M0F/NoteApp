@@ -1,11 +1,10 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
-import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/CodeTab.dart';
+import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/CodeBody.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/SnippetNoteHeader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +15,10 @@ class CodeSnippetEditor extends StatefulWidget {
   State<StatefulWidget> createState() => CodeSnippetEditorState();
 }
   
-
 class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindingObserver {
 
-  NoteService _noteService;
-  FolderService _folderService;
-
+  NoteService _noteService = NoteService();
+  FolderService _folderService = FolderService(); 
   NoteNotifier _noteNotifier;
   SnippetNotifier _snippetNotifier;
 
@@ -30,11 +27,8 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     WidgetsBinding.instance.addObserver(this);
     super.initState();
 
-    _noteService = NoteService();
-    _folderService = FolderService(); 
-
-    _folderService.findAllUntrashed().then((folders) { 
-      _snippetNotifier.folders = folders;
+    _folderService.findAllUntrashed().then((folders) {          //TODO this solution sucks
+      _snippetNotifier.folders = folders;       
       _snippetNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id, orElse: () => null);
     });
   }
@@ -97,7 +91,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
         SnippetNoteHeader(),
         Align(
           alignment: Alignment.topLeft,
-          child: CodeTab()
+          child: CodeBody()
         )
       ],
     );

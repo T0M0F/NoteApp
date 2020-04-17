@@ -19,17 +19,20 @@ class _TagListState extends State<TagList> {
   @override
   Widget build(BuildContext context) {
     _tagsNotifier = Provider.of<TagsNotifier>(context);
+    return _buildWidget();
+  }
 
+  ListView _buildWidget() {
     return ListView.builder(
-    itemCount: _tagsNotifier.tags.length,
-    itemBuilder: (context, index) {
-      return GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () => _onRowTap(_tagsNotifier.tags[index]),
-        child: TagListTile(tag: _tagsNotifier.tags[index])
-      );
-    },
-  );
+      itemCount: _tagsNotifier.tags.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => _onRowTap(_tagsNotifier.tags[index]),
+          child: TagListTile(tag: _tagsNotifier.tags[index])
+        );
+      },
+    );
   }
 
   void _onRowTap(String tag) => PageNavigator().navigateToNotesWithTag(context, tag);

@@ -22,7 +22,6 @@ class _ResponsiveFloatingActionButtonState extends State<ResponsiveFloatingActio
   @override
   Widget build(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
-
     return _buildWidget(context);
   }
 

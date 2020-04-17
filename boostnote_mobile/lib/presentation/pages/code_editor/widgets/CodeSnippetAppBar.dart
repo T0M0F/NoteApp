@@ -28,16 +28,22 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
 
   @override
   Widget build(BuildContext context) { 
+    _initNotifiers();
+    return _buildWidget();
+  }
+
+  void _initNotifiers() {
     _noteNotifier = Provider.of<NoteNotifier>(context);
     _snippetNotifier = Provider.of<SnippetNotifier>(context);
+  }
 
+  Widget _buildWidget() {
     return AppBar(
       leading: _buildLeadingIcon(),
       actions: _buildActions()
     );
   }
-
-
+  
   List<Widget> _buildActions() {
     List<Widget> actions = <Widget>[
       OverflowButton(

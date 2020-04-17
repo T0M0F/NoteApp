@@ -8,35 +8,32 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-class OverviewAppbar extends StatefulWidget implements PreferredSizeWidget {
+class NotesPageAppbar extends StatefulWidget implements PreferredSizeWidget {
 
-  Function(String action) onSelectedActionCallback;
+  final Function(String action) onSelectedActionCallback;
   final Function() onMenuClick;
- 
-  Map<String, String> actions;
-  List<Note> notes;
+  final Map<String, String> actions;
+  final List<Note> notes;
 
-  OverviewAppbar({this.notes, this.actions, this.onSelectedActionCallback, this.onMenuClick});
+  NotesPageAppbar({this.notes, this.actions, this.onSelectedActionCallback, this.onMenuClick});
 
   @override
-  _OverviewAppbarState createState() => _OverviewAppbarState();
+  _NotesPageAppbarState createState() => _NotesPageAppbarState();
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
-
 }
 
-class _OverviewAppbarState extends State<OverviewAppbar> {
+class _NotesPageAppbarState extends State<NotesPageAppbar> {
 
   TextEditingController _filter;
   Widget _appbarTitle;
   List<Note> filteredNotes;
   Icon _searchIcon;
   String _searchText;
-
   bool _firstLoad;
-
   NoteOverviewNotifier _noteOverviewNotifier;
+  PageNavigator _pageNavigator = PageNavigator();
 
   @override
   void initState(){
@@ -45,12 +42,15 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
     _firstLoad = true;
   }
 
-  //Necessary, because initialization of widgets not possible in initState
-  void _init(){
+  void _init(){    //Necessary, because initialization of Text and Icon widget not possible in initState
     _filter = TextEditingController();
     filteredNotes = List();
     _searchIcon = Icon(Icons.search, color: Theme.of(context).buttonColor);
-    _appbarTitle = Text(_noteOverviewNotifier.pageTitle ?? AppLocalizations.of(context).translate('all_notes'), style: Theme.of(context).accentTextTheme.title);
+    _appbarTitle = Text(
+      _noteOverviewNotifier.pageTitle 
+      ?? AppLocalizations.of(context).translate('all_notes'), 
+      style: Theme.of(context).accentTextTheme.title
+    );
     _searchText = "";
     _firstLoad = false;
   
@@ -88,6 +88,11 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
     if(_firstLoad){
       _init();
     }
+
+    return _buildWidget(context);
+  }
+
+  AppBar _buildWidget(BuildContext context) {
     return AppBar(
       title: _appbarTitle,
       leading: _buildLeadingIcon(context),
@@ -107,27 +112,49 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
         itemBuilder: (BuildContext context) {
           return <PopupMenuEntry<String>>[
             PopupMenuItem(
-              value: _noteOverviewNotifier.expandedTiles ?  ActionConstants.COLLPASE_ACTION: ActionConstants.EXPAND_ACTION,
+              value: _noteOverviewNotifier.expandedTiles 
+                ? ActionConstants.COLLPASE_ACTION
+                : ActionConstants.EXPAND_ACTION,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Icon(_noteOverviewNotifier.expandedTiles ? MdiIcons.arrowCollapse : MdiIcons.arrowExpand, color: Theme.of(context).iconTheme.color),
+                  Icon(
+                    _noteOverviewNotifier.expandedTiles 
+                    ? MdiIcons.arrowCollapse 
+                    : MdiIcons.arrowExpand, 
+                    color: Theme.of(context).iconTheme.color
+                  ),
                   Padding(
                     padding: EdgeInsets.only(left: 10),
-                    child: Text(_noteOverviewNotifier.expandedTiles ?  AppLocalizations.of(context).translate('collapse') : AppLocalizations.of(context).translate('expand') , style: Theme.of(context).textTheme.display1)
+                    child: Text(
+                      _noteOverviewNotifier.expandedTiles 
+                      ?  AppLocalizations.of(context).translate('collapse') 
+                      : AppLocalizations.of(context).translate('expand'), 
+                      style: Theme.of(context).textTheme.display1
+                    )
                   )
                 ]
               )
             ),
             PopupMenuItem(
-              value: _noteOverviewNotifier.showListView ? ActionConstants.SHOW_GRIDVIEW_ACTION: ActionConstants.SHOW_LISTVIEW_ACTION,
+              value: _noteOverviewNotifier.showListView 
+                ? ActionConstants.SHOW_GRIDVIEW_ACTION
+                : ActionConstants.SHOW_LISTVIEW_ACTION,
               child:  Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Icon(_noteOverviewNotifier.showListView ? MdiIcons.viewGrid : MdiIcons.viewList, color: Theme.of(context).iconTheme.color),
+                  Icon(
+                    _noteOverviewNotifier.showListView 
+                    ? MdiIcons.viewGrid : MdiIcons.viewList, color
+                    : Theme.of(context).iconTheme.color
+                  ),
                   Padding(
                     padding: EdgeInsets.only(left: 10),
-                    child:  Text(_noteOverviewNotifier.showListView ? AppLocalizations.of(context).translate('gridview') : AppLocalizations.of(context).translate('listview') , style: Theme.of(context).textTheme.display1)
+                    child:  Text(
+                      _noteOverviewNotifier.showListView 
+                      ? AppLocalizations.of(context).translate('gridview') 
+                      : AppLocalizations.of(context).translate('listview'), 
+                      style: Theme.of(context).textTheme.display1)
                   )
                 ]
               )
@@ -154,7 +181,11 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
         );
       } else {
         this._searchIcon = Icon(Icons.search, color: Theme.of(context).buttonColor);
-        this._appbarTitle = Text(_noteOverviewNotifier.pageTitle ?? AppLocalizations.of(context).translate('all_notes'), style: Theme.of(context).accentTextTheme.title);
+        this._appbarTitle = Text(
+          _noteOverviewNotifier.pageTitle 
+          ?? AppLocalizations.of(context).translate('all_notes'), 
+          style: Theme.of(context).accentTextTheme.title
+        );
         filteredNotes = this.widget.notes;
         _filter.clear();
       }
@@ -162,19 +193,21 @@ class _OverviewAppbarState extends State<OverviewAppbar> {
   }
 
   IconButton _buildLeadingIcon(BuildContext context) {
-    return PageNavigator().pageNavigatorState == PageNavigatorState.NOTES_IN_FOLDER 
-            ||  PageNavigator().pageNavigatorState == PageNavigatorState.NOTES_WITH_TAG 
-      ? IconButton(
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor),
-          onPressed: ()  {
-            PageNavigator().navigateBack(context);
-            Navigator.of(context).pop();
-          },
-        )
-      : IconButton(
-          icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
-          onPressed: widget.onMenuClick
-        );
+    bool notesInFOlderOrNotesWithTagsMode = 
+      _pageNavigator.pageNavigatorState == PageNavigatorState.NOTES_IN_FOLDER 
+      ||  _pageNavigator.pageNavigatorState == PageNavigatorState.NOTES_WITH_TAG;
+
+    return notesInFOlderOrNotesWithTagsMode ? IconButton(
+        icon: Icon(Icons.arrow_back, color: Theme.of(context).accentColor),
+        onPressed: ()  {
+          _pageNavigator.navigateBack(context);
+          Navigator.of(context).pop();
+        },
+      )
+    : IconButton(
+        icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
+        onPressed: widget.onMenuClick
+      );
   }
 
 }

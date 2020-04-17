@@ -2,8 +2,8 @@ import 'package:boostnote_mobile/data/entity/FolderEntity.dart';
 import 'package:boostnote_mobile/presentation/navigation/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
+import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/SnippetDescription.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/NoteInfoDialog.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/SnippetDescription.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/TagsDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,37 +11,34 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 
 class SnippetNoteHeader extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() => _SnippetNoteHeaderState();
-
 }
 
 class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
 
-  TextEditingController _textEditingController;
-  NoteNotifier _noteNotifier;
+  TextEditingController _textEditingController = TextEditingController();
+  PageNavigator _pageNavigator = PageNavigator();
+   NoteNotifier _noteNotifier;
   SnippetNotifier _snippetNotifier;
-  PageNavigator _pageNavigator;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _textEditingController = TextEditingController();
-  }
 
   @override
   Widget build(BuildContext context) {
+    _initNotifiers(context);
+    return _buildWidget();
+  }
+
+  void _initNotifiers(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
     _snippetNotifier = Provider.of<SnippetNotifier>(context);
-    _textEditingController.text = _noteNotifier.note.title; 
-    _pageNavigator = PageNavigator();
+  }
 
+  Padding _buildWidget() {
+    _textEditingController.text = _noteNotifier.note.title; 
     _textEditingController.addListener((){
       _noteNotifier.note.title = _textEditingController.text;
     });
-
+    
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16),
       child: Column(
@@ -50,31 +47,7 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
     );
   }
 
-  void _changeFolder(folder) {
-    _noteNotifier.note.folder = folder;
-    _snippetNotifier.selectedFolder = folder;
-  }
-
-  Future<List<String>> _showNoteInfoDialog() => showDialog(
-    context: context, 
-    builder: (context){
-      return NoteInfoDialog();
-  });
-
-  Future<List<String>> _showTagDialog() => showDialog(
-    context: context, 
-    builder: (context){
-      return TagsDialog();
-  });
-  
-  Future<String> _showDescriptionDialog() =>
-    showDialog(
-      context: context,  
-      builder: (context){
-        return SnippetDescriptionDialog();
-  });
- 
-  List<Widget> _getWidgets() {
+  List<Widget> _getWidgets() {    //TODO way too long
     List<Widget> widgets = <Widget>[
       Align(
         alignment: Alignment.centerLeft,
@@ -191,4 +164,27 @@ class _SnippetNoteHeaderState extends State<SnippetNoteHeader> {
     return widgets;
   }
 
+  void _changeFolder(folder) {
+    _noteNotifier.note.folder = folder;
+    _snippetNotifier.selectedFolder = folder;
+  }
+
+  Future<List<String>> _showNoteInfoDialog() => showDialog(
+    context: context, 
+    builder: (context){
+      return NoteInfoDialog();
+  });
+
+  Future<List<String>> _showTagDialog() => showDialog(
+    context: context, 
+    builder: (context){
+      return TagsDialog();
+  });
+  
+  Future<String> _showDescriptionDialog() =>
+    showDialog(
+      context: context,  
+      builder: (context){
+        return SnippetDescriptionDialog();
+  });
 }

@@ -1,36 +1,34 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
-import 'package:boostnote_mobile/presentation/pages/notes/widgets/NoteGridTile.dart';
-import 'package:boostnote_mobile/presentation/pages/notes/widgets/notelist/NoteList.dart';
+import 'package:boostnote_mobile/presentation/pages/notes/widgets/notesgrid/NoteGridTile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
-class Overview extends StatefulWidget {   //TODO Delete and move into OverviewPage???
+class NoteGrid extends StatefulWidget {
   @override
-  _OverviewState createState() => _OverviewState();
+  _NoteGridState createState() => _NoteGridState();
 }
 
-class _OverviewState extends State<Overview> {
-  NoteNotifier _noteNotifier;
+class _NoteGridState extends State<NoteGrid> {
+
   NoteOverviewNotifier _noteOverviewNotifier;
+  NoteNotifier _noteNotifier;
 
   @override
   Widget build(BuildContext context) {
-    _noteNotifier = Provider.of<NoteNotifier>(context);
+    initNotifiers();
+    return _buildWidget();
+  }
+
+  void initNotifiers() {
     _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
-    return _noteOverviewNotifier.showListView ? _buildListViewBody() : _buildGridViewBody();
+    _noteNotifier = Provider.of<NoteNotifier>(context);
   }
 
-  Widget _buildListViewBody() {
-    return Container( 
-      child: NoteList()
-    );
-  }
-
-  Widget _buildGridViewBody() {   //Todo extract widget
+  Widget _buildWidget() {
     double _displayWidth = MediaQuery.of(context).size.width;
     int _cardWidth = 200;
     if(_displayWidth >= 1200) _displayWidth = _displayWidth * 2/5;
@@ -43,11 +41,6 @@ class _OverviewState extends State<Overview> {
             child: GestureDetector(
               onTap: () {
                   _noteNotifier.note = _noteOverviewNotifier.notes[index];
-                  /*if(_noteNotifier.note is SnippetNote) {
-                  selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty 
-                    ? (_noteNotifier.note as SnippetNote).codeSnippets.first
-                    : null;
-                }*/
               },
               child: NoteGridTile(note:  _noteOverviewNotifier.notes[index], expanded: _noteOverviewNotifier.expandedTiles)
             )
@@ -64,6 +57,4 @@ class _OverviewState extends State<Overview> {
       return 0.8;
     }
   } 
-
 }
-

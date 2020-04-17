@@ -6,7 +6,7 @@ class ResponsiveWidget extends StatefulWidget {
   final int breakPoint;
   final List<ResponsiveChild> widgets;
   final bool showDivider;
-  Widget divider;
+  final Widget divider;
 
   ResponsiveWidget({this.showDivider = true, this.breakPoint = 1200, @required this.widgets, this.divider});
 
@@ -19,6 +19,7 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
 
   bool _isTablet;
   List<ResponsiveChild> widgets;
+  Widget divider;
 
   @override
   void initState() {
@@ -28,7 +29,9 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
   @override
   Widget build(BuildContext context) {
     if(widget.divider == null) {
-      widget.divider = Container(width: 0.5, color: Theme.of(context).dividerColor);
+      divider = Container(width: 0.5, color: Theme.of(context).dividerColor);
+    } else {
+      divider = widget.divider;
     }
 
     widgets = this.widget.widgets;
@@ -54,10 +57,9 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
           )
         );
         if(this.widget.showDivider){
-          result.add(widget.divider);
+          result.add(divider);
         }
       } 
-
     }
 
     result.removeLast();

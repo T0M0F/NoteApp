@@ -1,7 +1,4 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
-import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
-import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/presentation/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/navigation/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
@@ -9,11 +6,10 @@ import 'package:boostnote_mobile/presentation/pages/code_editor/CodeSnippetEdito
 import 'package:boostnote_mobile/presentation/pages/folders/widgets/CombinedFoldersAndEditorAppbar.dart';
 import 'package:boostnote_mobile/presentation/pages/folders/widgets/folderlist/FolderList.dart';
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/MarkdownEditor.dart';
-import 'package:boostnote_mobile/presentation/responsive/ResponsiveChild.dart';
-import 'package:boostnote_mobile/presentation/responsive/ResponsiveWidget.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/ResponsiveFloatingActionButton.dart';
-import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -27,19 +23,16 @@ class FoldersPage extends StatefulWidget {
 class _FoldersPageState extends State<FoldersPage> {
 
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
-  NoteService _noteService = NoteService();
   NoteNotifier _noteNotifier;
-  SnippetNotifier _snippetNotifier;
 
   @override
   Widget build(BuildContext context) {
-    _initProviders();
+    _initNotifier();
     return _buildScaffold(context);
   }
 
-  void _initProviders() {
+  void _initNotifier() {
     _noteNotifier = Provider.of<NoteNotifier>(context);
-    _snippetNotifier = Provider.of<SnippetNotifier>(context);
   }
 
   Widget _buildScaffold(BuildContext context) {
@@ -72,34 +65,8 @@ class _FoldersPageState extends State<FoldersPage> {
 
   CombinedFoldersAndEditorAppbar _buildAppbar() {
     return CombinedFoldersAndEditorAppbar(
-      onSelectedActionCallback: (String action) => _selectedAction(action),
       openDrawer: () => _drawerKey.currentState.openDrawer()
     );
-  }
-
-  void _selectedAction(String action){
-    switch (action) {
-      case ActionConstants.SAVE_ACTION:
-        _noteNotifier.note = null;
-        _noteService.save(_noteNotifier.note);
-        break;
-      case ActionConstants.MARK_ACTION:
-        _noteNotifier.note.isStarred = true;
-        _noteService.save(_noteNotifier.note);
-        break;
-      case ActionConstants.UNMARK_ACTION:
-          _noteNotifier.note.isStarred = false;
-        _noteService.save(_noteNotifier.note);
-        break;
-      case ActionConstants.RENAME_CURRENT_SNIPPET:
-       _showRenameSnippetDialog(context);
-        break;
-      case ActionConstants.DELETE_CURRENT_SNIPPET:
-        (_noteNotifier.note as SnippetNote).codeSnippets.remove(_snippetNotifier.selectedCodeSnippet);
-        _snippetNotifier.selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty ? (_noteNotifier.note as SnippetNote).codeSnippets.last : null;
-        _noteService.save(_noteNotifier.note);
-        break;
-    }
   }
 
   Widget _buildBody(BuildContext context) {
@@ -121,13 +88,7 @@ class _FoldersPageState extends State<FoldersPage> {
         )
       ]
     );
-  }
-
-  Future<String> _showRenameSnippetDialog(BuildContext context) =>
-    showDialog(context: context, 
-      builder: (context){
-        return EditSnippetNameDialog();
-  });                                  
+  }                                
 }
 
 

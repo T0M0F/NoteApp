@@ -4,37 +4,47 @@ import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/MarkdownEditor.dart';
-import 'package:boostnote_mobile/presentation/pages/tags/widgets/CombinedTagsAndEditorAppbar.dart';
-import 'package:boostnote_mobile/presentation/pages/tags/widgets/taglist/TagList.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/ResponsiveFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class TagsPage extends StatefulWidget {  
-  @override
-  _TagsPageState createState() => _TagsPageState();
-}
- 
-class _TagsPageState extends State<TagsPage> {
 
+class ResponsiveBaseView extends StatefulWidget {
+
+  final AppBar appBar;
+  final Widget leftChild;
+
+  ResponsiveBaseView({@required this.appBar,@required this.leftChild});
+  
+  @override
+  _ResponsiveBaseViewState createState() => _ResponsiveBaseViewState();
+}
+
+class _ResponsiveBaseViewState extends State<ResponsiveBaseView> {
+  
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   NoteNotifier _noteNotifier;
 
   @override
   Widget build(BuildContext context) {
-    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _initNotifier();
     return _buildScaffold(context);
+  }
+
+  void _initNotifier() {
+    _noteNotifier = Provider.of<NoteNotifier>(context);
   }
 
   Widget _buildScaffold(BuildContext context) {
     return WillPopScope(
       child: Scaffold(
         key: _drawerKey,
-        appBar: _buildAppBar(context),
+        appBar: widget.appBar,
         drawer: NavigationDrawer(),
         body: _buildBody(context),
         floatingActionButton: ResponsiveFloatingActionButton()
@@ -58,19 +68,13 @@ class _TagsPageState extends State<TagsPage> {
     );  
   }
 
-  Widget _buildAppBar(BuildContext context) {
-    return CombinedTagsAndEditorAppbar(
-      openDrawer: () => _drawerKey.currentState.openDrawer(),
-    );
-  }
-
   Widget _buildBody(BuildContext context) {
     return ResponsiveWidget(
       widgets: <ResponsiveChild> [
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 1 : 0, 
           largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2, 
-          child: TagList()
+          child: widget.leftChild
         ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 
@@ -83,6 +87,9 @@ class _TagsPageState extends State<TagsPage> {
         )
       ]
     );
-  }
-
+  }                            
 }
+
+
+
+

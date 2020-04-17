@@ -10,12 +10,10 @@ import 'package:provider/provider.dart';
 
 class NotesPageAppbar extends StatefulWidget implements PreferredSizeWidget {
 
-  final Function(String action) onSelectedActionCallback;
   final Function() onMenuClick;
-  final Map<String, String> actions;
   final List<Note> notes;
 
-  NotesPageAppbar({this.notes, this.actions, this.onSelectedActionCallback, this.onMenuClick});
+  NotesPageAppbar({this.notes, this.onMenuClick});
 
   @override
   _NotesPageAppbarState createState() => _NotesPageAppbarState();
@@ -108,7 +106,7 @@ class _NotesPageAppbarState extends State<NotesPageAppbar> {
       ),
       PopupMenuButton<String>(
         icon: Icon(Icons.more_vert, color: Theme.of(context).buttonColor),
-        onSelected: this.widget.onSelectedActionCallback,
+        onSelected: (action) => _selectedAction(action),
         itemBuilder: (BuildContext context) {
           return <PopupMenuEntry<String>>[
             PopupMenuItem(
@@ -208,6 +206,23 @@ class _NotesPageAppbarState extends State<NotesPageAppbar> {
         icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
         onPressed: widget.onMenuClick
       );
+  }
+
+  void _selectedAction(String action){
+    switch (action) {
+      case ActionConstants.COLLPASE_ACTION:
+        _noteOverviewNotifier.expandedTiles = false;
+        break;
+      case ActionConstants.EXPAND_ACTION:
+        _noteOverviewNotifier.expandedTiles = true;
+        break;
+      case ActionConstants.SHOW_GRIDVIEW_ACTION:
+        _noteOverviewNotifier.showListView = false;
+        break;
+      case ActionConstants.SHOW_LISTVIEW_ACTION:
+        _noteOverviewNotifier.showListView = true;
+        break;
+    }
   }
 
 }

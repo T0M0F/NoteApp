@@ -38,37 +38,34 @@ class NewSyntaxHighlighter extends SyntaxHighlighter{
     return language;
   }
 
-  List<TextSpan> _convertToTextSpan(List<Node> nodes) {   //TODO split method to reduce complexity
-
+  List<TextSpan> _convertToTextSpan(List<Node> nodes) {   
     List<TextSpan> spans = [];
     var currentSpans = spans;
     List<List<TextSpan>> stack = [];
 
-    _traverse(Node node) {
-      if (node.value != null) {
-        currentSpans.add(node.className == null
-            ? TextSpan(text: node.value)
-            : TextSpan(text: node.value, style: theme[node.className]));
-      } else if (node.children != null) {
-
-        List<TextSpan> tmp = [];
-        currentSpans.add(TextSpan(children: tmp, style: theme[node.className]));
-        stack.add(currentSpans);
-        currentSpans = tmp;
-
-        node.children.forEach((n) {
-          _traverse(n);
-          if (n == node.children.last) {
-            currentSpans = stack.isEmpty ? spans : stack.removeLast();
-          }
-        });
-      }
-    }
-
-    for (var node in nodes) {
-      _traverse(node);
-    }
+    nodes.forEach((node) => _traverse(node, currentSpans, stack, spans));
 
     return spans;
   }
+
+  void _traverse(Node node, List<TextSpan> currentSpans, List<List<TextSpan>> stack, List<TextSpan> spans) {
+    if (node.value != null) {
+      currentSpans.add(node.className == null
+          ? TextSpan(text: node.value)
+          : TextSpan(text: node.value, style: theme[node.className]));
+    } else if (node.children != null) {
+      List<TextSpan> tmp = [];
+      currentSpans.add(TextSpan(children: tmp, style: theme[node.className]));
+      stack.add(currentSpans);
+      currentSpans = tmp;
+    
+      node.children.forEach((n) {
+        _traverse(n, currentSpans, stack, spans);
+        if (n == node.children.last) {
+          currentSpans = stack.isEmpty ? spans : stack.removeLast();
+        }
+      });
+    }
+  }
+
 }

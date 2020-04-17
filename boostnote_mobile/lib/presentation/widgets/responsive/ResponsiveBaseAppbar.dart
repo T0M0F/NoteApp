@@ -1,42 +1,35 @@
 import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
-import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/CodeSnippetAppBar.dart';
+import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/CodeSnippetAppbarEditMode.dart';
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/widgets/MarkdownEditorAppBar.dart';
-import 'package:boostnote_mobile/presentation/pages/notes/widgets/NotesPageAppbar.dart';
-import 'package:boostnote_mobile/presentation/widgets/DeviceWidthService.dart';
 import 'package:boostnote_mobile/presentation/widgets/appbars/EmptyAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-/*
-* This class combines the NotesPage Appbar and the Code or MarkdownEditor Appbar 
-* into one responsive row.
-*/
-class CombinedNotesAndEditorAppbar extends StatefulWidget  implements PreferredSizeWidget{
+class ResponsiveBaseAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
   final Function(String action) onSelectedActionCallback;
   final Function onMenuClick;
+  final PreferredSizeWidget leftAppbar;
 
-  CombinedNotesAndEditorAppbar({this.onSelectedActionCallback, this.onMenuClick});
+  ResponsiveBaseAppbar({this.onSelectedActionCallback, this.onMenuClick, this.leftAppbar});
 
   @override
-  _CombinedNotesAndEditorAppbarState createState() => _CombinedNotesAndEditorAppbarState();
+  _ResponsiveBaseAppbarState createState() => _ResponsiveBaseAppbarState();
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
-class _CombinedNotesAndEditorAppbarState extends State<CombinedNotesAndEditorAppbar> {
+class _ResponsiveBaseAppbarState extends State<ResponsiveBaseAppbar> {
 
   NoteNotifier _noteNotifier;
   SnippetNotifier _snippetNotifier;
-  NoteOverviewNotifier _noteOverviewNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +40,6 @@ class _CombinedNotesAndEditorAppbarState extends State<CombinedNotesAndEditorApp
   void _initNotifiers(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
     _snippetNotifier = Provider.of<SnippetNotifier>(context);
-    _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
   }
 
   ResponsiveWidget _buildWidget(BuildContext context) {
@@ -57,7 +49,7 @@ class _CombinedNotesAndEditorAppbarState extends State<CombinedNotesAndEditorApp
          ResponsiveChild(
               smallFlex: _noteNotifier.note == null ? 1 : 0, 
               largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2, 
-              child: _buildLeftAppbar(context)
+              child: widget.leftAppbar
             ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 
@@ -67,13 +59,6 @@ class _CombinedNotesAndEditorAppbarState extends State<CombinedNotesAndEditorApp
       ]
     );
   }
- 
-  Widget _buildLeftAppbar(BuildContext context) {
-    return NotesPageAppbar(
-      notes: _noteOverviewNotifier.notesCopy,
-      onMenuClick: widget.onMenuClick,
-    );
-  }
 
   Widget _buildRightAppbar(BuildContext context) {
     return _noteNotifier.note == null   //Throws for some reason an exception when extracting into seperate methods
@@ -81,35 +66,7 @@ class _CombinedNotesAndEditorAppbarState extends State<CombinedNotesAndEditorApp
       : _noteNotifier.note is MarkdownNote
         ? MarkdownEditorAppBar()
         : _snippetNotifier.isEditMode
-          ? AppBar(
-              leading: _buildLeadingIcon(),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.check, color: Theme.of(context).buttonColor), 
-                  onPressed: () => _snippetNotifier.isEditMode = !_snippetNotifier.isEditMode
-                )
-              ]
-          )
+          ? CodeSnippetAppBarEditMode()
           : CodeSnippetAppBar();
-  }
-
-  Widget _buildLeadingIcon() {
-    if(DeviceWidthService(context).isTablet()) {
-      return IconButton(
-        icon: Icon(_noteNotifier.isEditorExpanded ? MdiIcons.chevronRight : MdiIcons.chevronLeft, color:  Theme.of(context).buttonColor), 
-        onPressed:() {
-          _noteNotifier.isEditorExpanded = !_noteNotifier.isEditorExpanded;
-        },
-      );
-    } else {
-      return IconButton(
-        icon: Icon(Icons.arrow_back, color:  Theme.of(context).buttonColor), 
-        onPressed:() {
-          _noteNotifier.isEditorExpanded = false;
-          _snippetNotifier.selectedCodeSnippet = null;
-          _noteNotifier.note = null;
-        },
-      );
-    }
   }
 }

@@ -1,4 +1,4 @@
-import 'package:boostnote_mobile/presentation/responsive/ResponsiveChild.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:flutter/material.dart';
 
 class ResponsiveWidget extends StatefulWidget {

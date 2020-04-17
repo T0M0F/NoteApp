@@ -42,7 +42,7 @@ class _NoteGridState extends State<NoteGrid> {
               onTap: () {
                   _noteNotifier.note = _noteOverviewNotifier.notes[index];
               },
-              child: NoteGridTile(note:  _noteOverviewNotifier.notes[index], expanded: _noteOverviewNotifier.expandedTiles)
+              child: NoteGridTile(note:  _noteOverviewNotifier.notes[index])
             )
         ),
         staggeredTileBuilder: (int index) => StaggeredTile.count(1, calculateHeightFactor( _noteOverviewNotifier.notes[index]))

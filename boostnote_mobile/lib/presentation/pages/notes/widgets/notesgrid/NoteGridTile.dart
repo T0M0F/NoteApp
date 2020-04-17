@@ -4,24 +4,36 @@ import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/presentation/converter/DateTimeConverter.dart';
 import 'package:boostnote_mobile/presentation/converter/TagListConverter.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class NoteGridTile extends StatelessWidget {    //TODO convert to stateful widget
-
-  final TagListConverter _tagListConverter = TagListConverter();
-  final DateTimeConverter _dateTimeConverter = DateTimeConverter();
+class NoteGridTile extends StatefulWidget {   
 
   final Note note;
-  bool expanded;
 
-  NoteGridTile({this.note, this.expanded});
+  NoteGridTile({this.note});
+
+  @override
+  _NoteGridTileState createState() => _NoteGridTileState();
+}
+
+class _NoteGridTileState extends State<NoteGridTile> {
+
+  TagListConverter _tagListConverter = TagListConverter();
+  DateTimeConverter _dateTimeConverter = DateTimeConverter();
+  NoteOverviewNotifier _noteOverviewNotifier;
 
   @override
   Widget build(BuildContext context) {
+    _noteOverviewNotifier = Provider.of<NoteOverviewNotifier>(context);
     List<Widget> widgets;
+    return _buildWidget(widgets, context);
+  }
 
-    if(expanded) {
+  Container _buildWidget(List<Widget> widgets, BuildContext context) {
+      if(_noteOverviewNotifier.expandedTiles) {
       widgets = <Widget>[
         _buildHeaderRow(context),
         _buildBody(context),
@@ -35,7 +47,7 @@ class NoteGridTile extends StatelessWidget {    //TODO convert to stateful widge
         _buildFooterRow2(context)
       ];
     }  
-
+    
     return Container(
       color: Theme.of(context).dialogBackgroundColor,
       padding: EdgeInsets.only(left: 5, right: 5, top: 8, bottom: 0),
@@ -50,11 +62,11 @@ class NoteGridTile extends StatelessWidget {    //TODO convert to stateful widge
     List<Widget> widgets = [
       Row(
         children: <Widget>[
-          Icon(note is MarkdownNote ? Icons.description : Icons.code, color: Theme.of(context).indicatorColor),
+          Icon(widget.note is MarkdownNote ? Icons.description : Icons.code, color: Theme.of(context).indicatorColor),
           Padding(
             padding: EdgeInsets.only(left: 5),
             child: Text(
-              note.title, 
+              widget.note.title, 
               maxLines: 1,
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.display1.color),
             )
@@ -63,7 +75,7 @@ class NoteGridTile extends StatelessWidget {    //TODO convert to stateful widge
       )
     ];
 
-    if(note.isStarred && expanded) {
+    if(widget.note.isStarred && _noteOverviewNotifier.expandedTiles) {
       widgets.add( Icon(Icons.star, color: Colors.yellow));
     }
 
@@ -79,8 +91,8 @@ class NoteGridTile extends StatelessWidget {    //TODO convert to stateful widge
   Widget _buildBody(BuildContext context) {
     Widget widget;
 
-    if(note is SnippetNote) {
-      SnippetNote snippetNote = note;
+    if(this.widget.note is SnippetNote) {
+      SnippetNote snippetNote = this.widget.note;
       if(snippetNote.description != null && snippetNote.description.trim().isNotEmpty) {
          widget = Text(
             snippetNote.description,
@@ -115,7 +127,7 @@ class NoteGridTile extends StatelessWidget {    //TODO convert to stateful widge
       }
 
     } else {
-      MarkdownNote markdownNote = note;
+      MarkdownNote markdownNote = this.widget.note;
       if(markdownNote.content == null || markdownNote.content.trim().isEmpty) {
         widget = Text(
           '\n' + AppLocalizations.of(context).translate('no_data') + '\n', 
@@ -140,13 +152,13 @@ class NoteGridTile extends StatelessWidget {    //TODO convert to stateful widge
   }
 
   Widget _buildFooterRow1(BuildContext context) {
-    if(note.tags.isNotEmpty) {
+    if(widget.note.tags.isNotEmpty) {
       return Padding(
         padding: EdgeInsets.only(bottom: 5),
         child: Align(
           alignment: Alignment.centerLeft,
           child: Text(
-                _tagListConverter.convert(note.tags), 
+                _tagListConverter.convert(widget.note.tags), 
                 maxLines: 1,
                 style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic, color: Colors.grey),
                 overflow: TextOverflow.ellipsis,
@@ -171,10 +183,9 @@ class NoteGridTile extends StatelessWidget {    //TODO convert to stateful widge
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
-          _dateTimeConverter.convertToReadableForm(note.updatedAt), 
+          _dateTimeConverter.convertToReadableForm(widget.note.updatedAt), 
           style: TextStyle(fontSize: 15.0, color: Theme.of(context).textTheme.display2.color)
       )
     );
   }
-
 }

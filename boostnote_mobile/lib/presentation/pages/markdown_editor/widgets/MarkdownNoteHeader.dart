@@ -44,7 +44,7 @@ class _MarkdownNoteHeaderState extends State<MarkdownNoteHeader> {
     );
   }
 
-  List<Widget> _getWidgets() {          //TODO way too long
+  List<Widget> _getWidgets() {        
     List<Widget> widgets = <Widget>[
       Align(
         alignment: Alignment.centerLeft,

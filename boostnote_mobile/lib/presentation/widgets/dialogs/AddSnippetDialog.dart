@@ -9,8 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or StatefulWidget?
+class AddSnippetDialog extends StatefulWidget {  
+  @override
+  _AddSnippetDialogState createState() => _AddSnippetDialogState();
+}
 
+class _AddSnippetDialogState extends State<AddSnippetDialog> {
+  
   final TextEditingController controller = TextEditingController();
   NoteNotifier _noteNotifier;
   SnippetNotifier _snippetNotifier;
@@ -41,7 +46,6 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
       )
     );
   }
-
 
   Container _buildContent(BuildContext context) {
      return Container(
@@ -89,5 +93,4 @@ class AddSnippetDialog extends StatelessWidget {  //TODO StatelessWidget or Stat
     _snippetNotifier.selectedCodeSnippet = codeSnippet;
     Navigator.of(context).pop();
   }   
-
 }

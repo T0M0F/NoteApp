@@ -4,10 +4,10 @@ import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/CodeSnippetAppBar.dart';
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/widgets/MarkdownEditorAppBar.dart';
 import 'package:boostnote_mobile/presentation/pages/tags/widgets/TagsPageAppbar.dart';
-import 'package:boostnote_mobile/presentation/responsive/DeviceWidthService.dart';
-import 'package:boostnote_mobile/presentation/responsive/ResponsiveChild.dart';
-import 'package:boostnote_mobile/presentation/responsive/ResponsiveWidget.dart';
+import 'package:boostnote_mobile/presentation/widgets/DeviceWidthService.dart';
 import 'package:boostnote_mobile/presentation/widgets/EmptyAppbar.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -19,10 +19,9 @@ import 'package:provider/provider.dart';
 */
 class CombinedTagsAndEditorAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
-  final Function(String action) onSelectedActionCallback;
   final Function() openDrawer;
 
-  CombinedTagsAndEditorAppbar({this.onSelectedActionCallback, this.openDrawer});
+  CombinedTagsAndEditorAppbar({this.openDrawer});
 
   @override
   _CombinedTagsAndEditorAppbarState createState() => _CombinedTagsAndEditorAppbarState();
@@ -62,7 +61,7 @@ class _CombinedTagsAndEditorAppbarState extends State<CombinedTagsAndEditorAppba
     return _noteNotifier.note == null   //Throws for some reason an exception when extracting into seperate methods
     ? EmptyAppbar()
     : _noteNotifier.note is MarkdownNote
-      ? MarkdownEditorAppBar(selectedActionCallback: widget.onSelectedActionCallback,)
+      ? MarkdownEditorAppBar()
       : _snippetNotifier.isEditMode
         ? AppBar(
             leading: _buildLeadingIcon(),
@@ -73,7 +72,7 @@ class _CombinedTagsAndEditorAppbarState extends State<CombinedTagsAndEditorAppba
               )
             ]
         )
-        : CodeSnippetAppBar(selectedActionCallback: widget.onSelectedActionCallback);
+        : CodeSnippetAppBar();
   }
 
   Widget _buildLeadingIcon() {

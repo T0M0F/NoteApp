@@ -1,19 +1,17 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
+import 'package:boostnote_mobile/presentation/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/OverflowButton.dart';
-import 'package:boostnote_mobile/presentation/responsive/DeviceWidthService.dart';
+import 'package:boostnote_mobile/presentation/widgets/DeviceWidthService.dart';
+import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 class CodeSnippetAppBar extends StatefulWidget implements PreferredSizeWidget{
-
-  final Function(String) selectedActionCallback;
-
-  CodeSnippetAppBar({this.selectedActionCallback});
-
   @override
   _CodeSnippetAppBarState createState() => _CodeSnippetAppBarState();
 
@@ -23,6 +21,7 @@ class CodeSnippetAppBar extends StatefulWidget implements PreferredSizeWidget{
 
 class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
 
+  NoteService _noteService = NoteService();
   NoteNotifier _noteNotifier;
   SnippetNotifier _snippetNotifier;
 
@@ -47,9 +46,7 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
   List<Widget> _buildActions() {
     List<Widget> actions = <Widget>[
       OverflowButton(
-        noteIsStarred: _noteNotifier.note.isStarred, 
-        selectedActionCallback: this.widget.selectedActionCallback,
-        snippetSelected: _snippetNotifier.selectedCodeSnippet != null,
+        selectedActionCallback: (action) => _selectedAction(action),
       )
     ];
 
@@ -110,4 +107,49 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
       );
     }
   }
+
+  void _selectedAction(String action){
+    switch (action) {
+      case ActionConstants.SAVE_ACTION:
+        setState(() {
+          _noteNotifier.note = null;
+        });
+        _noteService.save(_noteNotifier.note);
+        break;
+      case ActionConstants.MARK_ACTION:
+       setState(() {
+          _noteNotifier.note.isStarred = true;
+        });
+        _noteService.save(_noteNotifier.note);
+        break;
+      case ActionConstants.UNMARK_ACTION:
+        setState(() {
+          _noteNotifier.note.isStarred = false;
+        });
+        _noteService.save(_noteNotifier.note);
+        break;
+      case ActionConstants.RENAME_CURRENT_SNIPPET:
+       _showRenameSnippetDialog(context, (String name){
+          setState(() {
+            _snippetNotifier.selectedCodeSnippet.name = name;
+          });
+          Navigator.of(context).pop();
+          _noteService.save(_noteNotifier.note);
+        });
+        break;
+      case ActionConstants.DELETE_CURRENT_SNIPPET:
+        setState(() {
+          (_noteNotifier.note as SnippetNote).codeSnippets.remove(_snippetNotifier.selectedCodeSnippet);
+          _snippetNotifier.selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty ? (_noteNotifier.note as SnippetNote).codeSnippets.last : null;
+        });
+        _noteService.save(_noteNotifier.note);
+        break;
+    }
+  }
+
+  Future<String> _showRenameSnippetDialog(BuildContext context, Function(String) callback) =>
+    showDialog(context: context, 
+      builder: (context){
+        return EditSnippetNameDialog();
+  });
 }

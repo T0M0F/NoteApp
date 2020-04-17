@@ -11,11 +11,11 @@ import 'package:boostnote_mobile/presentation/pages/markdown_editor/MarkdownEdit
 import 'package:boostnote_mobile/presentation/pages/notes/widgets/CombinedNotesAndEditorAppbar.dart';
 import 'package:boostnote_mobile/presentation/pages/notes/widgets/notesgrid/NoteGrid.dart';
 import 'package:boostnote_mobile/presentation/pages/notes/widgets/noteslist/NoteList.dart';
-import 'package:boostnote_mobile/presentation/responsive/ResponsiveChild.dart';
-import 'package:boostnote_mobile/presentation/responsive/ResponsiveWidget.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/ResponsiveFloatingActionButton.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -75,68 +75,9 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   PreferredSizeWidget _buildAppBar() { 
-     return CombinedNotesAndEditorAppbar(
-        onSelectedActionCallback: (String action) => _selectedAction(action),
-        onMenuClick: () => _drawerKey.currentState.openDrawer(),
-      );
-  }
-
-  void _selectedAction(String action){
-    switch (action) {
-      case ActionConstants.COLLPASE_ACTION:
-        _noteOverviewNotifier.expandedTiles = false;
-        break;
-      case ActionConstants.EXPAND_ACTION:
-        _noteOverviewNotifier.expandedTiles = true;
-        break;
-      case ActionConstants.SHOW_GRIDVIEW_ACTION:
-        _noteOverviewNotifier.showListView = false;
-        break;
-      case ActionConstants.SHOW_LISTVIEW_ACTION:
-        _noteOverviewNotifier.showListView = true;
-        break;
-      case ActionConstants.SAVE_ACTION:
-        setState(() {
-          _noteNotifier.note = null;
-        });
-        _noteService.save(_noteNotifier.note);
-        break;
-      case ActionConstants.MARK_ACTION:
-       setState(() {
-          _noteNotifier.note.isStarred = true;
-        });
-        _noteService.save(_noteNotifier.note);
-        break;
-      case ActionConstants.UNMARK_ACTION:
-        setState(() {
-          _noteNotifier.note.isStarred = false;
-        });
-        _noteService.save(_noteNotifier.note);
-        break;
-      case ActionConstants.RENAME_CURRENT_SNIPPET:
-       _showRenameSnippetDialog(context, (String name){
-          setState(() {
-            _snippetNotifier.selectedCodeSnippet.name = name;
-          });
-          Navigator.of(context).pop();
-          _noteService.save(_noteNotifier.note);
-        });
-        break;
-      case ActionConstants.DELETE_CURRENT_SNIPPET:
-        setState(() {
-          (_noteNotifier.note as SnippetNote).codeSnippets.remove(_snippetNotifier.selectedCodeSnippet);
-          _snippetNotifier.selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty ? (_noteNotifier.note as SnippetNote).codeSnippets.last : null;
-        });
-        _noteService.save(_noteNotifier.note);
-        break;
-      case ActionConstants.DELETE_CURRENT_SNIPPET:
-         setState(() {
-          (_noteNotifier.note as SnippetNote).codeSnippets.remove(_snippetNotifier.selectedCodeSnippet);
-          _snippetNotifier.selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty ? (_noteNotifier.note as SnippetNote).codeSnippets.last : null;
-        });
-        _noteService.save(_noteNotifier.note);
-        break;
-    }
+    return CombinedNotesAndEditorAppbar(
+      onMenuClick: () => _drawerKey.currentState.openDrawer(),
+    );
   }
 
   ResponsiveWidget _buildBody() {
@@ -159,11 +100,5 @@ class _NotesPageState extends State<NotesPage> {
       ]
     );
   }
-
-  Future<String> _showRenameSnippetDialog(BuildContext context, Function(String) callback) =>
-    showDialog(context: context, 
-      builder: (context){
-        return EditSnippetNameDialog();
-  });
 
 }

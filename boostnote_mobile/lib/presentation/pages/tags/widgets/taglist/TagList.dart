@@ -5,11 +5,9 @@ import 'package:boostnote_mobile/presentation/pages/tags/widgets/taglist/TagList
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TagList extends StatefulWidget {   //TODO make generic
-
+class TagList extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _TagListState();
-
 }
 
 class _TagListState extends State<TagList> {

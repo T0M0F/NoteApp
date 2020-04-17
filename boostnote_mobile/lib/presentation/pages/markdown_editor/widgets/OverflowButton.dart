@@ -1,23 +1,31 @@
 import 'package:boostnote_mobile/presentation/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
+import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class OverflowButton extends StatefulWidget {       //TODO notifier for state mangement 
+class OverflowButton extends StatefulWidget {       
 
   final Function(String) selectedActionCallback;
-  bool noteIsStarred;
 
-  OverflowButton({this.selectedActionCallback, this.noteIsStarred});
+  OverflowButton({this.selectedActionCallback});
 
   @override
   _OverflowButtonState createState() => _OverflowButtonState();
 }
 
 class _OverflowButtonState extends State<OverflowButton> {
+
+  NoteNotifier _noteNotifier;
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    return _buildWidget(context);
+  }
+
+  PopupMenuButton<String> _buildWidget(BuildContext context) {
+     return PopupMenuButton<String>(
       icon: Icon(Icons.more_vert, color:  Theme.of(context).buttonColor),
       onSelected: widget.selectedActionCallback,
       itemBuilder: (BuildContext context) {
@@ -29,9 +37,14 @@ class _OverflowButtonState extends State<OverflowButton> {
             )
           ),
           PopupMenuItem(
-            value: widget.noteIsStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION,
+            value: _noteNotifier.note.isStarred ?  ActionConstants.UNMARK_ACTION : ActionConstants.MARK_ACTION,
             child: ListTile(
-              title: Text(widget.noteIsStarred ?  AppLocalizations.of(context).translate('unmark') : AppLocalizations.of(context).translate('mark'), style: Theme.of(context).textTheme.display1)
+              title: Text( 
+                _noteNotifier.note.isStarred 
+                ? AppLocalizations.of(context).translate('unmark') 
+                : AppLocalizations.of(context).translate('mark'), 
+                style: Theme.of(context).textTheme.display1
+              )
             )
           )
         ];

@@ -47,7 +47,7 @@ class _FolderListState extends State<FolderList> {
     showModalBottomSheet(    
       context: context,
       builder: (BuildContext buildContext) {
-        return (folder.id != 'Default'.hashCode && folder.id != 'Trash'.hashCode)   //TODO fix
+        return (folder.name != 'Default' && folder.name != 'Trash')   
           ? FolderOverviewBottomSheet()
           : FolderOverviewErrorBottomSheet();
       }

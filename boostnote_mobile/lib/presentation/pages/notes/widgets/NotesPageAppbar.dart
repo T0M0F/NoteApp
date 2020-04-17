@@ -1,8 +1,8 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
-import 'package:boostnote_mobile/presentation/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/navigation/PageNavigator.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dart';
+import 'package:boostnote_mobile/presentation/widgets/ActionConstants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';

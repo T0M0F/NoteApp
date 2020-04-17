@@ -13,11 +13,9 @@ import 'package:provider/provider.dart';
 
 class ResponsiveBaseAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
-  final Function(String action) onSelectedActionCallback;
-  final Function onMenuClick;
-  final PreferredSizeWidget leftAppbar;
+  final PreferredSizeWidget leftSideAppbar;
 
-  ResponsiveBaseAppbar({this.onSelectedActionCallback, this.onMenuClick, this.leftAppbar});
+  ResponsiveBaseAppbar({@required this.leftSideAppbar});
 
   @override
   _ResponsiveBaseAppbarState createState() => _ResponsiveBaseAppbarState();
@@ -49,7 +47,7 @@ class _ResponsiveBaseAppbarState extends State<ResponsiveBaseAppbar> {
          ResponsiveChild(
               smallFlex: _noteNotifier.note == null ? 1 : 0, 
               largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2, 
-              child: widget.leftAppbar
+              child: widget.leftSideAppbar
             ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 

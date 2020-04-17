@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:convert';
 
 import 'package:boostnote_mobile/business_logic/model/Folder.dart';

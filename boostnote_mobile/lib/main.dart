@@ -1,7 +1,6 @@
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/BoostnoteApp.dart';
-import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/FolderNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/MarkdownEditorNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
@@ -21,7 +20,7 @@ void main() {
 
       runApp(
         MultiProvider(
-          providers: _initProviders(themeData, notes),
+          providers: _initNotifierProviders(themeData, notes),
           child: BoostnoteApp()
       ));
 
@@ -29,7 +28,7 @@ void main() {
   });
 }
 
-List<ChangeNotifierProvider> _initProviders(ThemeData themeData, List<Note> notes) {
+List<ChangeNotifierProvider> _initNotifierProviders(ThemeData themeData, List<Note> notes) {
   return [
     ChangeNotifierProvider<ThemeNotifier>(
       create: (context) => ThemeNotifier(themeData),

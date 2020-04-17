@@ -16,10 +16,10 @@ import 'package:provider/provider.dart';
 
 class ResponsiveBaseView extends StatefulWidget {
 
-  final AppBar appBar;
-  final Widget leftChild;
+  final PreferredSizeWidget appBar;
+  final Widget leftSideChild;
 
-  ResponsiveBaseView({@required this.appBar,@required this.leftChild});
+  ResponsiveBaseView({@required this.appBar,@required this.leftSideChild});
   
   @override
   _ResponsiveBaseViewState createState() => _ResponsiveBaseViewState();
@@ -69,21 +69,23 @@ class _ResponsiveBaseViewState extends State<ResponsiveBaseView> {
   }
 
   Widget _buildBody(BuildContext context) {
+    Widget rightSideChild = _noteNotifier.note == null
+      ? Container()
+      : _noteNotifier.note is MarkdownNote
+        ? MarkdownEditor()
+        : CodeSnippetEditor();
+        
     return ResponsiveWidget(
       widgets: <ResponsiveChild> [
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 1 : 0, 
           largeFlex: _noteNotifier.isEditorExpanded ? 0 : 2, 
-          child: widget.leftChild
+          child: widget.leftSideChild
         ),
         ResponsiveChild(
           smallFlex: _noteNotifier.note == null ? 0 : 1, 
           largeFlex: _noteNotifier.isEditorExpanded ? 1 : 3, 
-          child: _noteNotifier.note == null
-            ? Container()
-            : _noteNotifier.note is MarkdownNote
-              ? MarkdownEditor()
-              : CodeSnippetEditor()
+          child: rightSideChild
         )
       ]
     );

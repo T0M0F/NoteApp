@@ -1,8 +1,8 @@
-import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/TagRepositoryImplV2.dart';
+import 'package:boostnote_mobile/data/repositoryImpl/csonImpl/TagRepositoryImpl.dart';
 
-class TagServiceV2 {
+class TagService {
  
-  TagRepositoryImplV2 _tagRepository = TagRepositoryImplV2();
+  TagRepositoryImpl _tagRepository = TagRepositoryImpl();
 
   Future<List<String>> findAll() async{
     return _tagRepository.findAll();

@@ -1,9 +1,9 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
-import 'package:boostnote_mobile/presentation/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/widgets/OverflowButton.dart';
+import 'package:boostnote_mobile/presentation/widgets/ActionConstants.dart';
 import 'package:boostnote_mobile/presentation/widgets/DeviceWidthService.dart';
 import 'package:boostnote_mobile/presentation/widgets/dialogs/EditSnippetNameDialog.dart';
 import 'package:flutter/cupertino.dart';

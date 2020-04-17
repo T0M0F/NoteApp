@@ -5,7 +5,7 @@ abstract class Note {
   String id;
   final DateTime createdAt;
   DateTime updatedAt;
-  Folder folder; //im wiki nach gucken, wie wert generiert wird + evtl extra Klasse
+  Folder folder; 
   String title;
   List<String> tags;
   bool isStarred;

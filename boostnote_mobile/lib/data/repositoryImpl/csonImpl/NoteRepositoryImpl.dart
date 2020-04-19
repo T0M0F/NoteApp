@@ -4,14 +4,16 @@ import 'package:boostnote_mobile/business_logic/model/Note.dart';
 import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
-import 'package:boostnote_mobile/data/CsonParser.dart';
+import 'package:boostnote_mobile/data/cson/CsonConverter.dart';
+import 'package:boostnote_mobile/data/cson/CsonParser.dart';
 import 'package:boostnote_mobile/data/IdGenerator.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/FolderRepositoryImpl.dart';
 import 'package:path_provider/path_provider.dart';
 
 class NoteRepositoryImpl extends NoteRepository {
  
-  CsonParser csonParser = CsonParser();
+  CsonParser _csonParser = CsonParser();
+  CsonConverter _csonConverter = CsonConverter();
   FolderRepository _folderRepository = FolderRepositoryImpl();
 
   Future<Directory> get directory async {    
@@ -75,7 +77,7 @@ class NoteRepositoryImpl extends NoteRepository {
     await Future.forEach(_files, (file) async {
       String content = file.readAsStringSync();
       try {
-        Note note = await csonParser.convertToNote(csonParser.parseCson(content, file.path.split('/').last));
+        Note note = await _csonConverter.convertToNote(_csonParser.parseCson(content, file.path.split('/').last));
         notes.add(note);
       } catch(e) {
         print('Error Reading note: ');
@@ -113,7 +115,7 @@ class NoteRepositoryImpl extends NoteRepository {
     } 
     _folderRepository.save(note.folder);
 
-    file.writeAsString(csonParser.convertToCson(note));
+    file.writeAsString(_csonConverter.convertToCson(note));
   }
 
   @override

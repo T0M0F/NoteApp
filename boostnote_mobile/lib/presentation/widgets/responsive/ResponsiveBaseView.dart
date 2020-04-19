@@ -6,6 +6,7 @@ import 'package:boostnote_mobile/presentation/pages/code_editor/CodeSnippetEdito
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/ResponsiveFloatingActionButton.dart';
+import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveBaseAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,10 +17,10 @@ import 'package:provider/provider.dart';
 
 class ResponsiveBaseView extends StatefulWidget {
 
-  final PreferredSizeWidget appBar;
+  final PreferredSizeWidget leftSideAppBar;
   final Widget leftSideChild;
 
-  ResponsiveBaseView({@required this.appBar,@required this.leftSideChild});
+  ResponsiveBaseView({@required this.leftSideAppBar,@required this.leftSideChild});
   
   @override
   _ResponsiveBaseViewState createState() => _ResponsiveBaseViewState();
@@ -27,7 +28,7 @@ class ResponsiveBaseView extends StatefulWidget {
 
 class _ResponsiveBaseViewState extends State<ResponsiveBaseView> {
   
-  GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   NoteNotifier _noteNotifier;
 
   @override
@@ -43,17 +44,17 @@ class _ResponsiveBaseViewState extends State<ResponsiveBaseView> {
   Widget _buildScaffold(BuildContext context) {
     return WillPopScope(
       child: Scaffold(
-        key: _drawerKey,
-        appBar: widget.appBar,
+        key: _scaffoldKey,
+        appBar: ResponsiveBaseAppbar(leftSideAppbar: widget.leftSideAppBar),
         drawer: NavigationDrawer(),
         body: _buildBody(context),
         floatingActionButton: ResponsiveFloatingActionButton()
       ), 
-      onWillPop: () {
+      onWillPop: () {     //TODO move in PageNavigator class
         NoteNotifier _noteNotifier = Provider.of<NoteNotifier>(context);
         SnippetNotifier snippetNotifier = Provider.of<SnippetNotifier>(context);
-        if(_drawerKey.currentState.isDrawerOpen) {
-          _drawerKey.currentState.openEndDrawer();
+        if(_scaffoldKey.currentState.isDrawerOpen) {
+          _scaffoldKey.currentState.openEndDrawer();
         } else if(_noteNotifier.note != null){
           _noteNotifier.note = null;
           _noteNotifier.isEditorExpanded = false;

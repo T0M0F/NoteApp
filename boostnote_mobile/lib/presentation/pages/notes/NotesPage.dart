@@ -2,7 +2,6 @@ import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dar
 import 'package:boostnote_mobile/presentation/pages/notes/widgets/NotesPageAppbar.dart';
 import 'package:boostnote_mobile/presentation/pages/notes/widgets/notesgrid/NoteGrid.dart';
 import 'package:boostnote_mobile/presentation/pages/notes/widgets/noteslist/NoteList.dart';
-import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveBaseAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveBaseView.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,10 +23,8 @@ class _NotesPageState extends State<NotesPage> {
 
   ResponsiveBaseView _buildWidget() {
     return ResponsiveBaseView(
-      appBar: ResponsiveBaseAppbar(
-        leftSideAppbar: NotesPageAppbar(
-          notes: _noteOverviewNotifier.notesCopy,
-        )
+      leftSideAppBar: NotesPageAppbar(
+        notes: _noteOverviewNotifier.notesCopy,
       ),
       leftSideChild: _noteOverviewNotifier.showListView ? NoteList() : NoteGrid()
     );

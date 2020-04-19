@@ -16,7 +16,16 @@ class SnippetNote extends Note {
       bool isStarred, 
       bool isTrashed,
       this.description,
-      this.codeSnippets}) : super(id: id, createdAt: createdAt, updatedAt: updatedAt, folder: folder, title: title, tags: tags, isStarred: isStarred, isTrashed: isTrashed);
+      this.codeSnippets}) : super(
+        id: id, 
+        createdAt: createdAt, 
+        updatedAt: updatedAt, 
+        folder: folder, 
+        title: title, 
+        tags: tags, 
+        isStarred: isStarred, 
+        isTrashed: isTrashed
+      );
   
 }
 

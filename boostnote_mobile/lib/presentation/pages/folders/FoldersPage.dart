@@ -1,6 +1,5 @@
 import 'package:boostnote_mobile/presentation/pages/folders/widgets/FoldersPageAppbar.dart';
 import 'package:boostnote_mobile/presentation/pages/folders/widgets/folderlist/FolderList.dart';
-import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveBaseAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveBaseView.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +13,7 @@ class _FoldersPageState extends State<FoldersPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveBaseView( 
-      appBar: ResponsiveBaseAppbar(
-        leftSideAppbar: FoldersPageAppbar(),
-      ), 
+      leftSideAppBar: FoldersPageAppbar(), 
       leftSideChild: FolderList()
     );
   }

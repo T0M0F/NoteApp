@@ -14,12 +14,11 @@ class TagRepositoryImpl implements TagRepositoryV2{
     return dir;
   }
   
-  Future<File> get localFile async {      //TODO: Merge with BN FolderRepo, weil wenn, das hier aufgerufen wird, bevor getter vom FolderRepo -> Problem
+  Future<File> get localFile async {      //TODO: Merge with BN FolderRepo
     final Directory dir = await directory;
     File file = File(dir.path + '/boostnote.json');
     bool fileExists = await file.exists();
     if(!fileExists){
-      print('Boostnote File doesnt exist');
       file.createSync();
       BoostnoteEntity boostnoteEntity = BoostnoteEntity(folders: List());
       file.writeAsStringSync(jsonEncode(boostnoteEntity));
@@ -31,10 +30,8 @@ class TagRepositoryImpl implements TagRepositoryV2{
   Future<BoostnoteEntity> get boostnoteEntity async  {  //TODO move in extra class
     final File file = await localFile;
     String content = file.readAsStringSync();
-    print('Boostnote file content: ' + content);
     BoostnoteEntity boostnoteEntity = BoostnoteEntity.fromJson(jsonDecode(content));
     if(boostnoteEntity.tags == null){
-      print('Tags are null');
       boostnoteEntity.tags = List();
     }
     return Future.value(boostnoteEntity);

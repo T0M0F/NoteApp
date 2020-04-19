@@ -1,6 +1,5 @@
 import 'package:boostnote_mobile/presentation/pages/tags/widgets/TagsPageAppbar.dart';
 import 'package:boostnote_mobile/presentation/pages/tags/widgets/taglist/TagList.dart';
-import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveBaseAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveBaseView.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +13,7 @@ class _TagsPageState extends State<TagsPage> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveBaseView(
-      appBar: ResponsiveBaseAppbar(
-        leftSideAppbar: TagsPageAppbar()
-      ), 
+      leftSideAppBar: TagsPageAppbar(),
       leftSideChild: TagList()
     );
   }

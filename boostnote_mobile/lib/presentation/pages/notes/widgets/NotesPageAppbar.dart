@@ -10,10 +10,9 @@ import 'package:provider/provider.dart';
 
 class NotesPageAppbar extends StatefulWidget implements PreferredSizeWidget {
 
-  final Function() onMenuClick;
   final List<Note> notes;
 
-  NotesPageAppbar({this.notes, this.onMenuClick});
+  NotesPageAppbar({@required this.notes});
 
   @override
   _NotesPageAppbarState createState() => _NotesPageAppbarState();
@@ -40,7 +39,7 @@ class _NotesPageAppbarState extends State<NotesPageAppbar> {
     _firstLoad = true;
   }
 
-  void _init(){    //Necessary, because initialization of Text and Icon widget not possible in initState
+  void _init(){    //Necessary, because initialization of Text and Icon widget not possible in initState    //TODO better solution?
     _filter = TextEditingController();
     filteredNotes = List();
     _searchIcon = Icon(Icons.search, color: Theme.of(context).buttonColor);
@@ -204,7 +203,9 @@ class _NotesPageAppbarState extends State<NotesPageAppbar> {
       )
     : IconButton(
         icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
-        onPressed: widget.onMenuClick
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        }
       );
   }
 

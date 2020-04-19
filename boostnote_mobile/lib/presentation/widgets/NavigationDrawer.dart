@@ -69,8 +69,8 @@ class NavigationDrawerState extends State<NavigationDrawer> {
                 : Theme.of(context).accentTextTheme.display1.color)
               ),
             onTap: () {
-              Navigator.pop(context);
               _pageNavigator.navigateToAllNotes(context);
+              Scaffold.of(context).openEndDrawer();
             },
       ),
       ListTile(
@@ -89,8 +89,8 @@ class NavigationDrawerState extends State<NavigationDrawer> {
           )
         ),
         onTap: () {
-          Navigator.pop(context);
           _pageNavigator.navigateToFolders(context);
+          Scaffold.of(context).openEndDrawer();
         },
       ),
       ListTile(
@@ -109,8 +109,8 @@ class NavigationDrawerState extends State<NavigationDrawer> {
           )
         ),
         onTap: () {
-          Navigator.pop(context);
           _pageNavigator.navigateToTags(context);
+          Scaffold.of(context).openEndDrawer();
         }
       ),
       ListTile(
@@ -128,8 +128,8 @@ class NavigationDrawerState extends State<NavigationDrawer> {
           )
         ),
         onTap: () {
-          Navigator.pop(context);
           _pageNavigator.navigateToStarredNotes(context);
+          Scaffold.of(context).openEndDrawer();
         },
       ),
       ListTile(
@@ -146,8 +146,8 @@ class NavigationDrawerState extends State<NavigationDrawer> {
           )
         ),
         onTap: () {
-          Navigator.pop(context);
           _pageNavigator.navigateToTrash(context);
+          Scaffold.of(context).openEndDrawer();
         },
       ),
       Padding(
@@ -164,10 +164,9 @@ class NavigationDrawerState extends State<NavigationDrawer> {
           AppLocalizations.of(context).translate('settings'), 
           style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color),
         ),
-        onTap: () {
-          Navigator.pop(context);
-        
+        onTap: () {        
           _pageNavigator.navigateToSettings(context);
+          Scaffold.of(context).openEndDrawer();
         },
       ),
       ListTile(
@@ -177,8 +176,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
           style: TextStyle(color: Theme.of(context).accentTextTheme.display1.color),
         ),
         onTap: () {
-          Navigator.pop(context);
-       
+          Scaffold.of(context).openEndDrawer();
         },
       ),
     ];
@@ -188,7 +186,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         leading: Icon(Icons.folder, color: Theme.of(context).buttonColor),
         title: Text(folder),
         onTap: () {
-          Navigator.pop(context);
+          Scaffold.of(context).openEndDrawer();
         },
       ));
     }

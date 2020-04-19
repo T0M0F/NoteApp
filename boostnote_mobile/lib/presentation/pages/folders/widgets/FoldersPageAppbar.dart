@@ -5,17 +5,15 @@ import 'package:flutter/material.dart';
 
 class FoldersPageAppbar extends StatelessWidget implements PreferredSizeWidget{
 
-  final Function() openDrawer;
-
-  FoldersPageAppbar({this.openDrawer});
-
   @override
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(AppLocalizations.of(context).translate('folders'), style: Theme.of(context).accentTextTheme.title),
       leading: IconButton(
         icon: Icon(Icons.menu, color: Theme.of(context).accentColor),
-        onPressed: openDrawer,
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        }
       ),
       actions: <Widget>[
         IconButton(

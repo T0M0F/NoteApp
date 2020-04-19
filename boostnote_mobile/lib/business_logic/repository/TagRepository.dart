@@ -1,4 +1,4 @@
-abstract class TagRepositoryV2 {
+abstract class TagRepository {
 
   Future<List<String>> findAll();
 

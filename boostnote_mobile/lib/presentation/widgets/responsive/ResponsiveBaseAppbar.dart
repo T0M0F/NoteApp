@@ -14,8 +14,9 @@ import 'package:provider/provider.dart';
 class ResponsiveBaseAppbar extends StatefulWidget  implements PreferredSizeWidget{
 
   final PreferredSizeWidget leftSideAppbar;
+  final Function() openDrawer;
 
-  ResponsiveBaseAppbar({@required this.leftSideAppbar});
+  ResponsiveBaseAppbar({@required this.leftSideAppbar, this.openDrawer});
 
   @override
   _ResponsiveBaseAppbarState createState() => _ResponsiveBaseAppbarState();

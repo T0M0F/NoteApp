@@ -13,68 +13,39 @@ import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/FolderRepositoryImpl.dart';
 import 'package:path_provider/path_provider.dart';
 
-//TODO: Make functions async
-//TODO: Exception handling
+@Deprecated('Use NoteRepositoryImpl in csonImpl Package instead.')
 class NoteRepositoryImpl extends NoteRepository {
 
   FolderRepository _folderRepository = FolderRepositoryImpl();
 
-  //Directory _directory;
-
-/*
-  NoteRepositoryImpl() {
-     Storage().localPath.then((path) => print(path));
-    Storage().readData().then((String value) {
-      print('heyyyyyyyyyyyyyyy');
-    });
-    SimplePermissions.requestPermission(Permission. WriteExternalStorage).then(
-      (permissionResult) {
-      if (permissionResult == PermissionStatus.authorized){
-      getApplicationDocumentsDirectory().then((directory) {
-        print(_directory);
-        _directory = directory;
-     });
-    }
-   });
-
-  }
-  */
   Future<Directory> get directory async {
     final Directory dir = await getExternalStorageDirectory();
-    print('Application Directory: ' + dir.toString());
-   
     Directory noteDirectory = Directory(dir.path + '/notes');
     bool dirExists = await noteDirectory.exists();
     if(!dirExists) {
      noteDirectory.createSync();
     }
-  
-    print('Note Directory: ' + noteDirectory.toString());
     return noteDirectory;
   }
   
 
   Future<String> get localPath async {
     final Directory dir = await directory;
-    print('dir.path: ' + dir.path);
     return dir.path;
   }
 
   @override
   void delete(Note note) {
-    print('delete');
     deleteById(note.id);
   }
 
   @override
   void deleteAll(List<Note> notes) {
-    print('deleteAll');
     notes.forEach((note) => delete(note));
   }
 
   @override
   void deleteById(String id) async {
-    print('deleteById');
     final List<Note> notes = await findAll();
     Note noteToBeRemoved = notes.firstWhere((note) => note.id == id, orElse: () => null);
     if(noteToBeRemoved != null) {
@@ -90,7 +61,6 @@ class NoteRepositoryImpl extends NoteRepository {
 
   @override
   Future<List<Note>> findAll() async {
-    print('findAll');
     final Directory dir = await directory;
 
     return dir.list().toList().then((List<FileSystemEntity> list) async {
@@ -98,7 +68,6 @@ class NoteRepositoryImpl extends NoteRepository {
       list.forEach((entity) => paths.add(entity.path));
       List<File> _files = List();
       paths.forEach((path) => _files.add(File(path)));
-      print(_files.length.toString() + ' notes found');
       List<Note> notes = await _extractNotes(_files);
       return Future.value(notes);
     }); 
@@ -120,17 +89,14 @@ class NoteRepositoryImpl extends NoteRepository {
 
   @override
   Future<Note> findById (String id) async {
-    print('findById');
     final List<Note> notes = await findAll();
     return Future.value(notes.firstWhere((note) => note.id == id));
   }
 
   @override
   void save(Note note) async {
-
   note.id = IdGenerator().generateNoteId();
 
-//TODO: Convertion is ugly -> cast
     if(note is MarkdownNote) {
       MarkdownNote markdownNote = note;
       note = MarkdownNoteEntity(
@@ -171,28 +137,19 @@ class NoteRepositoryImpl extends NoteRepository {
       );
     }
     
-    print('save');
     String path = await localPath;
-    print('id: ' + note.id.toString());
     File file = File(path + '/' + note.id.toString() + '.json');
     bool fileExists = await file.exists();
     if(fileExists) {
-      print('File exists');
-      print('json: ' + jsonEncode(note) );
       file.writeAsString(jsonEncode(note));
     } else {
-      print('File does not yet exist');
-      print('-----------------------');
-      print(note.createdAt);
       file = File(path + '/' + note.id.toString());
       file.create();
       if(note is MarkdownNoteEntity) {
         MarkdownNoteEntity markdownNoteEntity = note;
-        print('json: ' + jsonEncode(markdownNoteEntity.toJson()));
         file.writeAsString(jsonEncode(markdownNoteEntity.toJson()));
       } else {
         SnippetNoteEntity snippetNoteEntity = note;
-        print('json: ' + jsonEncode(snippetNoteEntity.toJson()));
         file.writeAsString(jsonEncode(snippetNoteEntity.toJson()));
       }
     } 
@@ -202,8 +159,6 @@ class NoteRepositoryImpl extends NoteRepository {
 
   @override
   void saveAll(List<Note> notes) {
-    print('saveAll');
-    print(notes.length.toString() + ' notes to save');
     notes.forEach((note) => save(note));
   }
 }

@@ -14,5 +14,14 @@ class MarkdownNote extends Note{
       List<String> tags, 
       bool isStarred, 
       bool isTrashed,
-      this.content}) : super(id: id, createdAt: createdAt, updatedAt: updatedAt, folder: folder, title: title, tags: tags, isStarred: isStarred, isTrashed: isTrashed);
+      this.content}) : super(
+        id: id, 
+        createdAt: createdAt, 
+        updatedAt: updatedAt, 
+        folder: folder, 
+        title: title, 
+        tags: tags, 
+        isStarred: isStarred, 
+        isTrashed: isTrashed
+      );
 }

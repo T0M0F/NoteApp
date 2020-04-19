@@ -5,8 +5,8 @@ import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
 import 'package:boostnote_mobile/presentation/pages/code_editor/CodeSnippetEditor.dart';
 import 'package:boostnote_mobile/presentation/pages/markdown_editor/MarkdownEditor.dart';
 import 'package:boostnote_mobile/presentation/widgets/NavigationDrawer.dart';
+import 'package:boostnote_mobile/presentation/widgets/base/ResponsiveBaseAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/ResponsiveFloatingActionButton.dart';
-import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveBaseAppbar.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveChild.dart';
 import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveWidget.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,23 +50,27 @@ class _ResponsiveBaseViewState extends State<ResponsiveBaseView> {
         body: _buildBody(context),
         floatingActionButton: ResponsiveFloatingActionButton()
       ), 
-      onWillPop: () {     //TODO move in PageNavigator class
-        NoteNotifier _noteNotifier = Provider.of<NoteNotifier>(context);
-        SnippetNotifier snippetNotifier = Provider.of<SnippetNotifier>(context);
-        if(_scaffoldKey.currentState.isDrawerOpen) {
-          _scaffoldKey.currentState.openEndDrawer();
-        } else if(_noteNotifier.note != null){
-          _noteNotifier.note = null;
-          _noteNotifier.isEditorExpanded = false;
-          snippetNotifier.selectedCodeSnippet = null;
-        } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
-          SystemNavigator.pop();
-        } else {
-          PageNavigator().navigateBack(context);
-          Navigator.of(context).pop();
-        }
+      onWillPop: () {    
+        _onBackButtonPress(context);
       },
     );  
+  }
+
+  void _onBackButtonPress(BuildContext context) {
+    NoteNotifier _noteNotifier = Provider.of<NoteNotifier>(context);
+    SnippetNotifier snippetNotifier = Provider.of<SnippetNotifier>(context);
+    if(_scaffoldKey.currentState.isDrawerOpen) {
+      _scaffoldKey.currentState.openEndDrawer();
+    } else if(_noteNotifier.note != null){
+      _noteNotifier.note = null;
+      _noteNotifier.isEditorExpanded = false;
+      snippetNotifier.selectedCodeSnippet = null;
+    } else if(PageNavigator().pageNavigatorState == PageNavigatorState.ALL_NOTES){
+      SystemNavigator.pop();
+    } else {
+      PageNavigator().navigateBack(context);
+      Navigator.of(context).pop();
+    }
   }
 
   Widget _buildBody(BuildContext context) {

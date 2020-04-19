@@ -3,6 +3,7 @@ import 'package:boostnote_mobile/business_logic/model/MarkdownNote.dart';
 
 import 'FolderEntity.dart';
 
+@Deprecated('Use MarkdownNote instead')
 class MarkdownNoteEntity extends MarkdownNote {
 
   MarkdownNoteEntity({String id,

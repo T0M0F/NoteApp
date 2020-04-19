@@ -5,6 +5,7 @@ import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 
 import 'FolderEntity.dart';
 
+@Deprecated('Use SnippetNote instead')
 class SnippetNoteEntity extends SnippetNote {
 
     SnippetNoteEntity({String id,
@@ -53,6 +54,7 @@ class SnippetNoteEntity extends SnippetNote {
   }
 }
 
+@Deprecated('Use CodeSnippet instead')
 class CodeSnippetEntity extends CodeSnippet {
 
   CodeSnippetEntity({List<int> linesHighlighted, String name, String mode, String content}):

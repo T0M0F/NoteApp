@@ -89,7 +89,10 @@ class NoteService {
     return filteredNotes;
   }
 
-  Future<void> createNote(Note note) async{  //TODO Validation 
+  Future<void> createNote(Note note) async{  
+    if(note == null) {
+      throw Exception('Note must not be null');
+    }
     save(note);
   }
 

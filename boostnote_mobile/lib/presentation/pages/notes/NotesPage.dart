@@ -2,7 +2,7 @@ import 'package:boostnote_mobile/presentation/notifiers/NoteOverviewNotifier.dar
 import 'package:boostnote_mobile/presentation/pages/notes/widgets/NotesPageAppbar.dart';
 import 'package:boostnote_mobile/presentation/pages/notes/widgets/notesgrid/NoteGrid.dart';
 import 'package:boostnote_mobile/presentation/pages/notes/widgets/noteslist/NoteList.dart';
-import 'package:boostnote_mobile/presentation/widgets/responsive/ResponsiveBaseView.dart';
+import 'package:boostnote_mobile/presentation/widgets/base/ResponsiveBaseView.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

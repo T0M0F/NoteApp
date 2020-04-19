@@ -1,5 +1,4 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
-import 'package:boostnote_mobile/data/entity/SnippetNoteEntity.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/notifiers/SnippetNotifier.dart';
@@ -79,13 +78,13 @@ class _AddSnippetDialogState extends State<AddSnippetDialog> {
   void _addSnippet(BuildContext context) {
     List<String> s = controller.text.split('.');
     CodeSnippet codeSnippet = s.length > 1 
-      ? CodeSnippetEntity(
-            linesHighlighted: List(),  //TODO CodeSnippetEntity...
+      ? CodeSnippet(
+            linesHighlighted: List(),  
             name: s[0],
             mode: s[1],
             content: '')
-      : CodeSnippetEntity(
-            linesHighlighted: List(),  //TODO CodeSnippetEntity...
+      : CodeSnippet(
+            linesHighlighted: List(),  
             name: controller.text,
             mode: '',
             content: '');

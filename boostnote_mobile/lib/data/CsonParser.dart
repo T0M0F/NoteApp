@@ -9,16 +9,13 @@ import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/FolderRepositoryIm
 class CsonParser {
 
   Map<String, dynamic> parseCson(String cson, String filename) {
-    Map<String, dynamic> result = _parse2(cson);
+    Map<String, dynamic> result = _parse(cson);
     result['id'] = filename.split('.').first;
     return result;
   }
 
-  //TODO:
-  //clean
-  //parse string and num list
-  // special characters in string } ] ''' \
-  Map<String, dynamic> _parse2(String cson) {
+  //TODO special characters in string } ] ''' \
+  Map<String, dynamic> _parse(String cson) {
 
     Map<String, dynamic> resultMap = Map();
     List<String> splittedByLine = LineSplitter.split(cson).toList();
@@ -36,7 +33,6 @@ class CsonParser {
           break;
 
         case Mode.MULTILINE:
-        //Annahme, dass sowas '''abc''' nicht geht, bzw in solch einem fall immer "abc" benutzt wird
           if((value as String).replaceFirst('\'\'\'', '').endsWith('\'\'\'')) {
             resultMap[key] = _clean(value);
             break;
@@ -77,7 +73,7 @@ class CsonParser {
               if(splittedByLine[i2].trimRight().endsWith('}')) {
                 inObject = false;
                 temp = _clean(temp);
-                list.add(_parse2(temp));
+                list.add(_parse(temp));
                 temp = '';
               }
             }

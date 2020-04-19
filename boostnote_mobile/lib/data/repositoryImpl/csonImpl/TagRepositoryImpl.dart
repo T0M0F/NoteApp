@@ -7,14 +7,14 @@ import 'package:boostnote_mobile/data/entity/BoostnoteEntity.dart';
 import 'package:boostnote_mobile/data/repositoryImpl/csonImpl/NoteRepositoryImpl.dart';
 import 'package:path_provider/path_provider.dart';
 
-class TagRepositoryImpl implements TagRepositoryV2{
+class TagRepositoryImpl implements TagRepository{
 
   Future<Directory> get directory async {
     final Directory dir = await getExternalStorageDirectory();
     return dir;
   }
   
-  Future<File> get localFile async {      //TODO: Merge with BN FolderRepo
+  Future<File> get localFile async {   
     final Directory dir = await directory;
     File file = File(dir.path + '/boostnote.json');
     bool fileExists = await file.exists();
@@ -27,7 +27,7 @@ class TagRepositoryImpl implements TagRepositoryV2{
     return file;
   }
 
-  Future<BoostnoteEntity> get boostnoteEntity async  {  //TODO move in extra class
+  Future<BoostnoteEntity> get boostnoteEntity async  { 
     final File file = await localFile;
     String content = file.readAsStringSync();
     BoostnoteEntity boostnoteEntity = BoostnoteEntity.fromJson(jsonDecode(content));

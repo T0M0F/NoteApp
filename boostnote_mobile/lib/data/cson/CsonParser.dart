@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 
-import 'package:boostnote_mobile/data/cson/CsonMode.dart';
+import 'package:boostnote_mobile/data/cson/CsonModeService.dart';
 import 'package:boostnote_mobile/data/cson/ParserUtils.dart';
 import 'package:boostnote_mobile/utils/StringUtils.dart';
 

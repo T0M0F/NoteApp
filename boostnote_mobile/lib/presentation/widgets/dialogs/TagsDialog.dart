@@ -15,21 +15,30 @@ class TagsDialog extends StatefulWidget {
 }
 
 class _TagsDialogState extends State<TagsDialog> {
+
   TextEditingController _textEditingController;
   List<String> _tags;
-
   NoteNotifier _noteNotifier;
   TagsNotifier _tagsNotifier;
+  NoteService _noteService;
 
   @override
   Widget build(BuildContext context) {
+    _init(context);
+    return _buildWidget(context);
+  }
+
+  void _init(BuildContext context) {
+    _noteService = NoteService();
     _noteNotifier = Provider.of<NoteNotifier>(context);
     _tagsNotifier = Provider.of<TagsNotifier>(context);
     _textEditingController = TextEditingController();
     _textEditingController.text = _convertTagListToTagString(_noteNotifier.note.tags);
     _tags = _noteNotifier.note.tags;
+  }
 
-    return AlertDialog(
+  AlertDialog _buildWidget(BuildContext context) {
+     return AlertDialog(
       title: _buildTitle(),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: _buildContent(),
@@ -87,7 +96,7 @@ class _TagsDialogState extends State<TagsDialog> {
       SaveButton(save: () {
         _tagsNotifier.tags = _tags ?? List();
         _noteNotifier.note.tags = _tags ?? List();
-        NoteService().save(_noteNotifier.note);
+        _noteService.save(_noteNotifier.note);
         Navigator.of(context).pop();
       })
     ];

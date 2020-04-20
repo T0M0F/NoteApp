@@ -111,8 +111,8 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
   void _selectedAction(String action){
     switch (action) {
       case ActionConstants.SAVE_ACTION:
-        _noteNotifier.note = null;
         _noteService.save(_noteNotifier.note);
+        _noteNotifier.note = null;
         break;
       case ActionConstants.MARK_ACTION:
         _noteNotifier.note.isStarred = true;

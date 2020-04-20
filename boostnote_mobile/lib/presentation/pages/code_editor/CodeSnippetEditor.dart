@@ -24,20 +24,27 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
   bool _isFirstBuild = true;
 
   @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
+  @override
+  void dispose() {
+    print('dispose');
+    WidgetsBinding.instance.removeObserver(this);
     if(_noteNotifier.note != null) {
       _noteService.save(_noteNotifier.note);
     }
+    super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
+      print('paused');
       if(_noteNotifier.note != null) {  
-        _noteService.save(_noteNotifier.note);   //TODO double save?
+        _noteService.save(_noteNotifier.note);   
       }  
     }
   }

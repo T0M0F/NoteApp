@@ -19,25 +19,12 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
   FolderService _folderService = FolderService();
   NoteNotifier _noteNotifier;
   MarkdownEditorNotifier _markdownEditorNotifier;
-
+  bool _isFirstBuild = true;
 
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-   
-    _folderService.findAllUntrashed().then((folders) {      //TODO this solution sucks
-      _markdownEditorNotifier.folders = folders;
-      _markdownEditorNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id, orElse: () => null);
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _noteNotifier = Provider.of<NoteNotifier>(context);
-    _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
   }
 
   @override
@@ -57,7 +44,21 @@ class MarkdownEditorState extends State<MarkdownEditor> with WidgetsBindingObser
 
   @override
   Widget build(BuildContext context) {
+    if(_isFirstBuild) {
+      _init();
+    }
     return _markdownEditorNotifier.isPreviewMode ? _buildMarkdownPreview() : _buildMarkdownEditor();
+  }
+
+  void _init() {
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _markdownEditorNotifier = Provider.of<MarkdownEditorNotifier>(context);
+    
+    _folderService.findAllUntrashed().then((folders) {      
+      _markdownEditorNotifier.folders = folders;
+      _markdownEditorNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id, orElse: () => null);
+    });
+    _isFirstBuild = false;
   }
 
   Widget _buildMarkdownPreview(){

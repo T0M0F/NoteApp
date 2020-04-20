@@ -6,8 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../mocks/FolderRepositoryMock.dart';
 
-
-//TODO Mock PathProvider
 void main(){
   
   TestWidgetsFlutterBinding.ensureInitialized();

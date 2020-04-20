@@ -1,4 +1,5 @@
 import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
+import 'package:boostnote_mobile/business_logic/service/NoteService.dart';
 import 'package:boostnote_mobile/presentation/localization/app_localizations.dart';
 import 'package:boostnote_mobile/presentation/notifiers/NoteNotifier.dart';
 import 'package:boostnote_mobile/presentation/widgets/buttons/CancelButton.dart';
@@ -15,16 +16,25 @@ class SnippetDescriptionDialog extends StatefulWidget {
 
 class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
 
+  NoteService _noteService;
   NoteNotifier _noteNotifier;
   TextEditingController _textEditingController;
 
   @override
   Widget build(BuildContext context) {
+    _init(context);
+    return _buildWidget(context);
+  }
+
+  void _init(BuildContext context) {
     _noteNotifier = Provider.of<NoteNotifier>(context);
+    _noteService = NoteService();
     _textEditingController = TextEditingController();
     _textEditingController.text = (_noteNotifier.note as SnippetNote).description;
+  }
 
-    return AlertDialog(
+  AlertDialog _buildWidget(BuildContext context) {
+     return AlertDialog(
       title: _buildTitle(),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: _buildContent(),
@@ -63,6 +73,7 @@ class _SnippetDescriptionDialogState extends State<SnippetDescriptionDialog> {
       CancelButton(),
       SaveButton(save: () {
          (_noteNotifier.note as SnippetNote).description = _textEditingController.text;
+         _noteService.save(_noteNotifier.note);
          Navigator.of(context).pop();
       })
     ];

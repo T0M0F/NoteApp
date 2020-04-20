@@ -74,21 +74,15 @@ class _MarkdownEditorAppBarState extends State<MarkdownEditorAppBar> {
   void _selectedAction(String action){
     switch (action) {
       case ActionConstants.SAVE_ACTION:
-        setState(() {
-          _noteNotifier.note = null;
-        });
         _noteService.save(_noteNotifier.note);
+        _noteNotifier.note = null;
         break;
       case ActionConstants.MARK_ACTION:
-       setState(() {
-          _noteNotifier.note.isStarred = true;
-        });
+        _noteNotifier.note.isStarred = true;
         _noteService.save(_noteNotifier.note);
         break;
       case ActionConstants.UNMARK_ACTION:
-        setState(() {
-          _noteNotifier.note.isStarred = false;
-        });
+        _noteNotifier.note.isStarred = false;
         _noteService.save(_noteNotifier.note);
         break;
     }

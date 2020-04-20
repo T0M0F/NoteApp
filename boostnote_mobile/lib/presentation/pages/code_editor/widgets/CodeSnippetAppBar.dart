@@ -111,43 +111,32 @@ class _CodeSnippetAppBarState extends State<CodeSnippetAppBar> {
   void _selectedAction(String action){
     switch (action) {
       case ActionConstants.SAVE_ACTION:
-        setState(() {
-          _noteNotifier.note = null;
-        });
+        _noteNotifier.note = null;
         _noteService.save(_noteNotifier.note);
         break;
       case ActionConstants.MARK_ACTION:
-       setState(() {
-          _noteNotifier.note.isStarred = true;
-        });
+        _noteNotifier.note.isStarred = true;
         _noteService.save(_noteNotifier.note);
         break;
       case ActionConstants.UNMARK_ACTION:
-        setState(() {
-          _noteNotifier.note.isStarred = false;
-        });
+        _noteNotifier.note.isStarred = false;
         _noteService.save(_noteNotifier.note);
         break;
       case ActionConstants.RENAME_CURRENT_SNIPPET:
-       _showRenameSnippetDialog(context, (String name){
-          setState(() {
-            _snippetNotifier.selectedCodeSnippet.name = name;
-          });
-          Navigator.of(context).pop();
-          _noteService.save(_noteNotifier.note);
-        });
+       _showRenameSnippetDialog(context);
         break;
       case ActionConstants.DELETE_CURRENT_SNIPPET:
-        setState(() {
-          (_noteNotifier.note as SnippetNote).codeSnippets.remove(_snippetNotifier.selectedCodeSnippet);
-          _snippetNotifier.selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty ? (_noteNotifier.note as SnippetNote).codeSnippets.last : null;
-        });
+        (_noteNotifier.note as SnippetNote).codeSnippets.remove(_snippetNotifier.selectedCodeSnippet);
+        _snippetNotifier.selectedCodeSnippet = 
+          (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty 
+            ? (_noteNotifier.note as SnippetNote).codeSnippets.last 
+            : null;
         _noteService.save(_noteNotifier.note);
         break;
     }
   }
 
-  Future<String> _showRenameSnippetDialog(BuildContext context, Function(String) callback) =>
+  Future<String> _showRenameSnippetDialog(BuildContext context) =>
     showDialog(context: context, 
       builder: (context){
         return EditSnippetNameDialog();

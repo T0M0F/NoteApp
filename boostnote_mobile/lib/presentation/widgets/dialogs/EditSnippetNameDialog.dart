@@ -10,17 +10,17 @@ import 'package:provider/provider.dart';
 class EditSnippetNameDialog extends StatelessWidget {
 
     SnippetNotifier _snippetNotifier;
-    TextEditingController _textEditingController;
-    TextEditingController _textEditingController2;
+    TextEditingController _textEditingControllerForName;
+    TextEditingController _textEditingControllerForMode;
 
     @override
     Widget build(BuildContext context) {
 
       _snippetNotifier = Provider.of<SnippetNotifier>(context);
-      _textEditingController = TextEditingController();
-      _textEditingController2 = TextEditingController();
-      _textEditingController.text = _snippetNotifier.selectedCodeSnippet.name;
-      _textEditingController2.text = _snippetNotifier.selectedCodeSnippet.mode;
+      _textEditingControllerForName = TextEditingController();
+      _textEditingControllerForMode = TextEditingController();
+      _textEditingControllerForName.text = _snippetNotifier.selectedCodeSnippet.name;
+      _textEditingControllerForMode.text = _snippetNotifier.selectedCodeSnippet.mode;
 
       return AlertDialog(
         title: _buildTitle(context),
@@ -49,7 +49,7 @@ class EditSnippetNameDialog extends StatelessWidget {
         child: Column(
           children: <Widget>[
             TextField(
-              controller: _textEditingController,
+              controller: _textEditingControllerForName,
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context).translate('enter_title'),
                 hintStyle: TextStyle(color:  Theme.of(context).textTheme.display2.color),
@@ -57,7 +57,7 @@ class EditSnippetNameDialog extends StatelessWidget {
               style: TextStyle(color:  Theme.of(context).textTheme.display1.color),
             ), 
             TextField(
-              controller: _textEditingController2,
+              controller: _textEditingControllerForMode,
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context).translate('mode'),
                 hintStyle: TextStyle(color:  Theme.of(context).textTheme.display2.color),
@@ -74,9 +74,10 @@ class EditSnippetNameDialog extends StatelessWidget {
       return <Widget>[
           CancelButton(),
           SaveButton(save: () {
-            if(_textEditingController.text.trim().length > 0){
+            if(_textEditingControllerForName.text.trim().length > 0){
                 CodeSnippet codeSnippet = _snippetNotifier.selectedCodeSnippet;
-                codeSnippet.name = _textEditingController.text;
+                codeSnippet.name = _textEditingControllerForName.text;
+                codeSnippet.mode = _textEditingControllerForMode.text;
                 _snippetNotifier.selectedCodeSnippet = codeSnippet; //otherwise no rebuild
                 Navigator.of(context).pop();
             }

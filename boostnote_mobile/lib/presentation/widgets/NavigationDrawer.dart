@@ -70,7 +70,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
               ),
             onTap: () {
               _pageNavigator.navigateToAllNotes(context);
-              Scaffold.of(context).openEndDrawer();
             },
       ),
       ListTile(
@@ -90,7 +89,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
         onTap: () {
           _pageNavigator.navigateToFolders(context);
-          Scaffold.of(context).openEndDrawer();
         },
       ),
       ListTile(
@@ -110,7 +108,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
         onTap: () {
           _pageNavigator.navigateToTags(context);
-          Scaffold.of(context).openEndDrawer();
         }
       ),
       ListTile(
@@ -129,7 +126,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
         onTap: () {
           _pageNavigator.navigateToStarredNotes(context);
-          Scaffold.of(context).openEndDrawer();
         },
       ),
       ListTile(
@@ -147,7 +143,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
         onTap: () {
           _pageNavigator.navigateToTrash(context);
-          Scaffold.of(context).openEndDrawer();
         },
       ),
       Padding(
@@ -166,7 +161,6 @@ class NavigationDrawerState extends State<NavigationDrawer> {
         ),
         onTap: () {        
           _pageNavigator.navigateToSettings(context);
-          Scaffold.of(context).openEndDrawer();
         },
       ),
       ListTile(
@@ -181,6 +175,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
       ),
     ];
 
+/*
     for(String folder in folders){
       widgets.insert(7, ListTile(
         leading: Icon(Icons.folder, color: Theme.of(context).buttonColor),
@@ -189,7 +184,7 @@ class NavigationDrawerState extends State<NavigationDrawer> {
           Scaffold.of(context).openEndDrawer();
         },
       ));
-    }
+    }*/
 
     return widgets;
   }

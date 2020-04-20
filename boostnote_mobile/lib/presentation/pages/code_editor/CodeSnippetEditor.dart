@@ -21,25 +21,7 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
   FolderService _folderService = FolderService(); 
   NoteNotifier _noteNotifier;
   SnippetNotifier _snippetNotifier;
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addObserver(this);
-    super.initState();
-
-    _folderService.findAllUntrashed().then((folders) {          //TODO this solution sucks
-      _snippetNotifier.folders = folders;       
-      _snippetNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id, orElse: () => null);
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _noteNotifier = Provider.of<NoteNotifier>(context);
-    _snippetNotifier = Provider.of<SnippetNotifier>(context);
-  }
+  bool _isFirstBuild = true;
 
   @override
   void dispose() {
@@ -62,6 +44,11 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
 
   @override
   Widget build(BuildContext context) {
+    if(_isFirstBuild) {
+      _init();
+    }
+
+    //TODO setState() or markNeedsBuild() called during build Exception
     if(_snippetNotifier.selectedCodeSnippet == null) { 
       if((_noteNotifier.note as SnippetNote).codeSnippets != null && (_noteNotifier.note as SnippetNote).codeSnippets.isNotEmpty) {
         _snippetNotifier.selectedCodeSnippet = (_noteNotifier.note as SnippetNote).codeSnippets.first;
@@ -69,6 +56,18 @@ class CodeSnippetEditorState extends State<CodeSnippetEditor> with WidgetsBindin
     }
     
     return _snippetNotifier.selectedCodeSnippet == null ? _buildEmptyBody() : _buildBody();
+  }
+
+  void _init() {
+    _noteNotifier = Provider.of<NoteNotifier>(context);
+    _snippetNotifier = Provider.of<SnippetNotifier>(context);
+
+    _folderService.findAllUntrashed().then((folders) {         
+      _snippetNotifier.folders = folders;       
+      _snippetNotifier.selectedFolder = folders.firstWhere((folder) => folder.id == _noteNotifier.note.folder.id, orElse: () => null);
+    });
+
+    _isFirstBuild = false;
   }
 
   Widget _buildEmptyBody(){ 

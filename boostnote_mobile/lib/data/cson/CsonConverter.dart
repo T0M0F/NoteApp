@@ -6,9 +6,14 @@ import 'package:boostnote_mobile/data/repositoryImpl/jsonImpl/FolderRepositoryIm
 
 class CsonConverter {
 
-  FolderRepository _folderRepository = FolderRepositoryImpl();
+  FolderRepository folderRepository;
+
+  CsonConverter({this.folderRepository});
   
   Future<Note> convertToNote(Map<String, dynamic> map) async {
+    if(folderRepository == null) {
+      folderRepository = FolderRepositoryImpl();
+    }
     Note note;
 
     if(map['type'] == 'SNIPPET_NOTE') {
@@ -18,7 +23,7 @@ class CsonConverter {
         id: map['id'],
         title: map['title'],
         description: map['description'],
-        folder: await _folderRepository.findById(map['folder']),  
+        folder: await folderRepository.findById(map['folder']),  
         isStarred: 'true' == map['isStarred'],
         isTrashed: 'true' == map['isTrashed'],
         tags:  List<String>.from(map['tags']), 
@@ -36,7 +41,7 @@ class CsonConverter {
         id: map['id'],
         title: map['title'],
         content: map['content'],
-        folder: await _folderRepository.findById(map['folder']), 
+        folder: await folderRepository.findById(map['folder']), 
         isStarred: 'true' == map['isStarred'],
         isTrashed: 'true' == map['isTrashed'],
         tags:  List<String>.from(map['tags'])

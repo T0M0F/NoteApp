@@ -80,7 +80,7 @@ class NoteRepositoryImpl extends NoteRepository {
         Note note = await _csonConverter.convertToNote(_csonParser.parseCson(content, file.path.split('/').last));
         notes.add(note);
       } catch(e) {
-        print('Error Reading note: ');
+        print('Error Reading note: \nat: NoteRepositoryImpl convertToNote() \ncausedBy: ');
         print(e.toString());
         print(content);
       }

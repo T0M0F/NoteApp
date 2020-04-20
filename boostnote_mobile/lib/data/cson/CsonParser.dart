@@ -36,7 +36,8 @@ class CsonParser {
           break;
 
         case Mode.MULTILINE:
-          if((value as String).replaceFirst('\'\'\'', '').endsWith('\'\'\'')) {
+          bool multilineStringIsSingleline = (value as String).replaceFirst('\'\'\'', '').endsWith('\'\'\'');
+          if(multilineStringIsSingleline) {
             resultMap[key] = _parserUtils.removeQuotationMarks(value);
             break;
           }
@@ -86,12 +87,15 @@ class CsonParser {
         case Mode.SIMPLE_LIST:
           List<dynamic> list = List();
           list.add(_parserUtils.removeBrackets(value));
-          if(value.trimRight().endsWith(']')) {
-             list.removeWhere((item) => (item as String).isEmpty);
-              value = list;
-              resultMap[key] = value;
-              break;
+
+          bool listStartsAndEndsInSameLine = value.trimRight().endsWith(']');
+          if(listStartsAndEndsInSameLine) {
+            list.removeWhere((item) => (item as String).isEmpty);
+            value = list;
+            resultMap[key] = value;
+            break;
           }
+          
           for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
             String cleanString = _parserUtils.removeQuotationMarks(_parserUtils.removeBrackets(splittedByLine[i2]));
             if(cleanString.length > 0) {

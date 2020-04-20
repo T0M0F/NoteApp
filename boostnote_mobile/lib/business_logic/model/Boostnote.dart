@@ -5,7 +5,10 @@ class Boostnote {
   final String version = '1.0'; 
   List<Folder> folders;
   List<String> tags;
-
+  
   Boostnote({this.folders, this.tags});
   
+  @override
+  String toString() => 'Boostnote[version: $version, folders: $folders, tags: $tags]';
+
 }

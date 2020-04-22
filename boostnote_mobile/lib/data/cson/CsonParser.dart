@@ -32,19 +32,21 @@ class CsonParser {
       switch (_csonMode.mode(key, value)) {
 
         case Mode.SINGLELINE:
-          resultMap[key] = _parserUtils.removeQuotationMarks(value);
+          resultMap[key] = _stringUtils.unescape(_parserUtils.removeQuotationMarks(value));
           break;
 
         case Mode.MULTILINE:
-          bool multilineStringIsSingleline = (value as String).replaceFirst('\'\'\'', '').endsWith('\'\'\'');
+          bool multilineStringIsSingleline = 
+            (value as String).replaceFirst("'''", '').endsWith(r"'''")
+            && !(value as String).replaceFirst("'''", '').endsWith(r"\'''");
           if(multilineStringIsSingleline) {
-            resultMap[key] = _parserUtils.removeQuotationMarks(value);
+            resultMap[key] = _stringUtils.unescape(_parserUtils.removeQuotationMarks(value));
             break;
           }
           for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
             value = value + '\n' + splittedByLine[i2];
-            if(splittedByLine[i2].trimRight().endsWith('\'\'\'')) {
-              resultMap[key] = _parserUtils.removeQuotationMarks(value);
+            if(splittedByLine[i2].trimRight().endsWith("'''") && !(value as String).trimRight().endsWith(r"\'''")) {
+              resultMap[key] = _stringUtils.unescape(_parserUtils.removeQuotationMarks(value));
               i = i2;
               break;
             }
@@ -69,7 +71,7 @@ class CsonParser {
                 temp = '';
               }*/
               value = list;
-              resultMap[key] = value;
+              resultMap[key] = _stringUtils.unescape(value);
               i = i2;
               break;
             } else {
@@ -92,7 +94,7 @@ class CsonParser {
           if(listStartsAndEndsInSameLine) {
             list.removeWhere((item) => (item as String).isEmpty);
             value = list;
-            resultMap[key] = value;
+            resultMap[key] = (value is String) ? _stringUtils.unescape(value) : value;
             break;
           }
           
@@ -104,7 +106,7 @@ class CsonParser {
             if(splittedByLine[i2].trimRight().endsWith(']')) {
               list.removeWhere((item) => (item as String).isEmpty);
               value = list;
-              resultMap[key] = value;
+              resultMap[key] = _stringUtils.unescape(value);
               i = i2;
               break;
             }

@@ -13,17 +13,20 @@ void main(){
 }
 
 Map<String, dynamic> expectedMap = {
-  'id': 'abcde',
-  'createdAt': '2020-01-10T08:45:20.122Z',
-  'updatedAt': '2020-04-04T08:52:14.683Z',
-  'type': 'MARKDOWN_NOTE',
-  'folder': 'f6b3ec63a3b965e19713',
-  'title': 'Welcome to Boostnote!',
-  'content': 'Das ist ein Test!',
-  'tags': List(),
-  'isStarred': 'false',
-  'isTrashed': 'false',
-  'linesHighlighted': List(),
+'id': 'abcde',
+'createdAt': '2020-01-10T08:45:20.122Z',
+'updatedAt': '2020-04-04T08:52:14.683Z',
+'type': 'MARKDOWN_NOTE',
+'folder': 'f6b3ec63a3b965e19713',
+'title': 'Welcome to Boostnote!',
+'content':'''Das ist \\ ein Test!
+Multiline String\''' abc\'''
+a\'''
+''',
+'tags': List(),
+'isStarred': 'false',
+'isTrashed': 'false',
+'linesHighlighted': List(),
 };
 
 
@@ -33,7 +36,10 @@ updatedAt: "2020-04-04T08:52:14.683Z"
 type: "MARKDOWN_NOTE"
 folder: "f6b3ec63a3b965e19713"
 title: "Welcome to Boostnote!"
-content: "Das ist ein Test!"
+content: \'''Das ist \\\\ ein Test!
+Multiline String\\\''' abc\\\'''
+a\\\'''
+\'''
 tags: []
 isStarred: false
 isTrashed: false

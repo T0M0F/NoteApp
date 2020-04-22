@@ -7,6 +7,14 @@ class Folder {
 
   Folder({this.name = 'Default', this.id, this.color});
 
+  static Folder clone(Folder folder) {
+    return Folder(
+      name: folder.name,
+      id: folder.id,
+      color: folder.color
+    );
+  }
+
   @override
   String toString() => 'Folder[id: $id, name: $name, color: $color]';
   

@@ -2,7 +2,7 @@ class CsonModeService {
 
    Mode mode(String key, String value) {
     String trimmedValue = value.trimLeft();
-    if(trimmedValue.startsWith('\'\'\'')) {
+    if(trimmedValue.startsWith("'''")) {
       return Mode.MULTILINE;
     } else if(key == 'snippets') {
       return Mode.OBJECT_LIST;

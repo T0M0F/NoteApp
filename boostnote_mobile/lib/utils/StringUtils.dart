@@ -11,4 +11,13 @@ class StringUtils {
       return splitted;
   }
 
+  String escape(String input) {
+    if(input == null) throw Exception('Input must not be null');
+    return input.replaceAll(r"\", r"\\").replaceAll("'''", r"\'''");
+  }
+
+  String unescape(String input) {
+    if(input == null) throw Exception('Input must not be null');
+    return input.replaceAll(r"\'''", r"'''").replaceAll(r"\\", r"\");
+  }
 }

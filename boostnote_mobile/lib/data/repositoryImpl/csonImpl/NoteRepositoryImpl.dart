@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:boostnote_mobile/business_logic/model/Note.dart';
+import 'package:boostnote_mobile/business_logic/model/SnippetNote.dart';
 import 'package:boostnote_mobile/business_logic/repository/FolderRepository.dart';
 import 'package:boostnote_mobile/business_logic/repository/NoteRepository.dart';
 import 'package:boostnote_mobile/business_logic/service/FolderService.dart';
@@ -99,7 +100,7 @@ class NoteRepositoryImpl extends NoteRepository {
   @override
   Future<void> save(Note note) async {
     String path = await localPath;
-    if(note.folder == null || note.folder.name == null) { //Service oder Repo Ebene?
+    if(note.folder == null || note.folder.name == null) { 
       note.folder = await FolderService().findDefaultFolder();
     } 
     if(note.isTrashed) {

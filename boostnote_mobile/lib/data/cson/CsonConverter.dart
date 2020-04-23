@@ -19,13 +19,9 @@ class CsonConverter {
       folderRepository = FolderRepositoryImpl();
     }
 
-    Note note;
-    if(map['type'] == 'SNIPPET_NOTE') {
-      note = await convertToSnippetNote(map);
-    } else {
-      note = await convertToMarkdownNote(map);
-    }
-    return note;
+    return map['type'] == 'SNIPPET_NOTE' 
+      ? await convertToSnippetNote(map) 
+      : await convertToMarkdownNote(map);
   }
 
   Future<MarkdownNote> convertToMarkdownNote(Map<String, dynamic> map) async {
@@ -129,9 +125,9 @@ class CsonConverter {
     return '''\n
       {
         linesHighlighted: []
-        name: "''' + _stringUtils.escape(snippet.content) + '''"
-      mode: "''' + _stringUtils.escape(snippet.name) + '''"
-      content: \'\'\'''' + _stringUtils.escape(snippet.mode) + '''\'\'\'
+        name: "''' + _stringUtils.escape(snippet.name) + '''"
+        mode: "''' + _stringUtils.escape(snippet.mode) + '''"
+        content: \'\'\'''' + _stringUtils.escape(snippet.content) + '''\'\'\'
     }
       ''';
   }

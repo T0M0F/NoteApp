@@ -70,8 +70,7 @@ class CsonParser {
                 list.add(parse2(temp));
                 temp = '';
               }*/
-              value = list;
-              resultMap[key] = _stringUtils.unescape(value);
+              resultMap[key] = list;
               i = i2;
               break;
             } else {
@@ -93,20 +92,18 @@ class CsonParser {
           bool listStartsAndEndsInSameLine = value.trimRight().endsWith(']');
           if(listStartsAndEndsInSameLine) {
             list.removeWhere((item) => (item as String).isEmpty);
-            value = list;
-            resultMap[key] = (value is String) ? _stringUtils.unescape(value) : value;
+            resultMap[key] = list;
             break;
           }
           
           for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
             String cleanString = _parserUtils.removeQuotationMarks(_parserUtils.removeBrackets(splittedByLine[i2]));
             if(cleanString.length > 0) {
-               list.add(cleanString);
+               list.add(_stringUtils.unescape(cleanString));
             }
             if(splittedByLine[i2].trimRight().endsWith(']')) {
               list.removeWhere((item) => (item as String).isEmpty);
-              value = list;
-              resultMap[key] = _stringUtils.unescape(value);
+              resultMap[key] = list;
               i = i2;
               break;
             }

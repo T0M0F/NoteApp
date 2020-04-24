@@ -17,7 +17,6 @@ class CsonParser {
     return result;
   }
 
-  //TODO special characters in string } ] ''' \
   Map<String, dynamic> _parse(String cson) {
 
     Map<String, dynamic> resultMap = Map();
@@ -32,20 +31,18 @@ class CsonParser {
       switch (_csonMode.mode(key, value)) {
 
         case Mode.SINGLELINE:
-          resultMap[key] = _stringUtils.unescape(_parserUtils.removeQuotationMarks(value));
+          resultMap[key] = _clean(value);
           break;
 
         case Mode.MULTILINE:
-          bool multilineStringIsSingleline = 
-            (value as String).replaceFirst("'''", '').endsWith(r"'''")
-            && !(value as String).replaceFirst("'''", '').endsWith(r"\'''");
-          if(multilineStringIsSingleline) {
-            resultMap[key] = _stringUtils.unescape(_parserUtils.removeQuotationMarks(value));
+          if(_isMultiLineStringASingleLine(value)) {
+            resultMap[key] = _clean(value);
             break;
           }
           for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
             value = value + '\n' + splittedByLine[i2];
-            if(splittedByLine[i2].trimRight().endsWith("'''") && !(value as String).trimRight().endsWith(r"\'''")) {
+            bool isEndOfMultiLineString = splittedByLine[i2].trimRight().endsWith("'''") && !(value as String).trimRight().endsWith(r"\'''");
+            if(isEndOfMultiLineString) {
               resultMap[key] = _stringUtils.unescape(_parserUtils.removeQuotationMarks(value));
               i = i2;
               break;
@@ -56,26 +53,41 @@ class CsonParser {
         case Mode.OBJECT_LIST:
           List<Map<String, dynamic>> list = List();
           String temp = '';
+          bool isInMultiLine = false;
           bool inObject = false;
           for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
-            if(splittedByLine[i2].trimLeft().startsWith('{')) {
+
+            //TEST AREA
+              List<String> pair = _stringUtils.splitFirst(splittedByLine[i2], ':');
+              if(pair.length >= 2) {
+                String key1 = pair[0].trim();
+                dynamic value1 = pair[1];
+                if(!isInMultiLine) {
+                  isInMultiLine = _csonMode.mode(key1, value1) == Mode.MULTILINE;
+                  isInMultiLine = !_isMultiLineStringASingleLine(value);
+                } else {
+                  isInMultiLine = !_isEndOfMultiLineString(value1);
+                }
+              } else if(isInMultiLine) {
+                isInMultiLine = !_isEndOfMultiLineString(splittedByLine[i2]);
+              }
+              
+            //
+
+            //Assumption: [{ or }] is not legal, instead [ and { must be in seperate lines 
+            bool startOfObject = splittedByLine[i2].trimLeft().startsWith('{') && isInMultiLine == false;
+            if(startOfObject) {
               inObject = true;
             }
-            if(splittedByLine[i2].trimRight().endsWith(']') && inObject == false) {
-              /*  Assuming that something like ]} is not legal. Instead end of object ] and end of list } must be in seperate lines.
-              String tempWithoutSquareBrackets = splittedByLine[i2].trimRight().substring(0, splittedByLine[i2].trimRight().length-2).trimRight();
-              if(tempWithoutSquareBrackets.endsWith('}')){
-                temp = temp + '\n' + splittedByLine[i2];
-                temp = _clean(temp);
-                list.add(parse2(temp));
-                temp = '';
-              }*/
+            bool endOfList = splittedByLine[i2].trimRight().endsWith(']') && isInMultiLine == false && !inObject;
+            if(endOfList) {
               resultMap[key] = list;
               i = i2;
               break;
             } else {
               temp = temp + '\n' + splittedByLine[i2];
-              if(splittedByLine[i2].trimRight().endsWith('}')) {
+              bool endOfObject = splittedByLine[i2].trimRight().endsWith('}') && isInMultiLine == false;
+              if(endOfObject) {
                 inObject = false;
                 temp = _parserUtils.removeQuotationMarks(temp);
                 list.add(_parse(temp));
@@ -114,6 +126,18 @@ class CsonParser {
     }
 
     return resultMap;
+  }
+
+  String _clean(value) => _stringUtils.unescape(_parserUtils.removeQuotationMarks(value));
+
+  bool _isEndOfMultiLineString(String line) {
+    return line.trimRight().endsWith("'''") 
+          && !line.trimRight().endsWith(r"\'''");
+  }
+
+  bool _isMultiLineStringASingleLine(String line) {
+    return line.replaceFirst("'''", '').endsWith(r"'''")
+          && !line.replaceFirst("'''", '').endsWith(r"\'''");
   }
 
 }

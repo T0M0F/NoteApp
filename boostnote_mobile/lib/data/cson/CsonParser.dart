@@ -50,31 +50,30 @@ class CsonParser {
           }
           break;
 
-        case Mode.OBJECT_LIST:
+        case Mode.OBJECT_LIST: //Assumption: [{ or }] is not legal, instead [ and { must be in seperate lines 
           List<Map<String, dynamic>> list = List();
           String temp = '';
           bool isInMultiLine = false;
           bool inObject = false;
           for(int i2 = i+1; i2 < splittedByLine.length; i2++) {
+            //isInMultiLine = _checkIfWithinMultiLineString(splittedByLine[i2], isInMultiLine);
 
-            //TEST AREA
-              List<String> pair = _stringUtils.splitFirst(splittedByLine[i2], ':');
-              if(pair.length >= 2) {
-                String key1 = pair[0].trim();
-                dynamic value1 = pair[1];
-                if(!isInMultiLine) {
-                  isInMultiLine = _csonMode.mode(key1, value1) == Mode.MULTILINE;
-                  isInMultiLine = !_isMultiLineStringASingleLine(value);
-                } else {
-                  isInMultiLine = !_isEndOfMultiLineString(value1);
+            List<String> pair = _stringUtils.splitFirst(splittedByLine[i2], ':');
+            if(pair.length >= 2) {
+              String key1 = pair[0].trim();
+              dynamic value1 = pair[1];
+              if(!isInMultiLine) {
+                isInMultiLine = _csonMode.mode(key1, value1) == Mode.MULTILINE;
+                if(_isMultiLineStringASingleLine(value1)) {
+                  isInMultiLine = false;
                 }
-              } else if(isInMultiLine) {
-                isInMultiLine = !_isEndOfMultiLineString(splittedByLine[i2]);
+              } else {
+                isInMultiLine = !_isEndOfMultiLineString(value1);
               }
+            } else if(isInMultiLine) {
+              isInMultiLine = !_isEndOfMultiLineString(splittedByLine[i2]);
+            }
               
-            //
-
-            //Assumption: [{ or }] is not legal, instead [ and { must be in seperate lines 
             bool startOfObject = splittedByLine[i2].trimLeft().startsWith('{') && isInMultiLine == false;
             if(startOfObject) {
               inObject = true;
@@ -87,7 +86,7 @@ class CsonParser {
             } else {
               temp = temp + '\n' + splittedByLine[i2];
               bool endOfObject = splittedByLine[i2].trimRight().endsWith('}') && isInMultiLine == false;
-              if(endOfObject) {
+              if(endOfObject) { 
                 inObject = false;
                 temp = _parserUtils.removeQuotationMarks(temp);
                 list.add(_parse(temp));
@@ -126,6 +125,23 @@ class CsonParser {
     }
 
     return resultMap;
+  }
+
+  bool _checkIfWithinMultiLineString(line, bool isInMultiLine) {
+    List<String> pair = _stringUtils.splitFirst(line, ':');
+    if(pair.length >= 2) {
+      String key1 = pair[0].trim();
+      dynamic value1 = pair[1];
+      if(!isInMultiLine) {
+        isInMultiLine = _csonMode.mode(key1, value1) == Mode.MULTILINE;
+        isInMultiLine = !_isMultiLineStringASingleLine(value1);  //'''This is a single Line'''
+      } else {
+        isInMultiLine = !_isEndOfMultiLineString(value1);
+      }
+    } else if(isInMultiLine) {
+      isInMultiLine = !_isEndOfMultiLineString(line);
+    }
+    return isInMultiLine;
   }
 
   String _clean(value) => _stringUtils.unescape(_parserUtils.removeQuotationMarks(value));

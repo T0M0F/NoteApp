@@ -35,7 +35,7 @@ class ResponsiveWidgetState extends State<ResponsiveWidget> {
     }
 
     widgets = this.widget.widgets;
-    _isTablet = MediaQuery.of(context).size.width > this.widget.breakPoint;
+    _isTablet = MediaQuery.of(context).size.width >= this.widget.breakPoint;
 
     return Row(
       children: _getWidgets(),

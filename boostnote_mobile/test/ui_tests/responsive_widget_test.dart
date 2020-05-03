@@ -5,7 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
   
 void main() {
 
-  testWidgets('Test responsive widget on small screen and portrait mode with default breakpoint', (WidgetTester tester) async {
+  group("Widget tests for responsive widget", () {
+
+    testWidgets('Test responsive widget on small screen and portrait mode with default breakpoint', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: MediaQuery(
@@ -26,7 +28,7 @@ void main() {
         )
       ),
     ));
-
+    
     final Finder container1Finder = find.byKey(Key('Container1'));
     final Finder container2Finder = find.byKey(Key('Container2'));
 
@@ -182,5 +184,6 @@ void main() {
     final Finder dividerFinder = find.byKey(Key('Divider'));
 
     expect(dividerFinder, findsOneWidget);
+  });
   });
 }

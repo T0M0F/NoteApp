@@ -7,7 +7,7 @@ void main() {
 
   group("Widget tests for responsive widget", () {
 
-    testWidgets('Test responsive widget on small screen and portrait mode with default breakpoint', (WidgetTester tester) async {
+  testWidgets('Test responsive widget on small screen and portrait mode with default breakpoint', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: MediaQuery(

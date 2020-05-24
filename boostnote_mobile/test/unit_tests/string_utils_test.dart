@@ -7,12 +7,18 @@ void main() {
   group('Tests for StringUtils', (){
     
     test("This should split the string at the first : ", () {
+      //given
       String test = 'linesHighlighted:[1]';
+
+      //when
+      List<String> result = stringUtils.splitFirst(test, ':');
+
+      //then
       List<String> expected = [
         'linesHighlighted',
         '[1]'
       ];
-      expect(stringUtils.splitFirst(test, ':'), expected);
+      expect(result, expected);
     });
 
     test("This should split the string at the first . ", () {

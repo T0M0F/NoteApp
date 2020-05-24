@@ -6,6 +6,11 @@ This project provides a mobile version of [Boostnote](https://github.com/BoostIO
 The app is written in [Flutter](https://flutter.io). Flutter allows you to build native apps on iOS and Android Platforms from a single codebase.
 
 ## Preview
+<img align="left" src="/imagesApp/NoteOverviewBlack.jpeg" width="30%">
+<img src="/imagesApp/CodeBlack.jpeg" width="30%">
+<img align="left" src="/imagesApp/NoteEditorBlack.jpeg" width="30%">
+<img src="/imagesApp/NotePrevBlack.jpeg" width="30%">
+
 
 ## Installation
 
@@ -24,3 +29,10 @@ Notes are stored in the filesystem under `/Android/data/com.example.boostnote_mo
 
 ## Contributions
 I gladly accept contributions! If you'd like to get involved with development please contact me :)
+
+## Some more images
+<img align="left" src="/imagesApp/NoteOverview.jpeg" width="30%">
+<img src="/imagesApp/CodeSnippet.jpeg" width="30%">
+<img align="left" src="/imagesApp/NoteEditor.jpeg" width="30%">
+<img src="/imagesApp/NotePrev.jpeg" width="30%">
+<img src="/imagesApp/Tablet.jpeg" >

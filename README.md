@@ -36,3 +36,4 @@ I gladly accept contributions! If you'd like to get involved with development pl
 <img align="left" src="/imagesApp/NoteEditor.jpeg" width="30%">
 <img src="/imagesApp/NotePrev.jpeg" width="30%">
 <img src="/imagesApp/Tablet.jpeg" >
+

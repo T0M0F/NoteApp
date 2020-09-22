@@ -1,4 +1,4 @@
-# Mobile Version of Boostnote
+# Mobile Version of Boostnote (Development paused)
 
 > *A markdown editor for iOS and Android*    
 
